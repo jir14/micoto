@@ -1,7 +1,4 @@
-#!/usr/bin/python3
-# -*- coding: latin-1 -*-
-import sys, binascii, socket, select, ssl
-import hashlib
+import sys, binascii, socket, select, ssl, hashlib
 
 class ApiRos:
 	"Routeros api"
@@ -59,13 +56,11 @@ class ApiRos:
 			r.append(w)
 
 	def writeWord(self, w):
-		print(("<<< " + w))
 		self.writeLen(len(w))
 		self.writeStr(w)
 
 	def readWord(self):
 		ret = self.readStr(self.readLen())
-		print((">>> " + ret))
 		return ret
 
 	def writeLen(self, l):
@@ -170,6 +165,8 @@ def open_socket(dst, port, secure=False):
 	s.connect(sockaddr)
 	return s
 
+
+"""
 def main():
 	s = None
 	dst = sys.argv[1]
@@ -219,3 +216,4 @@ def main():
 
 if __name__ == '__main__':
 	main()
+"""
