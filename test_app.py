@@ -1,9 +1,15 @@
-from db_crypto import DBConn
+from app.db_crypto import DBConn
 
 db = DBConn("db.db", "pes")
 
-db.dbInsert("testName", "10.255.255.254", "admin", "testpass")
+db.insert("testName", "10.255.255.255", "admin", "testpass")
 
 
-for row in db.dbQuery("SELECT * FROM devices"):
+print(db.selectAll())
+
+for row in db.selectAll():
     print(row)
+
+#for row in db.query("SELECT * FROM devices"):
+#    print(row)
+

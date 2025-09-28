@@ -1,4 +1,5 @@
-import sqlite3, base64, api
+import sqlite3, base64
+import app.api as api
 from cryptography.fernet import Fernet
 
 class DBConn:
@@ -13,37 +14,44 @@ class DBConn:
         except:
             print("Connection to DB failed")        
 
-    def dbInsert(self, devName, devIp, devUser, devPass):
-        #devHost
-        try:
-            apiros = api.ApiRos(api.open_socket(devIp, 8729, True))
-            if not apiros.login(devUser, devPass):
-                devHost = devName
-            apiros.writeWord("/system/identity/print")
-            apiros.writeWord("")
-            res = apiros.readSentence()
-            devHost = res[1].split("=")[2]
-        except:
-            print("cannot connect to device")
-            devHost = devName
-
-        #password encryption
+    def encrypt(self, text):
         f = Fernet(base64.urlsafe_b64encode(self.masterPass))
-        ciphertext = f.encrypt(devPass.encode())
+        return f.encrypt(text.encode())
 
+    def decrypt(self, ciphertext):
+        f = Fernet(base64.urlsafe_b64encode(self.masterPass))
+        return f.decrypt(ciphertext)
+
+    def insert(self, devName, devIp, devUser, devPass):
+        #devHost
+        identity = api.ApiRos.getResponse(devIp, devUser, devPass, "/system/identity/print")
+        if identity:
+            devHost = identity["name"]
+        else:
+            devHost = devName
         #db insert
-        self.cur.execute("INSERT INTO devices (devName, devHost, devIp, devUser, devPass) VALUES (?, ?, ?, ?, ?)", (devName, devHost, devIp, devUser, ciphertext))
+        self.cur.execute("INSERT INTO devices (devName, devHost, devIp, devUser, devPass) VALUES (?, ?, ?, ?, ?)", (devName, devHost, devIp, devUser, self.encrypt(devPass)))
         self.con.commit()
 
-    def dbSelect(self):
-        res = self.cur.execute("SELECT * FROM devices")
-        for row in res.fetchall():
+    def selectAll(self, decrypt=True):
+        res = []
+        for row in self.query("SELECT * FROM devices"):
             row = list(row)
-            f = Fernet(base64.urlsafe_b64encode(self.masterPass))
-            row[5] = f.decrypt(row[5])
-        return row
+            if decrypt:
+                row[5] = self.decrypt(row[5])
+            res.append(row)
+        return res
 
-    def dbQuery(self, query):
+    def select(self, query, decrypt=True):
+        ans = self.query(query)
+        for row in self.query(query):
+            row = list(row)
+            if decrypt:
+                f = Fernet(base64.urlsafe_b64encode(self.masterPass))
+                row[5] = f.decrypt(row[5])
+        return ans
+
+    def query(self, query):
         res = self.cur.execute(query)
         return res.fetchall()
 

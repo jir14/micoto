@@ -1,4 +1,4 @@
-import sys, binascii, socket, select, ssl, hashlib
+import sys, binascii, socket, ssl, hashlib
 
 class ApiRos:
 	"Routeros api"
@@ -149,6 +149,26 @@ class ApiRos:
 			# print((">>> " + s.decode(sys.stdout.encoding, 'ignore')))
 			ret += s.decode(sys.stdout.encoding, "replace")
 		return ret
+	
+
+	def getResponse(devIp, devUser, devPass, sentence):
+		try:
+			apiros = ApiRos(open_socket(devIp, 8729, True))
+			if not apiros.login(devUser, devPass):	
+				return
+			apiros.writeWord(sentence)
+			apiros.writeWord("")
+			return apiros.parser(apiros.readSentence())
+		except:
+			return
+
+	def parser(self, sentence):
+		thisdict = dict()
+		for i in range(1, len(sentence), 2):
+			text = sentence[i].split("=")
+			thisdict[text[1]] = text[2]
+		return thisdict
+			
 
 def open_socket(dst, port, secure=False):
 	s = None
