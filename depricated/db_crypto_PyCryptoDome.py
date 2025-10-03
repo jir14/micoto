@@ -1,13 +1,13 @@
 import sqlite3, base64, os
 import app.api as api
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from Crypto.Cipher import AES
 
 class DBConn:
     def __init__(self, dbFile, masterPass):
         try:
             con = sqlite3.connect(dbFile)
             cur = con.cursor()
-            cur.execute("CREATE TABLE IF NOT EXISTS devices(id INTEGER PRIMARY KEY AUTOINCREMENT, devName VARCHAR(255), devHost VARCHAR(255), devIp VARCHAR(255), devUser VARCHAR(255), devPass VARCHAR(255), devIv)")
+            cur.execute("CREATE TABLE IF NOT EXISTS devices(id INTEGER PRIMARY KEY AUTOINCREMENT, devName VARCHAR(255), devHost VARCHAR(255), devIp VARCHAR(255), devUser VARCHAR(255), devPass VARCHAR(255), devNonce)")
             self.masterPass = masterPass.encode().ljust(32)[:32]
             self.con = con
             self.cur = cur
@@ -15,15 +15,14 @@ class DBConn:
             print("Connection to DB failed")        
 
     def encrypt(self, text):
-        iv = os.urandom(16)
-        cipher = Cipher(algorithms.AES256(self.masterPass), modes.CBC(iv))
-        encryptor = cipher.encryptor()
-        return encryptor.update(text) + encryptor.finalize(), iv
+        cipher = AES.new(text, AES.MODE_EAX)
+        nonce = cipher.nonce
+        return cipher.encrypt(text), nonce
 
 
-    def decrypt(self, ciphertext, iv):
-        decryptor = Cipher(algorithms.AES256(self.masterPass), modes.CBC(iv)).decryptor()
-        return decryptor.update(ciphertext) + decryptor.finalize()
+    def decrypt(self, ciphertext, nonce):
+        cipher = AES.new(self.masterPass, AES.MODE_EAX, nonce=nonce)
+        return cipher.decrypt(ciphertext)
 
     def insert(self, devName, devIp, devUser, devPass):
         #devHost
@@ -33,8 +32,8 @@ class DBConn:
         else:
             devHost = devName
         #db insert
-        devCipher, devIv = self.encrypt(self.masterPass)
-        self.cur.execute("INSERT INTO devices (devName, devHost, devIp, devUser, devPass, devIv) VALUES (?, ?, ?, ?, ?, ?)", (devName, devHost, devIp, devUser, devCipher, devIv))
+        ciphertext, nonce = self.encrypt(self.masterPass)
+        self.cur.execute("INSERT INTO devices (devName, devHost, devIp, devUser, devPass, devNonce) VALUES (?, ?, ?, ?, ?, ?)", (devName, devHost, devIp, devUser, ciphertext, nonce))
         self.con.commit()
 
     def selectAll(self, decrypt=True):

@@ -1,11 +1,10 @@
 from app.db_crypto import DBConn
 
-db = DBConn("db.db", "pes")
+db = DBConn("db.db", "pes les")
 
 db.insert("testName", "10.255.255.255", "admin", "testpass")
 
-
-print(db.selectAll())
+#print(db.selectAll())
 
 for row in db.selectAll():
     print(row)

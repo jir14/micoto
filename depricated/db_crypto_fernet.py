@@ -1,13 +1,13 @@
-import sqlite3, base64, os
+import sqlite3, base64
 import app.api as api
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.fernet import Fernet
 
 class DBConn:
     def __init__(self, dbFile, masterPass):
         try:
             con = sqlite3.connect(dbFile)
             cur = con.cursor()
-            cur.execute("CREATE TABLE IF NOT EXISTS devices(id INTEGER PRIMARY KEY AUTOINCREMENT, devName VARCHAR(255), devHost VARCHAR(255), devIp VARCHAR(255), devUser VARCHAR(255), devPass VARCHAR(255), devIv)")
+            cur.execute("CREATE TABLE IF NOT EXISTS devices(id INTEGER PRIMARY KEY AUTOINCREMENT, devName VARCHAR(255), devHost VARCHAR(255), devIp VARCHAR(255), devUser VARCHAR(255), devPass VARCHAR(255))")
             self.masterPass = masterPass.encode().ljust(32)[:32]
             self.con = con
             self.cur = cur
@@ -15,15 +15,12 @@ class DBConn:
             print("Connection to DB failed")        
 
     def encrypt(self, text):
-        iv = os.urandom(16)
-        cipher = Cipher(algorithms.AES256(self.masterPass), modes.CBC(iv))
-        encryptor = cipher.encryptor()
-        return encryptor.update(text) + encryptor.finalize(), iv
+        f = Fernet(base64.urlsafe_b64encode(self.masterPass))
+        return f.encrypt(text.encode())
 
-
-    def decrypt(self, ciphertext, iv):
-        decryptor = Cipher(algorithms.AES256(self.masterPass), modes.CBC(iv)).decryptor()
-        return decryptor.update(ciphertext) + decryptor.finalize()
+    def decrypt(self, ciphertext):
+        f = Fernet(base64.urlsafe_b64encode(self.masterPass))
+        return f.decrypt(ciphertext)
 
     def insert(self, devName, devIp, devUser, devPass):
         #devHost
@@ -33,8 +30,7 @@ class DBConn:
         else:
             devHost = devName
         #db insert
-        devCipher, devIv = self.encrypt(self.masterPass)
-        self.cur.execute("INSERT INTO devices (devName, devHost, devIp, devUser, devPass, devIv) VALUES (?, ?, ?, ?, ?, ?)", (devName, devHost, devIp, devUser, devCipher, devIv))
+        self.cur.execute("INSERT INTO devices (devName, devHost, devIp, devUser, devPass) VALUES (?, ?, ?, ?, ?)", (devName, devHost, devIp, devUser, self.encrypt(devPass)))
         self.con.commit()
 
     def selectAll(self, decrypt=True):
@@ -42,7 +38,7 @@ class DBConn:
         for row in self.query("SELECT * FROM devices"):
             row = list(row)
             if decrypt:
-                row[5] = self.decrypt(row[5], row[6]).strip()
+                row[5] = self.decrypt(row[5])
             res.append(row)
         return res
 
@@ -50,6 +46,9 @@ class DBConn:
         ans = self.query(query)
         for row in self.query(query):
             row = list(row)
+            if decrypt:
+                f = Fernet(base64.urlsafe_b64encode(self.masterPass))
+                row[5] = f.decrypt(row[5])
         return ans
 
     def query(self, query):
