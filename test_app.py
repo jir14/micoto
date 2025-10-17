@@ -1,6 +1,6 @@
 from app.db_crypto import DBConn
 
-db = DBConn("debices.db", "pes les")
+db = DBConn("devices.db", "pes les")
 
 db.insert("testName", "10.255.255.255", "admin", "testpass")
 

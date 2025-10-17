@@ -14,35 +14,41 @@ class scan:
         self.db = db.Database("db.db")
 
     def init_scan(self):
-        self.conn.write(b"\t")
-        text = self.conn.read_until(b"\r\r[admin@BC-TEST] >").strip()
-        options = []
-        for line in text.split(b"\r\n"):
-            for word in line.split():
-                word = word.decode()
-                options.append(word)
-        options.pop()
-        options.pop()
-        options.pop(0)
-        options.pop(0)
+        a=0
+        while a < 2:
+            self.conn.write(b"\t")
+            text = self.conn.read_until(b">").strip()
+            options = []
+            text = text.split(b"\r\n")
+            for line in text:
+                if b"\r\r" in line:
+                    continue
+                for word in line.split():
+                    word = word.decode()
+                    options.append(word)   
+            options = self.filter(options)
+            a+=1
         return options
      
-    def scan(self, command):
+    def scan(self, command, *args):
+        for arg in args:
+            command = command+"/"+arg
         command = command.encode("ascii")
         self.conn.write(command + b"\r\n")
+        self.conn.write(command)
         self.conn.write(b"\t")
-        self.conn.read_until(b"\r\r[admin@BC-TEST] /"+command+b">").strip()
-        text = self.conn.read_until(b"\r\r[admin@BC-TEST] /"+command+b">").strip()
+        text = self.conn.read_until(command+b">").strip()
         options = []
-        for line in text.split(b"\r\n"):
+        text = text.split(b"\r\n")
+        for line in text:
+            if b"\r\r" in line:
+                continue
             for word in line.split():
                 word = word.decode()
-                options.append(word)
-        self.conn.write(b".." + b"\r\n")
-        options.pop()
-        options.pop()
+            options.append(word)
         options.pop(0)
-        options.pop(0)
+        options = self.filter(options)
+        self.conn.write(b"/\r\n")
         return options
 
     def filter(self, options):
@@ -52,6 +58,15 @@ class scan:
                 continue
             out.append(opt)
         return out
+    
+    def back(self):
+        self.conn.write(b".." + b"\r\n")
+
+    def checkLength(self, options):
+        if len(options) == 0:
+            return False
+        else:
+            return True
 
 
 def main():
@@ -59,14 +74,17 @@ def main():
     scanner = scan("10.255.255.255", "admin", "testpass")
     print("connected")
     options = scanner.init_scan()
-    for opt in scanner.init_scan():
-        options.append(opt)
     print("scanned")
-    options = scanner.filter(options)
-    commands = []
     for opt in options:
-        print(opt)
+        print("")
+        print(opt.upper())
         print(scanner.scan(opt))
+    #    for opts in scanner.scan(opt):          
+    #        print(opts)
+    #        for optts in scanner.scan(opt, opts):
+    #            print(optts)
+            
+                
 
 if __name__ == '__main__':
 	main()
