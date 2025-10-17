@@ -5,7 +5,7 @@ Mikrotik Configuration Tool
 ![Filtered output form telnet](docs/filtered-output.png)
 
 ## Finally - config tree (without tool, log, terminal, partitions, console, disk, certificate)
-CAPS-MAN
+CAPS-MAN\
 -aaa
 -datapath
 -rates
@@ -31,7 +31,7 @@ CAPS-MAN
 --hw-info
 --provision
 
-IPV6
+IPV6\
 -address
 -dhcp-server
 --binding
@@ -57,10 +57,10 @@ IPV6
 --prefix
 -route
 
-RADIUS
+RADIUS\
 -incoming
 
-ROUTING
+ROUTING\
 -bfd
 --configuration
 --session
@@ -136,7 +136,7 @@ ROUTING
 --neighbor
 -rule
 
-USER
+USER\
 -aaa
 -settings
 -active
@@ -145,7 +145,7 @@ USER
 --private
 -group
 
-MPLS
+MPLS\
 -forwarding-table
 -ldp
 --accept-filter
@@ -164,15 +164,15 @@ MPLS
 --path
 --tunnel
 
-SNMP
+SNMP\
 -community
 
-FILE
+FILE\
 
-PORT
+PORT\
 -remote-access
 
-INTERFACE
+INTERFACE\
 -6to4
 -l2tp-ether
 -pptp-client
@@ -304,14 +304,14 @@ INTERFACE
 -pppoe-server
 --server
 
-PPP
+PPP\
 -aaa
 -active
 -l2tp-secret
 -profile
 -secret
 
-SYSTEM
+SYSTEM\
 -backup
 --cloud
 --load
@@ -367,7 +367,7 @@ SYSTEM
 --output
 -watchdog
 
-IP
+IP\
 -address
 -dns
 --adlist
@@ -468,7 +468,7 @@ IP
 -tftp
 --settings
 
-QUEUE
+QUEUE\
 -interface
 -simple
 --reset-counters-all
