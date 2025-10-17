@@ -1,4 +1,4 @@
-import sqlite3, base64, os
+import sqlite3, os
 import app.api as api
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
