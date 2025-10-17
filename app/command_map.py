@@ -15,29 +15,33 @@ class scan:
 
     def init_scan(self):
         a=0
-        while a < 2:
-            self.conn.write(b"\t")
-            text = self.conn.read_until(b">").strip()
-            options = []
-            text = text.split(b"\r\n")
-            for line in text:
-                if b"\r\r" in line:
-                    continue
-                for word in line.split():
-                    word = word.decode()
-                    options.append(word)   
-            options = self.filter(options)
+        while a < 4:
+            if a%2:
+                self.conn.write(b"\t")
+                text = self.conn.read_until(b">").strip()
+                options = []
+                text = text.split(b"\r\n")
+                for line in text:
+                    if b"\r\r" in line:
+                        continue
+                    for word in line.split():
+                        word = word.decode()
+                        options.append(word)
             a+=1
-        return options
+        return self.filter(options)
      
-    def scan(self, command, *args):
+    def scan(self, *args):
+        command = ""
         for arg in args:
-            command = command+"/"+arg
+            command+="/"+arg
+        last = args[-1]
+        last = last.encode("ascii")
         command = command.encode("ascii")
         self.conn.write(command + b"\r\n")
-        self.conn.write(command)
         self.conn.write(b"\t")
-        text = self.conn.read_until(command+b">").strip()
+        self.conn.read_until(last+b">").strip()
+        self.conn.read_until(last+b">").strip()
+        text = self.conn.read_until(last+b">").strip()
         options = []
         text = text.split(b"\r\n")
         for line in text:
@@ -45,8 +49,8 @@ class scan:
                 continue
             for word in line.split():
                 word = word.decode()
-            options.append(word)
-        options.pop(0)
+                options.append(word)
+
         options = self.filter(options)
         self.conn.write(b"/\r\n")
         return options
@@ -78,11 +82,12 @@ def main():
     for opt in options:
         print("")
         print(opt.upper())
-        print(scanner.scan(opt))
-    #    for opts in scanner.scan(opt):          
-    #        print(opts)
-    #        for optts in scanner.scan(opt, opts):
-    #            print(optts)
+    #    scanner.scan(opt)
+    #    print(scanner.scan((opt)))
+        for opts in scanner.scan(opt):          
+            print("-"+opts)
+            for optts in scanner.scan(opt, opts):
+                print("--"+optts)
             
                 
 
