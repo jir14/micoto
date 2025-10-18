@@ -11,6 +11,9 @@ class scan:
         connect.write(password.encode('ascii') + b"\n")
         connect.read_until(b"[admin@BC-TEST] >")
         self.conn = connect
+        self.ip = ip
+        self.username = username
+        self.password = password
         self.db = db.Database("db.db")
 
     def init_scan(self):
@@ -21,12 +24,7 @@ class scan:
                 text = self.conn.read_until(b">").strip()
                 options = []
                 text = text.split(b"\r\n")
-                for line in text:
-                    if b"\r\r" in line:
-                        continue
-                    for word in line.split():
-                        word = word.decode()
-                        options.append(word)
+                options = self.iterate(text)
             a+=1
         return self.filter(options)
      
@@ -44,52 +42,61 @@ class scan:
         text = self.conn.read_until(last+b">").strip()
         options = []
         text = text.split(b"\r\n")
+        options = self.iterate(text)
+        options = self.filter(options, command.decode())
+        self.conn.write(b"/\r\n")
+        return options
+
+    def filter(self, options, command=""):
+        out = []
+        for opt in options:
+            if self.db.filterWords(opt):
+                if self.db.filterOptions(opt):
+                    continue
+                #self.db.insertRoutes(command+"/"+opt)
+                continue
+            out.append(opt)
+        return out
+        
+    def scanAll(self):
+        print("start")
+        scanner = scan(self.ip, self.username, self.password)
+        print("connected")
+        options = scanner.init_scan()
+        scanner.db.clearTable("routes")
+        for opt in options:
+            print("")
+            print(opt.upper())
+            for opts in scanner.scan(opt):          
+                print("-"+opts)
+                for optts in scanner.scan(opt, opts):
+                    print("--"+optts)
+                    for opttts in scanner.scan(opt, opts, optts):
+                        print("---"+opttts)
+                        for optttts in scanner.scan(opt, opts, optts, opttts):
+                            print("---"+optttts)
+                            for opttttts in scanner.scan(opt, opts, optts, opttts, optttts):
+                                print("---"+opttttts)
+                                for optttttts in scanner.scan(opt, opts, optts, opttts, optttts, opttttts):
+                                    print("---"+optttttts)
+        print("scanned")
+        return
+    
+    def iterate(self, text):
+        output = []
         for line in text:
             if b"\r\r" in line:
                 continue
             for word in line.split():
                 word = word.decode()
-                options.append(word)
-
-        options = self.filter(options)
-        self.conn.write(b"/\r\n")
-        return options
-
-    def filter(self, options):
-        out = []
-        for opt in options:
-            if self.db.filter(opt):
-                continue
-            out.append(opt)
-        return out
+                output.append(word)
+        return output
     
-    def back(self):
-        self.conn.write(b".." + b"\r\n")
-
-    def checkLength(self, options):
-        if len(options) == 0:
-            return False
-        else:
-            return True
-
-
 def main():
-    print("start")
-    scanner = scan("10.255.255.255", "admin", "testpass")
-    print("connected")
-    options = scanner.init_scan()
-    print("scanned")
-    for opt in options:
-        print("")
-        print(opt.upper())
-    #    scanner.scan(opt)
-    #    print(scanner.scan((opt)))
-        for opts in scanner.scan(opt):          
-            print("-"+opts)
-            for optts in scanner.scan(opt, opts):
-                print("--"+optts)
-            
-                
+    test = scan("10.255.255.255", "admin", "testpass")
+    test.scanAll()
+    #test.options("/caps-man/datapath/add")
+    #test.db.insertOptions("/caps-man/datapath/add", test.options("/caps-man/datapath/add"))
 
 if __name__ == '__main__':
 	main()
