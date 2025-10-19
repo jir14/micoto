@@ -20,7 +20,7 @@ class Database:
             return True
         
     def filterOptions(self, opt):
-        self.cur.execute("SELECT id FROM forbidden_commands WHERE command=?", (opt,)) 
+        self.cur.execute("SELECT id FROM forbidden_commands WHERE command=?", (opt,))
         if len(self.cur.fetchall()) == 0:
             return False
         else:
@@ -40,7 +40,8 @@ class Database:
         return False
 
     def insertOptions(self, route, options):
-        self.cur.execute("SELECT id FROM routes WHERE route=?", (route.decode(),))
+        #self.cur.execute("SELECT id FROM routes WHERE route=?", (route,))
+        #self.cur.execute(f"SELECT id FROM routes WHERE route={route}")
         id = self.cur.fetchone()[0]
         for opt in options:
             self.cur.execute("INSERT INTO options (routeId, option) VALUES (?, ?)", (id,opt,))

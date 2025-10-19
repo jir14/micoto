@@ -51,10 +51,12 @@ class scan:
         out = []
         for opt in options:
             if self.db.filterWords(opt):
-                if self.db.filterOptions(opt):
-                    continue
-                #self.db.insertRoutes(command+"/"+opt)
+                
+                self.db.insertRoutes(command+"/"+opt)
                 continue
+            if self.db.filterOptions(opt):
+                    print(opt.upper())
+                    continue
             out.append(opt)
         return out
         
@@ -92,11 +94,25 @@ class scan:
                 output.append(word)
         return output
     
+    def options(self, command):
+        command = command.encode("ascii")
+        self.conn.write(command + b"\r\n")
+        self.conn.write(b" \t")
+        self.conn.read_until(command + b">").strip()
+        self.conn.read_until(command + b">").strip()
+        text = self.conn.read_until(command + b">").strip().decode()
+        text = text.split()
+        text.pop()
+        text.pop()
+        self.db.insertOptions(command, text)
+        return
+
+    
 def main():
     test = scan("10.255.255.255", "admin", "testpass")
-    test.scanAll()
-    #test.options("/caps-man/datapath/add")
-    #test.db.insertOptions("/caps-man/datapath/add", test.options("/caps-man/datapath/add"))
+    #test.scanAll()
+    test.options("/caps-man/datapath")
+    #test.db.insertOptions("/caps-man/datapath", test.options("/caps-man/datapath/add"))
 
 if __name__ == '__main__':
 	main()
