@@ -1,8 +1,6 @@
 import paramiko as ssh
 import telnetlib3 as telnet
 import db
-import routeros_api
-
 
 class scan:
     def __init__(self, ip, username, password):
@@ -56,8 +54,9 @@ class scan:
                 self.db.insertRoutes(command+"/"+opt)
                 continue
             if self.db.filterOptions(opt):
-                    print(opt.upper())
-                    continue
+                #print(opt+command)
+                #self.options(opt+command)    
+                continue
             out.append(opt)
         return out
         
@@ -66,7 +65,7 @@ class scan:
         scanner = scan(self.ip, self.username, self.password)
         print("connected")
         options = scanner.init_scan()
-        scanner.db.clearTable("routes")
+        #scanner.db.clearTable("routes")
         for opt in options:
             print("")
             print(opt.upper())
@@ -111,9 +110,8 @@ class scan:
 def main():
     test = scan("10.255.255.255", "admin", "testpass")
     #test.scanAll()
-    test.options("/caps-man/datapath/add")
+    #test.options("/caps-man/datapath/add")
     #test.db.insertOptions("/caps-man/datapath", test.options("/caps-man/datapath/add"))
-
 
 if __name__ == '__main__':
 	main()

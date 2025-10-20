@@ -46,3 +46,9 @@ class Database:
                 self.cur.execute("INSERT INTO options (routeId, option) VALUES (?, ?)", (id,opt,))
                 self.con.commit()
         return True
+    
+    def selectAllRoutes(self):
+        if self.cur.execute("SELECT route FROM routes"):
+            routes = self.cur.fetchall()
+            return routes
+        return
