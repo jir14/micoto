@@ -40,10 +40,9 @@ class Database:
         return False
 
     def insertOptions(self, route, options):
-        #self.cur.execute("SELECT id FROM routes WHERE route=?", (route,))
-        #self.cur.execute(f"SELECT id FROM routes WHERE route={route}")
-        id = self.cur.fetchone()[0]
-        for opt in options:
-            self.cur.execute("INSERT INTO options (routeId, option) VALUES (?, ?)", (id,opt,))
-            self.con.commit()
+        if self.cur.execute("SELECT id FROM routes WHERE route=?", (route.decode(),)):
+            id = self.cur.fetchone()[0]
+            for opt in options:
+                self.cur.execute("INSERT INTO options (routeId, option) VALUES (?, ?)", (id,opt,))
+                self.con.commit()
         return True
