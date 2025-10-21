@@ -7,8 +7,8 @@ class Database:
             cur = con.cursor()
             self.con = con
             self.cur = cur
-            cur.execute("CREATE TABLE IF NOT EXISTS routes(id INTEGER PRIMARY KEY AUTOINCREMENT, route VARCHAR(255))")
-            cur.execute("CREATE TABLE IF NOT EXISTS options(id INTEGER PRIMARY KEY AUTOINCREMENT, routeId INTEGER, option VARCHAR(255), UNIQUE(routeId, option) ON CONFLICT REPLACE, FOREIGN KEY (routeId) REFERENCES routes(id) ON UPDATE CASCADE ON DELETE CASCADE)")
+            cur.execute("CREATE TABLE IF NOT EXISTS routes(id INTEGER PRIMARY KEY AUTOINCREMENT, route VARCHAR(255) UNIQUE ON CONFLICT IGNORE)")
+            cur.execute("CREATE TABLE IF NOT EXISTS options(id INTEGER PRIMARY KEY AUTOINCREMENT, routeId INTEGER, option VARCHAR(255), UNIQUE(routeId, option) ON CONFLICT IGNORE, FOREIGN KEY (routeId) REFERENCES routes(id) ON UPDATE CASCADE ON DELETE CASCADE)")
         except:
             print("Connection to DB failed")   
     

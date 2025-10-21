@@ -53,9 +53,7 @@ class scan:
             if self.db.filterWords(opt):
                 self.db.insertRoutes(command+"/"+opt)
                 continue
-            if self.db.filterOptions(opt):
-                #print(opt+command)
-                #self.options(opt+command)    
+            if self.db.filterOptions(opt):  
                 continue
             out.append(opt)
         return out
@@ -65,7 +63,7 @@ class scan:
         scanner = scan(self.ip, self.username, self.password)
         print("connected")
         options = scanner.init_scan()
-        #scanner.db.clearTable("routes")
+        scanner.db.clearTable("routes")
         for opt in options:
             print("")
             print(opt.upper())
@@ -81,6 +79,8 @@ class scan:
                                 print("---"+opttttts)
                                 for optttttts in scanner.scan(opt, opts, optts, opttts, optttts, opttttts):
                                     print("---"+optttttts)
+        for route in self.db.selectAllRoutes():
+            self.options(route)
         print("scanned")
         return
     
@@ -104,13 +104,25 @@ class scan:
         text.pop()
         text.pop(0)
         self.db.insertOptions(command, text)
-        return
+        for t in len():
+            self.conn.write(b"")
+            print(self.conn.read_until(b">").strip())
+        self.conn.read_until(b">").strip()
+        return 
 
     
 def main():
     test = scan("10.255.255.255", "admin", "testpass")
     #test.scanAll()
-    #test.options("/caps-man/datapath/add")
+    #for route in test.db.selectAllRoutes():
+    #        if test.db.filterOptions(route[0]) in route:
+    #            continue
+    #        print(route[0])
+    #        test.options(route[0])
+    test.options("/caps-man/aaa/edit")
+    print("pes")
+    test.options("/caps-man/aaa/export")
+    print("les")
     #test.db.insertOptions("/caps-man/datapath", test.options("/caps-man/datapath/add"))
 
 if __name__ == '__main__':

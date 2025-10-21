@@ -1,5 +1,4 @@
 import routeros_api
-import app.db
 
 connection = routeros_api.RouterOsApiPool(
     '10.255.255.255',
@@ -12,9 +11,7 @@ connection = routeros_api.RouterOsApiPool(
 )
 api = connection.get_api()
 
-db = app.db.Database("./app/db.db")
-
-list = api.get_resource("/caps-man/rates")
+list = api.get_resource("/console").call("inspect",{"request":"child","path":"ip,address"})
 for rec in list.get():
     print(rec)
 
