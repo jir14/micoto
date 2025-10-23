@@ -7,6 +7,7 @@ class Api():
         #self.sk = API.open_socket(ip, 8728, False)
         self.api = API.ApiRos(self.sk)
         self.api.login(username, password)
+        self.db = DB.Database("db.db")
 
     def filter(self, output):
         filtered = []
@@ -39,13 +40,16 @@ class Api():
             dirs.append(path)
         return dirs, cmds, args
     
-    def requestOne(self, re, type):
-        answer = []
-        for r in re:
-            if r["=node-type"] == type:
-                answer.append(r["=name"])
-        return answer
-    
+    def getPath(self, dir):
+        path = dir
+        while dir:
+            dir = self.db.getDirParentName(dir)
+            if dir:
+                path = dir+","+path
+            break
+        print(path)
+        return
+
     def requestSome(self, path, type):
         sentence = []
         sentence.append("/console/inspect")
@@ -54,15 +58,14 @@ class Api():
         out = self.api.talk(sentence)
         out = self.filter(out)
         return self.requestOne(out, type)
-    
-    def insert(self):
-        return
 
 def main():
     api = Api("10.255.255.255", "admin", "testpass")
-    db = DB.Database("db.db")
+    db = api.db
 
-    
+    api.getPath("aaa")
+
+""" 
     dirs, opts, args = api.requestAll()
     db.insertDirs(dirs, 0)
     cmds = []
@@ -78,24 +81,34 @@ def main():
 
     for dir in dirs:
         dirss, cmdss, argss = api.requestAll(dir)
-        db.insertDirs(dirss, 1, db.getDirID(dir)[0])
+        db.insertDirs(dirss, 1, db.getDirID(dir))
         db.insertCommands(dir, cmdss)
-        print(dir)
         for cmdd in cmdss:
             argss = api.requestSome(cmdd, "arg")
             db.insertArgs(cmdd, argss)
 
+    dirs = dirss
+
+    a=1
+    while a<10:
+        for dir in dirs:
+            dirss, cmdss, argss = api.requestAll(dir)
+            db.insertDirs(dirss, a)
+            db.insertCommands(dir, cmdss)
+            for cmdd in cmdss:
+                argss = api.requestSome(cmdd, "arg")
+                db.insertArgs(cmdd, argss)
+        a+=1
+        dirs = db.getLevelDirs(a)
 
 
-"""
+
+
     a = 1
     for lvl in db.getLevelDirs(a-1):
         if lvl[0] == "":
             continue
         db.insertDirs(api.requestSome(lvl[0], "dir"), a)
-
-
-
 
     print("PATHS")
     for path in paths:

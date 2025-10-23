@@ -21,8 +21,10 @@ class Database:
         else:
             return True
 
-    def insertDirs(self, dirs, level, higherID=""):
+    def insertDirs(self, dirs, level, higherID=""):  
         for dir in dirs:
+            if higherID == "":
+                higherID=self.getDirParentID(dir)
             if self.cur.execute("INSERT INTO dirs (dir, level, higherID) VALUES (?, ?, ?)", (dir,level,higherID,)):
                 self.con.commit()
                 continue
@@ -60,5 +62,27 @@ class Database:
     
     def getDirID(self, dir):
         if self.cur.execute("SELECT id FROM dirs WHERE dir=?", (dir,)):
-            return self.cur.fetchone()
+            res = self.cur.fetchone()
+            if res:
+                return res[0]
+        return False
+    
+    def getDirName(self, dirID):
+        if self.cur.execute("SELECT dir FROM dirs WHERE id=?", (dirID,)):
+            res = self.cur.fetchone()
+            if res:
+                return res[0]
+        return False
+    
+    def getDirParentID(self, dir):
+        if self.cur.execute("SELECT higherID FROM dirs WHERE dir=?", (dir,)):
+            res = self.cur.fetchone()
+            if res:
+                return res[0]
+        return False
+    
+    def getDirParentName(self, dir):
+        perID = self.getDirParentID(dir)
+        if perID:
+            return self.getDirName(perID)
         return False
