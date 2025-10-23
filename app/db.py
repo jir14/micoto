@@ -7,48 +7,58 @@ class Database:
             cur = con.cursor()
             self.con = con
             self.cur = cur
-            cur.execute("CREATE TABLE IF NOT EXISTS routes(id INTEGER PRIMARY KEY AUTOINCREMENT, route VARCHAR(255) UNIQUE ON CONFLICT IGNORE)")
-            cur.execute("CREATE TABLE IF NOT EXISTS options(id INTEGER PRIMARY KEY AUTOINCREMENT, routeId INTEGER, option VARCHAR(255), UNIQUE(routeId, option) ON CONFLICT IGNORE, FOREIGN KEY (routeId) REFERENCES routes(id) ON UPDATE CASCADE ON DELETE CASCADE)")
+            cur.execute('CREATE TABLE IF NOT EXISTS "dirs" ("id" INTEGER NOT NULL UNIQUE, "higherID" INTEGER, "dir" TEXT UNIQUE ON CONFLICT IGNORE, "level" INTEGER NOT NULL, PRIMARY KEY("id" AUTOINCREMENT))')
+            cur.execute('INSERT INTO dirs (dir, level) VALUES ("", 0)')
+            cur.execute('CREATE TABLE IF NOT EXISTS "cmds" ("id" INTEGER NOT NULL UNIQUE, "cmd" TEXT NOT NULL, "dir_id" INTEGER NOT NULL, UNIQUE("cmd","dir_id") ON CONFLICT IGNORE, PRIMARY KEY("id" AUTOINCREMENT), FOREIGN KEY("dir_id") REFERENCES "dirs"("dir") ON DELETE CASCADE)')
+            cur.execute('CREATE TABLE IF NOT EXISTS "args" ("id" INTEGER NOT NULL UNIQUE, "cmd_id" INTEGER NOT NULL, "arg" TEXT NOT NULL, UNIQUE("arg","cmd_id") ON CONFLICT IGNORE, PRIMARY KEY("id" AUTOINCREMENT), FOREIGN KEY("cmd_id") REFERENCES "cmds"("id") ON DELETE CASCADE)')
         except:
             print("Connection to DB failed")   
     
-    def filterWords(self, word):
-        self.cur.execute("SELECT id FROM forbidden_words WHERE word=?", (word,)) 
-        if len(self.cur.fetchall()) == 0:
-            return False
-        else:
-            return True
-        
     def filterOptions(self, opt):
         self.cur.execute("SELECT id FROM forbidden_commands WHERE command=?", (opt,))
         if len(self.cur.fetchall()) == 0:
             return False
         else:
             return True
-        
-    def insertRoutes(self, route):
-        if self.cur.execute("INSERT INTO routes (route) VALUES (?)", (route,)):
-            self.con.commit()
-            print(route)
-            return True
-        return False
+
+    def insertDirs(self, dirs, level, higherID=""):
+        for dir in dirs:
+            if self.cur.execute("INSERT INTO dirs (dir, level, higherID) VALUES (?, ?, ?)", (dir,level,higherID,)):
+                self.con.commit()
+                continue
+            return False
+        return True
     
-    def clearTable(self, tableName):
-        if self.cur.execute(f"DELETE FROM {tableName}"):
-            self.con.commit()
+
+    def insertCommands(self, dir, cmds):
+        if self.cur.execute("SELECT id FROM dirs WHERE dir=?", (dir,)):
+            id = self.cur.fetchone()[0]
+            for cmd in cmds:
+                self.cur.execute("INSERT INTO cmds (cmd, dir_id) VALUES (?, ?)", (cmd,id,))
+                self.con.commit()
             return True
         return False
 
-    def insertOptions(self, route, options):
-        if self.cur.execute("SELECT id FROM routes WHERE route=?", (route.decode(),)):
+    def insertArgs(self, cmd, args):
+        if self.cur.execute("SELECT id FROM cmds WHERE cmd=?", (cmd,)):
             id = self.cur.fetchone()[0]
-            for opt in options:
-                self.cur.execute("INSERT INTO options (routeId, option) VALUES (?, ?)", (id,opt,))
+            for arg in args:
+                self.cur.execute("INSERT INTO args (arg, cmd_id) VALUES (?, ?)", (arg,id,))
                 self.con.commit()
-        return True
+            return True
+        return False
     
-    def selectAllRoutes(self):
-        if self.cur.execute("SELECT route FROM routes"):
-            routes = self.cur.fetchall()
-            return routes
-        return
+    def getLevelDirs(self, level):
+        if self.cur.execute("SELECT dir FROM dirs WHERE level=?", (level,)):
+            return self.cur.fetchall()
+        return False
+    
+    def getLevelCmds(self, dir_id):
+        if self.cur.execute("SELECT cmd FROM cmds WHERE dir_id=?", (dir_id,)):
+            return self.cur.fetchall()
+        return False
+    
+    def getDirID(self, dir):
+        if self.cur.execute("SELECT id FROM dirs WHERE dir=?", (dir,)):
+            return self.cur.fetchone()
+        return False
