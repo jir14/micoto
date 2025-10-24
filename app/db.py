@@ -21,10 +21,12 @@ class Database:
         else:
             return True
 
-    def insertDirs(self, dirs, level, higherID=""):  
+    def insertDirs(self, dirs, level, parDir, higID=True):  
         for dir in dirs:
-            if higherID == "":
-                higherID=self.getDirParentID(dir)
+            if higID:
+                higherID=self.getDirID(parDir)
+            else:
+                higherID=None
             if self.cur.execute("INSERT INTO dirs (dir, level, higherID) VALUES (?, ?, ?)", (dir,level,higherID,)):
                 self.con.commit()
                 continue
@@ -41,45 +43,45 @@ class Database:
             return True
         return False
 
-    def insertArgs(self, cmd, args):
-        if self.cur.execute("SELECT id FROM cmds WHERE cmd=?", (cmd,)):
-            id = self.cur.fetchone()[0]
-            for arg in args:
-                self.cur.execute("INSERT INTO args (arg, cmd_id) VALUES (?, ?)", (arg,id,))
-                self.con.commit()
-            return True
-        return False
+    def insertArgs(self, cmd, args, dirID=False):
+        if dirID:
+            self.cur.execute("SELECT id FROM cmds WHERE cmd=? AND dir_id=?", (cmd,dirID,))
+        else:
+            self.cur.execute("SELECT id FROM cmds WHERE cmd=?", (cmd,))
+        id = self.cur.fetchone()[0]
+        for arg in args:
+            self.cur.execute("INSERT INTO args (arg, cmd_id) VALUES (?, ?)", (arg,id,))
+            self.con.commit()
+        return True
     
     def getLevelDirs(self, level):
         if self.cur.execute("SELECT dir FROM dirs WHERE level=?", (level,)):
-            return self.cur.fetchall()
-        return False
+            res = []
+            for re in self.cur.fetchall():
+                res.append(re[0])
+            return res
     
     def getLevelCmds(self, dir_id):
         if self.cur.execute("SELECT cmd FROM cmds WHERE dir_id=?", (dir_id,)):
             return self.cur.fetchall()
-        return False
     
     def getDirID(self, dir):
         if self.cur.execute("SELECT id FROM dirs WHERE dir=?", (dir,)):
             res = self.cur.fetchone()
             if res:
                 return res[0]
-        return False
     
     def getDirName(self, dirID):
         if self.cur.execute("SELECT dir FROM dirs WHERE id=?", (dirID,)):
             res = self.cur.fetchone()
             if res:
                 return res[0]
-        return False
-    
+
     def getDirParentID(self, dir):
         if self.cur.execute("SELECT higherID FROM dirs WHERE dir=?", (dir,)):
             res = self.cur.fetchone()
             if res:
                 return res[0]
-        return False
     
     def getDirParentName(self, dir):
         perID = self.getDirParentID(dir)
