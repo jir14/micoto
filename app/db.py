@@ -3,7 +3,7 @@ import sqlite3
 class Database:
     def __init__(self, dbFile):
         try:
-            con = sqlite3.connect(dbFile)
+            con = sqlite3.connect(dbFile, check_same_thread=False)
             cur = con.cursor()
             self.con = con
             self.cur = cur
@@ -87,4 +87,17 @@ class Database:
         perID = self.getDirParentID(dir)
         if perID:
             return self.getDirName(perID)
+        return False
+    
+    def getDirCmds(self, dirID):
+        if self.cur.execute("SELECT cmd FROM cmds WHERE dir_id=?", (dirID,)):
+            res = self.cur.fetchall()
+            if res:
+                return res
+        
+    def getDirDirs(self, dirID):
+        if self.cur.execute("SELECT dir FROM dirs WHERE higherID=?", (dirID,)):
+            res = self.cur.fetchall()
+            if res:
+                return res
         return False
