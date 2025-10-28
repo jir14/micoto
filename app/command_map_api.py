@@ -1,4 +1,4 @@
-import api as API
+import app.apiros as API
 import db as DB
 
 class Api():
@@ -7,7 +7,6 @@ class Api():
         #self.sk = API.open_socket(ip, 8728, False)
         self.api = API.ApiRos(self.sk)
         self.api.login(username, password)
-        self.db = DB.Database("db.db")
 
     def filter(self, output):
         filtered = []
@@ -65,8 +64,8 @@ class Api():
         return self.requestOne(out, type)
 
 def main():
-    api = Api("10.255.255.255", "admin", "testpass")
-    db = api.db
+    api = API.Api("10.255.255.255", "admin", "testpass")
+    db = DB.Database("db.db")
 
     dirs, opts, args = api.requestAll()
     db.insertDirs(dirs, 0, None, False)

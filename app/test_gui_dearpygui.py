@@ -1,14 +1,39 @@
 import dearpygui.dearpygui as dpg
 from db import Database
+import api as API
 
 db = Database("db.db")
-
+api = API.Api("10.255.255.255", "admin", "testpass", db)
 dpg.create_context()
 
 def openCmdWindow(user_data):
-    lbl = db.getDirName(user_data)   
-    with dpg.window(label=lbl, width=300, height=500):
-        dpg.add_text("state data/options")
+    lbl = db.getDirName(user_data)
+    cmds = db.getDirCmds(user_data)
+    with dpg.window(label=lbl, tag="window", width=500):
+        with dpg.group(horizontal=True):
+            with dpg.group(horizontal=False):
+                           #width=(dpg.get_item_width("window")-100)
+                with dpg.table(header_row=True, policy=dpg.mvTable_SizingFixedFit, hideable=True, resizable=False, width=(dpg.get_item_width("window")-100)):
+                    first = True
+                    for re in api.printDir(user_data):
+                        if re[0]=="!re":
+                            if first:
+                                for k in re[1].keys():
+                                    k = k.replace("=","")
+                                    if k == ".id":
+                                        continue
+                                    dpg.add_table_column(label=k)
+                                first = False
+                            with dpg.table_row():
+                                for rec in re[1].values():
+                                    if "*" in rec:
+                                        continue
+                                    dpg.add_text(rec)
+
+            with dpg.group(horizontal=False, width=100):
+                for cmd in cmds:
+                    dpg.add_button(label=cmd)
+            
     return
 
 def openDirWindow(sender, app_data, user_data):
@@ -17,13 +42,13 @@ def openDirWindow(sender, app_data, user_data):
     if not dirs:
         openCmdWindow(user_data)
         return
-    with dpg.window(label=lbl, width=300, height=500):
+    with dpg.window(label=lbl):
         for rec in dirs:
             if rec =="":
                 continue
-            dpg.add_button(label=rec[0], user_data=db.getDirID(rec[0]), callback=openDirWindow)
+            dpg.add_button(label=rec, user_data=db.getDirID(rec), callback=openDirWindow)
 
-with dpg.window(tag="Menu",label="Menu", width=200, height=500):
+with dpg.window(tag="Menu",label="Menu"):
     for rec in db.getLevelDirs(0):
         if rec =="":
             continue
@@ -58,4 +83,23 @@ dpg.create_viewport(title='Micoto', width=800, height=600)
 dpg.setup_dearpygui()
 dpg.show_viewport()
 dpg.start_dearpygui()
-dpg.destroy_context()"""
+dpg.destroy_context()
+
+        with dpg.table(header_row=True, policy=dpg.mvTable_SizingFixedFit):
+            first = True
+            for re in api.printDir(user_data):
+                if re[0]=="!re":
+                    if first:
+                        for k in re[1].keys():
+                            k = k.replace("=","")
+                            if k == ".id":
+                                continue
+                            dpg.add_table_column(label=k)
+                        first = False
+                    with dpg.table_row():
+                        for rec in re[1].values():
+                            if "*" in rec:
+                                continue
+                            dpg.add_text(rec)
+        
+                            """

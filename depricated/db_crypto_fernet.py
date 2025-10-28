@@ -1,5 +1,5 @@
 import sqlite3, base64
-import app.api as api
+import app.apiros as apiros
 from cryptography.fernet import Fernet
 
 class DBConn:
@@ -24,7 +24,7 @@ class DBConn:
 
     def insert(self, devName, devIp, devUser, devPass):
         #devHost
-        identity = api.ApiRos.getResponse(devIp, devUser, devPass, "/system/identity/print")
+        identity = apiros.ApiRos.getResponse(devIp, devUser, devPass, "/system/identity/print")
         if identity:
             devHost = identity["name"]
         else:

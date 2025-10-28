@@ -1,5 +1,5 @@
 import sqlite3, base64, os
-import app.api as api
+import app.apiros as apiros
 from Crypto.Cipher import AES
 
 class DBConn:
@@ -26,7 +26,7 @@ class DBConn:
 
     def insert(self, devName, devIp, devUser, devPass):
         #devHost
-        identity = api.ApiRos.getResponse(devIp, devUser, devPass, "/system/identity/print")
+        identity = apiros.ApiRos.getResponse(devIp, devUser, devPass, "/system/identity/print")
         if identity:
             devHost = identity["name"]
         else:
