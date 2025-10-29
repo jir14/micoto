@@ -6,53 +6,72 @@ db = Database("db.db")
 api = API.Api("10.255.255.255", "admin", "testpass", db)
 dpg.create_context()
 
-def openCmdWindow(user_data):
-    lbl = db.getDirName(user_data)
-    cmds = db.getDirCmds(user_data)
-    with dpg.window(label=lbl, tag="window", width=500):
-        with dpg.group(horizontal=True):
-            with dpg.group(horizontal=False):
-                           #width=(dpg.get_item_width("window")-100)
-                with dpg.table(header_row=True, policy=dpg.mvTable_SizingFixedFit, hideable=True, resizable=False, width=(dpg.get_item_width("window")-100)):
-                    first = True
-                    for re in api.printDir(user_data):
-                        if re[0]=="!re":
-                            if first:
-                                for k in re[1].keys():
-                                    k = k.replace("=","")
-                                    if k == ".id":
-                                        continue
-                                    dpg.add_table_column(label=k)
-                                first = False
-                            with dpg.table_row():
-                                for rec in re[1].values():
-                                    if "*" in rec:
-                                        continue
-                                    dpg.add_text(rec)
+def changeValue(sender, app_data, user_data):
 
-            with dpg.group(horizontal=False, width=100):
-                for cmd in cmds:
-                    dpg.add_button(label=cmd)
-            
     return
 
+def openArgWindow(sender, app_data, user_data):
+    lbl = db.getDirName(user_data[1])
+    cmds = db.getDirCmds(user_data[1])
+    uTag = dpg.generate_uuid()
+    with dpg.window(label=lbl, tag=uTag, autosize=True):
+        with dpg.group(horizontal=False): 
+            with dpg.group(horizontal=False):
+                with dpg.table(header_row=True, policy=dpg.mvTable_SizingFixedFit, hideable=True):
+                    keys, values, ids = api.printDir(user_data[1], user_data[0])
+                    for key in keys:
+                        dpg.add_table_column(label=key)
+                    for vals, id in zip(values, ids):
+                        with dpg.table_row():
+                            for value in vals:
+                                dpg.add_selectable(label=value, span_columns=True, callback=changeValue, user_data=(user_data, id))
+            with dpg.group(horizontal=True):
+                for cmd in cmds:
+                    dpg.add_button(label=cmd) 
+
+def openCmdWindow(user_data):
+    lbl = db.getDirName(user_data[1])
+    cmds = db.getDirCmds(user_data[1])
+    uTag = dpg.generate_uuid()
+    with dpg.window(label=lbl, width=500, tag=uTag):
+        dpg.set_item_pos(uTag, [240, 0])
+        with dpg.group(horizontal=True):
+            with dpg.group(horizontal=False, width=100):
+                for cmd in cmds:
+                    dpg.add_button(label=cmd) 
+            with dpg.group(horizontal=False):
+                           #width=(dpg.get_item_width("window")-100)
+                with dpg.table(header_row=True, policy=dpg.mvTable_SizingFixedFit, hideable=True):
+                    keys, values, ids = api.printDir(user_data[1])
+                    for key in keys:
+                        dpg.add_table_column(label=key)
+                    for vals, id in zip(values, ids):
+                        with dpg.table_row():
+                            for value in vals:
+                                dpg.add_selectable(label=value, span_columns=True, callback=openArgWindow, user_data=(user_data, id)) 
+
+
+
 def openDirWindow(sender, app_data, user_data):
-    dirs = db.getDirDirs(user_data)
-    lbl = db.getDirName(user_data)
+    bid = user_data[0]
+    dirs = db.getDirDirs(user_data[1])
+    lbl = db.getDirName(user_data[1])
+    uTag = dpg.generate_uuid()
     if not dirs:
         openCmdWindow(user_data)
         return
-    with dpg.window(label=lbl):
+    with dpg.window(label=lbl, tag=uTag):
+        dpg.set_item_pos(uTag, [120, 0])
         for rec in dirs:
             if rec =="":
                 continue
-            dpg.add_button(label=rec, user_data=db.getDirID(rec), callback=openDirWindow)
+            dpg.add_button(label=rec, user_data=(bid, db.getDirID(rec)), callback=openDirWindow)
 
 with dpg.window(tag="Menu",label="Menu"):
     for rec in db.getLevelDirs(0):
         if rec =="":
             continue
-        dpg.add_button(label=rec, user_data=db.getDirID(rec), callback=openDirWindow)
+        dpg.add_button(label=rec, user_data=(db.getDirID(rec), db.getDirID(rec)), callback=openDirWindow)
 
 dpg.create_viewport(title='Micoto', width=1500, height=1000)
 dpg.setup_dearpygui()
@@ -101,5 +120,24 @@ dpg.destroy_context()
                             if "*" in rec:
                                 continue
                             dpg.add_text(rec)
-        
+
                             """
+"""
+                    first = True
+                    for re in api.printDir(user_data):
+                        if re[0]=="!re":
+                            if first:
+                                for k in re[1].keys():
+                                    k = k.replace("=","")
+                                    if k == ".id":
+                                        continue
+                                    dpg.add_table_column(label=k)
+                                first = False
+                            with dpg.table_row():
+                                item_id = 0
+                                for rec in re[1].values():
+                                    print(rec)
+                                    if "*" in rec:
+                                        item_id = rec.replace("*","")
+                                        continue
+                                    dpg.add_selectable(label=rec, span_columns=True, callback=openArgWindow, user_data=(user_data, cmds, item_id, re))"""

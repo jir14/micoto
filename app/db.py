@@ -7,8 +7,8 @@ class Database:
             cur = con.cursor()
             self.con = con
             self.cur = cur
-            cur.execute('CREATE TABLE IF NOT EXISTS "dirs" ("id" INTEGER NOT NULL UNIQUE, "higherID" INTEGER, "dir" TEXT UNIQUE ON CONFLICT IGNORE, "level" INTEGER NOT NULL, PRIMARY KEY("id" AUTOINCREMENT))')
-            cur.execute('INSERT INTO dirs (dir, level) VALUES ("", 0)')
+            cur.execute('CREATE TABLE IF NOT EXISTS "dirs" ("id" INTEGER NOT NULL UNIQUE, "higherID" INTEGER, "dir" TEXT, "level" INTEGER NOT NULL, "bid" INTEGER, UNIQUE("dir","higherID") ON CONFLICT IGNORE, PRIMARY KEY("id" AUTOINCREMENT))')
+            cur.execute('INSERT INTO dirs (dir, level, bid) VALUES ("", 0, "")')
             cur.execute('CREATE TABLE IF NOT EXISTS "cmds" ("id" INTEGER NOT NULL UNIQUE, "cmd" TEXT NOT NULL, "dir_id" INTEGER NOT NULL, UNIQUE("cmd","dir_id") ON CONFLICT IGNORE, PRIMARY KEY("id" AUTOINCREMENT), FOREIGN KEY("dir_id") REFERENCES "dirs"("dir") ON DELETE CASCADE)')
             cur.execute('CREATE TABLE IF NOT EXISTS "args" ("id" INTEGER NOT NULL UNIQUE, "cmd_id" INTEGER NOT NULL, "arg" TEXT NOT NULL, UNIQUE("arg","cmd_id") ON CONFLICT IGNORE, PRIMARY KEY("id" AUTOINCREMENT), FOREIGN KEY("cmd_id") REFERENCES "cmds"("id") ON DELETE CASCADE)')
         except:
@@ -25,9 +25,11 @@ class Database:
         for dir in dirs:
             if higID:
                 higherID=self.getDirID(parDir)
+                bID=self.getBaseID(higherID)
             else:
                 higherID=None
-            if self.cur.execute("INSERT INTO dirs (dir, level, higherID) VALUES (?, ?, ?)", (dir,level,higherID,)):
+                bID=None
+            if self.cur.execute("INSERT INTO dirs (dir, level, higherID, bid) VALUES (?, ?, ?, ?)", (dir,level,higherID,bID,)):
                 self.con.commit()
                 continue
             return False
@@ -110,14 +112,16 @@ class Database:
             return res
         return False
         
-    def getDirDirs(self, dirID):
-        if self.cur.execute("SELECT dir FROM dirs WHERE higherID=?", (dirID,)):
-            res = []
-            for re in self.cur.fetchall():
-                res.append(re[0])
-            return res
-        return False
-    
+    def getDirDirs(self, dirID, bid=None):
+        if bid:
+            self.cur.execute("SELECT dir FROM dirs WHERE higherID=? AND bid=?", (dirID,bid,))
+        else:
+            self.cur.execute("SELECT dir FROM dirs WHERE higherID=?", (dirID,))
+        res = []
+        for re in self.cur.fetchall():
+            res.append(re[0])
+        return res
+            
     def getCmdArgs(self, dirID):
         if self.cur.execute("SELECT arg FROM args WHERE dir_id=?", (dirID,)):
             res = []
@@ -146,3 +150,11 @@ class Database:
             else:
                 break
         return "/"+path
+    
+    def getBaseID(self, parDirID):
+        bID=parDirID
+        while parDirID:
+            parDirID = self.getDirParentID(parDirID)
+            if parDirID:
+                bID = parDirID
+        return bID

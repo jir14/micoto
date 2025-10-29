@@ -8,15 +8,34 @@ class Api():
         self.api.login(username, password)
         self.db = db
 
-    def parser(self, reply):
-        for re in reply:
-            if re[0]=="!re":
-                for r in re[1].keys():
-                    print(r.replace("=",""), re[1][r])
-        return
-
-    def printDir(self, dirID):
+    def printDir(self, dirID, id=None):
         sentence = []
         sentence.append(self.db.printDirPath(dirID)+"/print")
-        out = self.api.talk(sentence)
-        return out
+        first = True
+        keys = []
+        values = []
+        ids = []
+        for re in self.api.talk(sentence):
+            if re[0]=="!re":
+                if first:
+                    for k in re[1].keys():
+                        k = k.replace("=","")
+                        if k == ".id":
+                            continue
+                        keys.append(k)
+                    first = False
+                vals = []
+                for rec in re[1].values():
+                    if "*" in rec:
+                        ids.append(rec.replace("*",""))
+                        continue
+                    vals.append(rec)
+                values.append(vals)
+        if id:
+            val = values[ids.index(id)]
+            values = []
+            values.append(val)
+            ids = [id]
+        return keys, values, ids
+    
+    
