@@ -11,14 +11,14 @@ with dpg.window(tag="Menu",label="Menu"):
         if rec =="":
             continue
         dpg.add_tree_node(tag=db.getDirID(rec), label=rec)
-    dirID=1
-    while dirID<10:
-        recs, bids = db.getLevelDirs(dirID, True)
+    lvl=1
+    while lvl<10:
+        recs, bids = db.getLevelDirs(lvl, True)
         for rec, bid in zip(recs, bids):
             if rec =="":
                 continue
             dpg.add_tree_node(tag=db.getDirID(rec, bid), label=rec, parent=db.getDirParentID(rec, bid))
-        dirID+=1
+        lvl+=1
 
 dpg.create_viewport(title='Micoto', width=1500, height=1000)
 dpg.setup_dearpygui()

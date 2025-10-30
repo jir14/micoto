@@ -25,11 +25,11 @@ class Database:
         for dir in dirs:
             if higID:
                 higherID=self.getDirID(parDir)
-                bID=self.getBaseID(higherID)
+                bid=self.getBaseID(higherID)
             else:
                 higherID=None
-                bID=None
-            if self.cur.execute("INSERT INTO dirs (dir, level, higherID, bid) VALUES (?, ?, ?, ?)", (dir,level,higherID,bID,)):
+                bid=None
+            if self.cur.execute("INSERT INTO dirs (dir, level, higherID, bid) VALUES (?, ?, ?, ?)", (dir,level,higherID,bid,)):
                 self.con.commit()
                 continue
             return False
@@ -73,7 +73,6 @@ class Database:
             for re in self.cur.fetchall():
                 res.append(re[0])
             return res
-        return False
     
     def getLevelCmds(self, dir_id):
         if self.cur.execute("SELECT cmd FROM cmds WHERE dir_id=?", (dir_id,)):
@@ -83,42 +82,36 @@ class Database:
             return res
         return False
     
-    def getDirID(self, dir, bid=None):
+    def getDirID(self, dir, bid=None, lvl=None):
+        sql = "SELECT id FROM dirs WHERE dir=?"
+        params = [dir]
         if bid:
-            self.cur.execute("SELECT id FROM dirs WHERE dir=? AND bid=?", (dir,bid,))
-        else:
-            self.cur.execute("SELECT id FROM dirs WHERE dir=?", (dir,))
-        res = self.cur.fetchone()
-        if res:
-            return res[0]
-        return False
+            sql = sql+" AND bid=?"
+            params.append(bid)
+        if lvl:
+            sql = sql+" AND level=?"
+            params.append(lvl)
+        return self.getOne(sql, params)
     
-    def getDirName(self, dirID, bID=None):
-        if bID:
-            self.cur.execute("SELECT dir FROM dirs WHERE id=? AND bid=?", (dirID,bID,))
-        else:
-            self.cur.execute("SELECT dir FROM dirs WHERE id=?", (dirID,))
-        res = self.cur.fetchone()
-        if res:
-            return res[0]
-        return False
+    def getDirName(self, dirID, bid=None):
+        sql = "SELECT dir FROM dirs WHERE id=?"
+        params = [dirID]
+        if bid:
+            sql = sql+" AND bid=?"
+            params.append(bid)
+        return self.getOne(sql, params)
 
     def getDirParentID(self, dir, bid=None):
-        if bid:
-            if type(dir) is int:
-                self.cur.execute("SELECT higherID FROM dirs WHERE id=? AND bid=?", (dir,bid,))    
-            else:
-                self.cur.execute("SELECT higherID FROM dirs WHERE dir=? AND bid=?", (dir,bid,))
+        sql = "SELECT higherID FROM dirs WHERE"
+        params = [dir]
+        if type(dir) is int:
+            sql = sql+" id=?"
         else:
-            if type(dir) is int:
-                self.cur.execute("SELECT higherID FROM dirs WHERE id=?", (dir,))    
-            else:
-                self.cur.execute("SELECT higherID FROM dirs WHERE dir=?", (dir,))
-    
-        res = self.cur.fetchone()
-        if res:
-            return res[0]
-        return False
+            sql = sql+" dir=?"
+        if bid:
+            sql = sql+" AND bid=?"
+            params.append(bid)
+        return self.getOne(sql, params)
     
     def getDirParentName(self, dir, bid=None):
         if bid:
@@ -138,10 +131,11 @@ class Database:
         return False
         
     def getDirDirs(self, dirID, bid=None):
+        sql = "SELECT dir FROM dirs WHERE higherID=?"
+        params = [dirID]
         if bid:
-            self.cur.execute("SELECT dir FROM dirs WHERE higherID=? AND bid=?", (dirID,bid,))
-        else:
-            self.cur.execute("SELECT dir FROM dirs WHERE higherID=?", (dirID,))
+            sql = sql+" AND bid=?"
+            params.append(bid)
         res = []
         for re in self.cur.fetchall():
             res.append(re[0])
@@ -163,9 +157,16 @@ class Database:
         return False
     
     def getBaseID(self, parDirID):
-        bID=parDirID
+        bid=parDirID
         while parDirID:
             parDirID = self.getDirParentID(parDirID)
             if parDirID:
-                bID = parDirID
-        return bID
+                bid = parDirID
+        return bid
+    
+    def getOne(self, sql, params):
+        if self.cur.execute(sql, params):
+            res = self.cur.fetchone()
+            if res:
+                return res[0]
+        return False
