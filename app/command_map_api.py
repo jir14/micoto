@@ -40,14 +40,17 @@ class Api():
             dirs.append(path)
         return dirs, cmds, args
     
-    def getPath(self, dir):
+    def getPath(self, dir, bid=None):
         path = dir
+        base = self.db.getLevelDirs(0)
         while dir:
-            dir = self.db.getDirParentName(dir)
+            if bid and dir in base:
+                return path
+            dir = self.db.getDirParentName(dir, bid)
             if dir:
                 path = dir+","+path
         return path
-    
+
     def requestOne(self, re, type):
         answer = []
         for r in re:
@@ -82,7 +85,6 @@ def main():
         args = api.requestSome(cmd, "arg")
         db.insertArgs(cmd, args)
 
-
     for dir in dirs:
         path = api.getPath(dir)
         print(path)
@@ -95,9 +97,9 @@ def main():
 
     a=2
     while a<10:
-        dirs = db.getLevelDirs(a-1)
-        for dir in dirs:
-            path = api.getPath(dir)
+        dirs, bids = db.getLevelDirs(a-1, True)
+        for dir, bid in zip(dirs, bids):
+            path = api.getPath(dir, bid)
             print(path)
             dirss, cmdss, argss = api.requestAll(path)
             db.insertDirs(dirss, a, dir)
@@ -107,6 +109,7 @@ def main():
                 argss = api.requestSome(path+","+cmdd, "arg")
                 db.insertArgs(cmdd, argss, dirID)
         a=a+1
+        
         
 
 if __name__ == '__main__':

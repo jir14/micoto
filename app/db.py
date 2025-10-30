@@ -58,8 +58,17 @@ class Database:
             return False
         return True
     
-    def getLevelDirs(self, level):
-        if self.cur.execute("SELECT dir FROM dirs WHERE level=?", (level,)):
+    def getLevelDirs(self, level, bid=None):
+        if bid:
+            self.cur.execute("SELECT dir, bid FROM dirs WHERE level=?", (level,))
+            res = []
+            bid = []
+            for re in self.cur.fetchall():
+                res.append(re[0])
+                bid.append(re[1])
+            return res, bid
+        else:
+            self.cur.execute("SELECT dir FROM dirs WHERE level=?", (level,))
             res = []
             for re in self.cur.fetchall():
                 res.append(re[0])
@@ -74,11 +83,14 @@ class Database:
             return res
         return False
     
-    def getDirID(self, dir):
-        if self.cur.execute("SELECT id FROM dirs WHERE dir=?", (dir,)):
-            res = self.cur.fetchone()
-            if res:
-                return res[0]
+    def getDirID(self, dir, bid=None):
+        if bid:
+            self.cur.execute("SELECT id FROM dirs WHERE dir=? AND bid=?", (dir,bid,))
+        else:
+            self.cur.execute("SELECT id FROM dirs WHERE dir=?", (dir,))
+        res = self.cur.fetchone()
+        if res:
+            return res[0]
         return False
     
     def getDirName(self, dirID, bID=None):
@@ -91,18 +103,28 @@ class Database:
             return res[0]
         return False
 
-    def getDirParentID(self, dir):
-        if type(dir) is int:
-            self.cur.execute("SELECT higherID FROM dirs WHERE id=?", (dir,))    
+    def getDirParentID(self, dir, bid=None):
+        if bid:
+            if type(dir) is int:
+                self.cur.execute("SELECT higherID FROM dirs WHERE id=? AND bid=?", (dir,bid,))    
+            else:
+                self.cur.execute("SELECT higherID FROM dirs WHERE dir=? AND bid=?", (dir,bid,))
         else:
-            self.cur.execute("SELECT higherID FROM dirs WHERE dir=?", (dir,))
+            if type(dir) is int:
+                self.cur.execute("SELECT higherID FROM dirs WHERE id=?", (dir,))    
+            else:
+                self.cur.execute("SELECT higherID FROM dirs WHERE dir=?", (dir,))
+    
         res = self.cur.fetchone()
         if res:
             return res[0]
         return False
     
-    def getDirParentName(self, dir):
-        perID = self.getDirParentID(dir)
+    def getDirParentName(self, dir, bid=None):
+        if bid:
+            perID = self.getDirParentID(dir, bid)
+        else:
+            perID = self.getDirParentID(dir)
         if perID:
             return self.getDirName(perID)
         return False
@@ -139,20 +161,6 @@ class Database:
             if res:
                 return res[0]
         return False
-    
-    def printDirPath(self, dirID, bID=None):
-        parDir = self.getDirName(dirID, bID)
-        if parDir:
-            path = parDir
-        else:
-            return
-        while parDir:
-            parDir = self.getDirParentName(parDir)
-            if parDir:
-                path = parDir+"/"+path
-            else:
-                break
-        return "/"+path
     
     def getBaseID(self, parDirID):
         bID=parDirID
