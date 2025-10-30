@@ -8,9 +8,9 @@ class Api():
         self.api.login(username, password)
         self.db = db
 
-    def printDir(self, dirID, id=None):
+    def printDir(self, dirID, id=None, bID=None):
         sentence = []
-        sentence.append(self.db.printDirPath(dirID)+"/print")
+        sentence.append(self.db.printDirPath(dirID, bID)+"/print")
         first = True
         keys = []
         values = []
@@ -38,4 +38,11 @@ class Api():
             ids = [id]
         return keys, values, ids
     
-    
+    def getAvailableInterfaces(self):
+        sentence = []
+        sentence.append("/interface/print")
+        first = True
+        keys = []
+        values = []
+        ids = []
+        print(self.api.talk(sentence))

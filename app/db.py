@@ -81,11 +81,14 @@ class Database:
                 return res[0]
         return False
     
-    def getDirName(self, dirID):
-        if self.cur.execute("SELECT dir FROM dirs WHERE id=?", (dirID,)):
-            res = self.cur.fetchone()
-            if res:
-                return res[0]
+    def getDirName(self, dirID, bID=None):
+        if bID:
+            self.cur.execute("SELECT dir FROM dirs WHERE id=? AND bid=?", (dirID,bID,))
+        else:
+            self.cur.execute("SELECT dir FROM dirs WHERE id=?", (dirID,))
+        res = self.cur.fetchone()
+        if res:
+            return res[0]
         return False
 
     def getDirParentID(self, dir):
@@ -137,12 +140,12 @@ class Database:
                 return res[0]
         return False
     
-    def printDirPath(self, dirID):
-        parDir = self.getDirName(dirID)
+    def printDirPath(self, dirID, bID=None):
+        parDir = self.getDirName(dirID, bID)
         if parDir:
             path = parDir
         else:
-            return False
+            return
         while parDir:
             parDir = self.getDirParentName(parDir)
             if parDir:
