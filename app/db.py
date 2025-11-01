@@ -82,7 +82,7 @@ class Database:
             return res
         return False
     
-    def getDirID(self, dir, bid=None, lvl=None):
+    def getDirID(self, dir, bid=None, lvl=None, higherID=None):
         sql = "SELECT id FROM dirs WHERE dir=?"
         params = [dir]
         if bid:
@@ -91,6 +91,9 @@ class Database:
         if lvl:
             sql = sql+" AND level=?"
             params.append(lvl)
+        if higherID:
+            sql = sql+" AND higherID=?"
+            params.append(higherID)
         return self.getOne(sql, params)
     
     def getDirName(self, dirID, bid=None):
@@ -165,8 +168,20 @@ class Database:
         return bid
     
     def getOne(self, sql, params):
+        print(sql, params)
         if self.cur.execute(sql, params):
             res = self.cur.fetchone()
             if res:
+                print(res[0])
                 return res[0]
+        return False
+    
+    def getWithHigherID(self, higherID):
+        sql = "SELECT dir FROM dirs WHERE higherID=?"
+        params = [higherID]
+        if self.cur.execute(sql, params):
+            res = []
+            for re in self.cur.fetchall():
+                res.append(re[0])
+            return res
         return False
