@@ -10,11 +10,15 @@ class Api():
 
     def printDir(self, dirID, id=None, bID=None):
         sentence = []
-        sentence.append(self.db.printDirPath(dirID, bID)+"/print")
         first = True
         keys = []
         values = []
         ids = []
+        path = self.db.printDirPath(dirID, bID)
+        if not path:
+            return keys, values, ids
+        sentence.append(path+"/print")
+        print(sentence)
         for re in self.api.talk(sentence):
             if re[0]=="!re":
                 if first:

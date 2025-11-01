@@ -168,11 +168,9 @@ class Database:
         return bid
     
     def getOne(self, sql, params):
-        print(sql, params)
         if self.cur.execute(sql, params):
             res = self.cur.fetchone()
             if res:
-                print(res[0])
                 return res[0]
         return False
     
@@ -185,3 +183,18 @@ class Database:
                 res.append(re[0])
             return res
         return False
+    
+    def printDirPath(self, dirID, bID=None):
+        parDir = self.getDirName(dirID, bID)
+        print(parDir)
+        if parDir:
+            path = parDir
+        else:
+            return
+        while dirID:
+            dirID = self.getDirParentID(dirID)
+            if dirID:
+                path = self.getDirName(dirID)+"/"+path
+            else:
+                break
+        return "/"+path
