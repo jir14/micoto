@@ -6,6 +6,17 @@ db = Database("db.db")
 api = API.Api("10.255.255.255", "admin", "testpass", db)
 dpg.create_context()
 
+def openAdd(sender, app_data, user_data):
+    lbl = "new "+str(db.getDirName(user_data[0]))
+    uTag = dpg.generate_uuid()
+    with dpg.window(label=lbl, tag=uTag, width=400):
+        pos = user_data[1]+120
+        dpg.set_item_pos(uTag,[pos,0])
+        args = db.getDirAddArgs(user_data[0])
+        for arg in args:
+            dpg.add_text(arg)
+    return
+
 def openCmds(sender, app_data, user_data):
     lbl = db.getDirName(user_data[0])
     uTag = dpg.generate_uuid()
@@ -14,7 +25,6 @@ def openCmds(sender, app_data, user_data):
         dpg.set_item_pos(uTag,[pos,0])
         keys, values, ids = api.printDir(user_data[0], id=user_data[2])
         with dpg.group(horizontal=True):
-            dpg.add_text("")
             with dpg.group(horizontal=False):
                 for key in keys:
                     dpg.add_text(key)
@@ -27,7 +37,7 @@ def openCmds(sender, app_data, user_data):
 def openDirWindow(sender, app_data, user_data):
     lbl = db.getDirName(user_data[0])
     uTag = dpg.generate_uuid()
-    with dpg.window(label=lbl, tag=uTag, autosize=True):
+    with dpg.window(label=lbl, tag=uTag, width=400, horizontal_scrollbar=True):
         pos = user_data[1]+120
         dpg.set_item_pos(uTag,[pos,0])
         with dpg.group(horizontal=True):
@@ -40,6 +50,9 @@ def openDirWindow(sender, app_data, user_data):
                         dpg.add_button(label=rec, user_data=(dirID, pos), callback=openDirWindow)
             dpg.add_text("")
             with dpg.group(horizontal=False):
+                keys, values, ids = api.printDir(user_data[0])
+                if len(values)!=0:
+                    dpg.add_button(label="add", callback=openAdd, user_data=(user_data[0], pos))
                 with dpg.table(header_row=True, policy=dpg.mvTable_SizingFixedFit, hideable=True):
                     keys, values, ids = api.printDir(user_data[0])
                     for key in keys:

@@ -18,7 +18,6 @@ class Api():
         if not path:
             return keys, values, ids
         sentence.append(path+"/print")
-        print(sentence)
         for re in self.api.talk(sentence):
             if re[0]=="!re":
                 if first:
@@ -41,12 +40,3 @@ class Api():
             values.append(val)
             ids = [id]
         return keys, values, ids
-    
-    def getAvailableInterfaces(self):
-        sentence = []
-        sentence.append("/interface/print")
-        first = True
-        keys = []
-        values = []
-        ids = []
-        print(self.api.talk(sentence))

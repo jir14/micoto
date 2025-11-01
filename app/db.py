@@ -10,7 +10,7 @@ class Database:
             cur.execute('CREATE TABLE IF NOT EXISTS "dirs" ("id" INTEGER NOT NULL UNIQUE, "higherID" INTEGER, "dir" TEXT, "level" INTEGER NOT NULL, "bid" INTEGER, UNIQUE("dir","higherID") ON CONFLICT IGNORE, PRIMARY KEY("id" AUTOINCREMENT))')
             cur.execute('INSERT INTO dirs (dir, level, bid) VALUES ("", 0, "")')
             cur.execute('CREATE TABLE IF NOT EXISTS "cmds" ("id" INTEGER NOT NULL UNIQUE, "cmd" TEXT NOT NULL, "dir_id" INTEGER NOT NULL, UNIQUE("cmd","dir_id") ON CONFLICT IGNORE, PRIMARY KEY("id" AUTOINCREMENT), FOREIGN KEY("dir_id") REFERENCES "dirs"("dir") ON DELETE CASCADE)')
-            cur.execute('CREATE TABLE IF NOT EXISTS "args" ("id" INTEGER NOT NULL UNIQUE, "cmd_id" INTEGER NOT NULL, "arg" TEXT NOT NULL, UNIQUE("arg","cmd_id") ON CONFLICT IGNORE, PRIMARY KEY("id" AUTOINCREMENT), FOREIGN KEY("cmd_id") REFERENCES "cmds"("id") ON DELETE CASCADE)')
+            cur.execute('CREATE TABLE IF NOT EXISTS "args" ("id" INTEGER NOT NULL UNIQUE, "arg" TEXT NOT NULL, "cmd_id" INTEGER NOT NULL, UNIQUE("arg","cmd_id") ON CONFLICT IGNORE, PRIMARY KEY("id" AUTOINCREMENT), FOREIGN KEY("cmd_id") REFERENCES "cmds"("id") ON DELETE CASCADE)')
         except:
             print("Connection to DB failed")   
     
@@ -144,13 +144,18 @@ class Database:
             res.append(re[0])
         return res
             
-    def getCmdArgs(self, dirID):
-        if self.cur.execute("SELECT arg FROM args WHERE dir_id=?", (dirID,)):
+    def getCmdArgs(self, cmdID):
+        if self.cur.execute("SELECT arg FROM args WHERE cmd_id=?", (cmdID,)):
             res = []
             for re in self.cur.fetchall():
                 res.append(re[0])
             return res
         return False
+
+    def getCmdID(self, dirID):
+        sql = "SELECT id FROM cmds WHERE dir_id=?"
+        params = [dirID]
+        return self.getOne(sql, params)
     
     def getDirLevel(self, dirID):
         if self.cur.execute("SELECT level FROM dirs WHERE id=?", (dirID,)):
@@ -186,7 +191,6 @@ class Database:
     
     def printDirPath(self, dirID, bID=None):
         parDir = self.getDirName(dirID, bID)
-        print(parDir)
         if parDir:
             path = parDir
         else:
@@ -198,3 +202,7 @@ class Database:
             else:
                 break
         return "/"+path
+    
+    def getDirAddArgs(self, dirID):
+        cmdID = self.getCmdID(dirID)
+        return self.getCmdArgs(cmdID)
