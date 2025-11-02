@@ -139,10 +139,12 @@ class Database:
         if bid:
             sql = sql+" AND bid=?"
             params.append(bid)
-        res = []
-        for re in self.cur.fetchall():
-            res.append(re[0])
-        return res
+        if self.cur.execute(sql, params):
+            res = []
+            for re in self.cur.fetchall():
+                res.append(re[0])
+            return res
+        return False
             
     def getCmdArgs(self, cmdID):
         if self.cur.execute("SELECT arg FROM args WHERE cmd_id=?", (cmdID,)):
@@ -177,16 +179,6 @@ class Database:
             res = self.cur.fetchone()
             if res:
                 return res[0]
-        return False
-    
-    def getWithHigherID(self, higherID):
-        sql = "SELECT dir FROM dirs WHERE higherID=?"
-        params = [higherID]
-        if self.cur.execute(sql, params):
-            res = []
-            for re in self.cur.fetchall():
-                res.append(re[0])
-            return res
         return False
     
     def printDirPath(self, dirID, bID=None):

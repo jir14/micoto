@@ -43,7 +43,7 @@ def openDirWindow(sender, app_data, user_data):
         with dpg.group(horizontal=True):
             dpg.add_text("")
             with dpg.group(horizontal=False):
-                recs = db.getWithHigherID(user_data[0])
+                recs = db.getDirDirs(user_data[0])
                 if len(recs)!=0:
                     for rec in recs:
                         dirID=db.getDirID(rec, higherID=user_data[0])

@@ -7,7 +7,7 @@ api = API.Api("10.255.255.255", "admin", "testpass", db)
 dpg.create_context()
 
 def loop(user_data):
-    recs = db.getWithHigherID(user_data)
+    recs = db.getDirDirs(user_data)
     if recs:
         for rec in recs:
             dirID=db.getDirID(rec, higherID=user_data)
