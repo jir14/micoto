@@ -35,7 +35,6 @@ class Database:
             return False
         return True
     
-
     def insertCommands(self, dir, cmds):
         if self.cur.execute("SELECT id FROM dirs WHERE dir=?", (dir,)):
             id = self.cur.fetchone()[0]
@@ -45,18 +44,20 @@ class Database:
             return True
         return False
 
-    def insertArgs(self, cmd, args, dirID=False):
+    def insertArgs(self, cmd, args, dirID=None):
+        sql = "SELECT id FROM cmds WHERE cmd=?"
+        params = [cmd]
         if dirID:
-            self.cur.execute("SELECT id FROM cmds WHERE cmd=? AND dir_id=?", (cmd,dirID,))
-        else:
-            self.cur.execute("SELECT id FROM cmds WHERE cmd=?", (cmd,))
-        id = self.cur.fetchone()[0]
-        for arg in args:
-            if self.cur.execute("INSERT INTO args (arg, cmd_id) VALUES (?, ?)", (arg,id,)):
-                self.con.commit()
-                continue
-            return False
-        return True
+            sql = sql+" AND dir_id=?"
+            params.append(dirID)
+        id = self.getOne(sql, params)
+        if id:
+            for arg in args:
+                if self.cur.execute("INSERT INTO args (arg, cmd_id) VALUES (?, ?)", (arg,id,)):
+                    self.con.commit()
+                    continue
+            return True
+        return False
     
     def getLevelDirs(self, level, bid=None):
         if bid:
