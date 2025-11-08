@@ -1,5 +1,6 @@
 import dearpygui.dearpygui as dpg
 from app.db.db_crypto import DBConn
+import re
 
 dpg.create_context()
 
@@ -45,16 +46,27 @@ class GUI:
 def openAdd(sender, app_data, user_data):
     with dpg.window(label="Add device", width=400, tag="AddWindow"):
         with dpg.group():
-            dpg.add_input_text(label="Device IP", tag="DevIP")
+            ipItem = dpg.add_input_text(label="Device IP", tag="DevIP", callback=ipValidation)
             dpg.add_input_text(label="Device Username", tag="DevUser")
-            dpg.add_input_text(label="Device password", tag="DevPass")
-        dpg.add_button(label="Add", callback=add, user_data=user_data)
+            dpg.add_input_text(label="Device password", tag="DevPass", password=True)
+        dpg.add_button(label="Add", tag="Add", callback=add, user_data=user_data, enabled=False)
+        dpg.bind_item_theme(ipItem, ipTheme)
+    
 
 def fileSelect(sender, app_data, user_data):
     for s in app_data["selections"].values():
         dpg.set_value("DBFile", s)
 
+def ipValidation():
+    if re.match(r"^(((?!25?[6-9])[12]\d|[1-9])?\d\.?\b){4}$", dpg.get_value("DevIP")):
+        dpg.bind_item_theme("DevIP", ipThemeCorrect)
+        dpg.configure_item("DevIP", enabled=True)
+    else:
+        dpg.bind_item_theme("DevIP", ipTheme)
+
+
 def add(sender, app_data, user_data):
+    dpg.configure_item("Add", enabled=False)
     user_data.db.insert(dpg.get_value("DevIP"), dpg.get_value("DevUser"), dpg.get_value("DevPass"))
     dpg.delete_item("devTable")
     user_data.drawTable()
@@ -65,8 +77,16 @@ with dpg.window(tag="devList", label="List of available devices") as devList:
     gui = GUI()
     dpg.add_button(label="Add device", tag="AddButton", show=False, callback=openAdd, user_data=gui)
     
-   
 
+with dpg.theme() as ipThemeCorrect:
+    with dpg.theme_component(dpg.mvAll):
+        dpg.add_theme_color(dpg.mvThemeCol_FrameBg, (0, 0, 0), category=dpg.mvThemeCat_Core)
+        dpg.add_theme_style(dpg.mvStyleVar_FrameRounding, 0, category=dpg.mvThemeCat_Core)
+
+with dpg.theme() as ipTheme:
+        with dpg.theme_component(dpg.mvAll):
+            dpg.add_theme_color(dpg.mvThemeCol_FrameBg, (200, 0, 0), category=dpg.mvThemeCat_Core)
+            dpg.add_theme_style(dpg.mvStyleVar_FrameRounding, 0, category=dpg.mvThemeCat_Core)
 
 dpg.create_viewport(title='Micoto', width=700, height=500)
 dpg.setup_dearpygui()
