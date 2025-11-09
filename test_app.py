@@ -1,6 +1,6 @@
 import dearpygui.dearpygui as dpg
 from app.db.db_crypto import DBConn
-import re
+import re as re
 
 dpg.create_context()
 
