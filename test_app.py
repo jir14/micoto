@@ -60,9 +60,10 @@ def fileSelect(sender, app_data, user_data):
 def ipValidation():
     if re.match(r"^(((?!25?[6-9])[12]\d|[1-9])?\d\.?\b){4}$", dpg.get_value("DevIP")):
         dpg.bind_item_theme("DevIP", ipThemeCorrect)
-        dpg.configure_item("DevIP", enabled=True)
+        dpg.configure_item("Add", enabled=True)
     else:
         dpg.bind_item_theme("DevIP", ipTheme)
+        dpg.configure_item("Add", enabled=False)
 
 
 def add(sender, app_data, user_data):
