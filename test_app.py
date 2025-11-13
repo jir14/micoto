@@ -44,14 +44,18 @@ class GUI:
                     dpg.add_text(rec[2])
                     
 def openAdd(sender, app_data, user_data):
-    with dpg.window(label="Add device", width=400, tag="AddWindow"):
+    with dpg.window(label="Add device", width=400, tag="AddWindow", on_close=destroy):
         with dpg.group():
             ipItem = dpg.add_input_text(label="Device IP", tag="DevIP", callback=ipValidation)
             dpg.add_input_text(label="Device Username", tag="DevUser")
             dpg.add_input_text(label="Device password", tag="DevPass", password=True)
-        dpg.add_button(label="Add", tag="Add", callback=add, user_data=user_data, enabled=False)
+        with dpg.group(horizontal=True):
+            dpg.add_button(label="Add", tag="Add", callback=add, user_data=user_data, enabled=False)
+            dpg.add_text("Trying to add device...", tag="Adding", show=False)
         dpg.bind_item_theme(ipItem, ipTheme)
     
+def destroy(sender, app_data):
+    dpg.delete_item(sender)
 
 def fileSelect(sender, app_data, user_data):
     for s in app_data["selections"].values():
@@ -68,6 +72,7 @@ def ipValidation():
 
 def add(sender, app_data, user_data):
     dpg.configure_item("Add", enabled=False)
+    dpg.configure_item("Adding", show=True)
     user_data.db.insert(dpg.get_value("DevIP"), dpg.get_value("DevUser"), dpg.get_value("DevPass"))
     dpg.delete_item("devTable")
     user_data.drawTable()
