@@ -1,15 +1,21 @@
 # micoto
 Mikrotik Configuration Tool
 
-## Finally - config tree
-Config tree in DB using system of levels.\
-![Example of dirs's table record](docs/dirs_table.png)\
-*Example of dirs's table record*\
-\
-![Example of cmds's table record](docs/cmds_table.png)\
-*Example of cmds's table record*\
-\
-![Example of args's table record](docs/args_table.png)\
-*Example of args's table record*
-## Passible gui appearance
-![Prototype of GUI](docs/prototype_image.png)
+This programme is part of my bachelor's degree. Current state is SEMESTRAL THESIS of this project.
+
+## Welcome screen
+At lunch the app welcomes you with dialog show below. You can choose to use existing DB file or create new.
+![Welcome screen](docs/Impl_welcome.png)
+
+## Main window
+There is a view of the main app window. Now it consist of devices saved in DB file and self-explanatory function buttons.
+![Main window](docs/Impl_main_window.png)
+
+## Device management
+### Adding device
+The picture shows the process of adding new device after clicking "Add" button. You have to fill the device ip field as well as device username and password.
+![Add window](docs/Impl_add_device.png)
+
+### Deleting
+Process of deleting items is shown below. You can select one or multiple rows at once and simply remove them by pressing "Remove selected devices". Given rows are deleted from the DB immediately. The whole table of devices is refreshed so that only devices which exists in DB are shown.
+![Showcase of deletion](docs/Impl_device_select.png)
