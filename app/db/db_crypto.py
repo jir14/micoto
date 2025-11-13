@@ -25,6 +25,8 @@ class DBConn:
         return decryptor.update(ciphertext) + decryptor.finalize()
 
     def insert(self, devIp, devUser, devPass):
+        if self.checkExistance(devIp):
+            return False
         #devHost
         identity = apiros.getResponse(devIp, devUser, devPass, "/system/identity/print")
         if identity:
@@ -35,6 +37,7 @@ class DBConn:
         devCipher, devIv = self.encrypt(devPass.encode().ljust(32)[:32])
         self.cur.execute("INSERT INTO devices (devHost, devIp, devUser, devPass, devIv) VALUES (?, ?, ?, ?, ?)", (devHost, devIp, devUser, devCipher, devIv))
         self.con.commit()
+        return True
 
     def selectAll(self, decrypt=True):
         res = []
@@ -54,3 +57,15 @@ class DBConn:
     def query(self, query):
         res = self.cur.execute(query)
         return res.fetchall()
+    
+    def remove(self, devIp):
+        if self.cur.execute("DELETE FROM devices WHERE devIP=?", (devIp,)):
+            self.con.commit()
+            return True
+        return False
+    
+    def checkExistance(self, devIp):
+        res = self.cur.execute("SELECT devIp FROM devices WHERE devIP=?", (devIp,))
+        if len(res.fetchall()) > 0:
+            return True
+        return False
