@@ -50,7 +50,6 @@ class GUI:
             else:
                 self.dbPath = db_path
             self.dbPass = db_pass
-            print(self.dbPath)
             self.db = DBConn(self.dbPath, db_pass)
             self.drawTable()    
     
@@ -76,19 +75,38 @@ class GUI:
         else:
             self.selectedList.append(devIpAddr)
                     
-def openAdd(sender, app_data, user_data):
-    with dpg.window(label="Add device", width=400, tag="AddWindow", on_close=destroy):
-        with dpg.group():
-            ipItem = dpg.add_input_text(label="Device IP", tag="DevIP", callback=ipValidation)
-            dpg.add_input_text(label="Device Username", tag="DevUser")
-            dpg.add_input_text(label="Device password", tag="DevPass", password=True)
-        with dpg.group(horizontal=True):
-            dpg.add_button(label="Add", tag="Add", callback=add, user_data=user_data, enabled=False)
-            dpg.add_text("Trying to add device...", tag="Adding", show=False)
-        dpg.bind_item_theme(ipItem, ipTheme)
-    
-def destroy(sender, app_data):
-    dpg.delete_item(sender)
+    def openAdd(self, sender, app_data, user_data):
+        with dpg.window(label="Add device", width=400, tag="AddWindow", on_close=lambda: dpg.delete_item("AddWindow")):
+            with dpg.group():
+                ipItem = dpg.add_input_text(label="Device IP", tag="DevIP", callback=self.ipValidation)
+                dpg.add_input_text(label="Device Username", tag="DevUser")
+                dpg.add_input_text(label="Device password", tag="DevPass", password=True)
+            with dpg.group(horizontal=True):
+                dpg.add_button(label="Add", tag="Add", callback=self.add, user_data=user_data, enabled=False)
+                dpg.add_text("Trying to add device...", tag="Adding", show=False)
+            dpg.bind_item_theme(ipItem, ipTheme)
+
+    def ipValidation(self):
+        if re.match(r"^(((?!25?[6-9])[12]\d|[1-9])?\d\.?\b){4}$", dpg.get_value("DevIP")):
+            dpg.bind_item_theme("DevIP", ipThemeCorrect)
+            dpg.configure_item("Add", enabled=True)
+        else:
+            dpg.bind_item_theme("DevIP", ipTheme)
+            dpg.configure_item("Add", enabled=False)
+
+
+    def add(self, sender, app_data, user_data):
+        dpg.configure_item("Add", enabled=False)
+        dpg.configure_item("Adding", show=True)
+        if self.db.insert(dpg.get_value("DevIP"), dpg.get_value("DevUser"), dpg.get_value("DevPass")):
+            dpg.delete_item("devTable")
+            self.drawTable()
+            dpg.delete_item("AddWindow")
+        else:
+            with dpg.window(label="Error", tag="Error", modal=True, no_close=True) as modal_id:
+                dpg.add_text("Device with same IP already exists!")
+                dpg.add_button(label="Ok", width=75, user_data=(modal_id, True), callback=lambda: dpg.delete_item("Error"))
+                dpg.configure_item("Adding", show=False)
 
 def fileSelect(sender, app_data, user_data):
     for s in app_data["selections"].values():
@@ -99,32 +117,10 @@ def directorySelect(sender, app_data, user_data):
     dpg.set_value("DBFile", app_data["file_path_name"])
     dpg.configure_item("DBName", show=True)
 
-def ipValidation():
-    if re.match(r"^(((?!25?[6-9])[12]\d|[1-9])?\d\.?\b){4}$", dpg.get_value("DevIP")):
-        dpg.bind_item_theme("DevIP", ipThemeCorrect)
-        dpg.configure_item("Add", enabled=True)
-    else:
-        dpg.bind_item_theme("DevIP", ipTheme)
-        dpg.configure_item("Add", enabled=False)
-
-
-def add(sender, app_data, user_data):
-    dpg.configure_item("Add", enabled=False)
-    dpg.configure_item("Adding", show=True)
-    if user_data.db.insert(dpg.get_value("DevIP"), dpg.get_value("DevUser"), dpg.get_value("DevPass")):
-        dpg.delete_item("devTable")
-        user_data.drawTable()
-        dpg.delete_item("AddWindow")
-    else:
-        with dpg.window(label="Error", tag="Error", modal=True, no_close=True) as modal_id:
-            dpg.add_text("Device with same IP already exists!")
-            dpg.add_button(label="Ok", width=75, user_data=(modal_id, True), callback=lambda: dpg.delete_item("Error"))
-            dpg.configure_item("Adding", show=False)
-
 with dpg.window(tag="devList", label="List of available devices") as devList:
     gui = GUI()
     with dpg.group(horizontal=True):
-        dpg.add_button(label="Add device", tag="AddButton", show=False, callback=openAdd, user_data=gui)
+        dpg.add_button(label="Add device", tag="AddButton", show=False, callback=gui.openAdd, user_data=gui)
         dpg.add_button(label="Remove selected devices", tag="DelButton", show=False, callback=gui.delDev, user_data=gui)
 
 with dpg.theme() as ipThemeCorrect:
