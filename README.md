@@ -3,6 +3,8 @@ Mikrotik Configuration Tool
 
 This programme is part of my bachelor's degree. Current state is SEMESTRAL THESIS of this project.
 
+The programme can be run by `python3 test_app.py`.
+
 ## Welcome screen
 At lunch the app welcomes you with dialog show below. You can choose to use existing DB file or create new.<br />
 ![Welcome screen](docs/Impl_welcome.png)
