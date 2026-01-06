@@ -199,3 +199,33 @@ class Database:
     def getDirAddArgs(self, dirID):
         cmdID = self.getCmdID(dirID)
         return self.getCmdArgs(cmdID)
+
+    def getDirDirsIDs(self, dirID):
+        if self.cur.execute("SELECT id FROM dirs WHERE higherID=?", (dirID,)):
+            res = []
+            for re in self.cur.fetchall():
+                res.append(re[0])
+            return res
+        return False
+    
+    def getLevelDirsIDs(self, level):
+        if self.cur.execute("SELECT id FROM dirs WHERE level=?", (level,)):
+            res = []
+            for re in self.cur.fetchall():
+                res.append(re[0])
+            return res
+        return False
+    
+    def getDirCmdsIDs(self, dirID):
+        if self.cur.execute("SELECT id FROM cmds WHERE dir_id=?", (dirID,)):
+            res = []
+            for re in self.cur.fetchall():
+                res.append(re[0])
+            return res
+        return False
+    
+    def getCmdName(self, cmdID):
+        if self.cur.execute("SELECT cmd FROM cmds WHERE id=?", (cmdID,)):
+            res = self.cur.fetchone()
+            return res
+        return False
