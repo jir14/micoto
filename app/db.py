@@ -14,8 +14,8 @@ class Database:
         except:
             print("Connection to DB failed")   
     
-    def filterCmds(self, cmd):
-        self.cur.execute("SELECT id FROM forbidden_commands WHERE command=?", (cmd,))
+    def filterOptions(self, opt):
+        self.cur.execute("SELECT id FROM forbidden_commands WHERE command=?", (opt,))
         if len(self.cur.fetchall()) == 0:
             return False
         else:

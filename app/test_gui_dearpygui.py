@@ -63,7 +63,7 @@ def openDirWindow(sender, app_data, user_data):
                                 dpg.add_selectable(label=value, span_columns=True, callback=openCmds, user_data=(user_data[0], pos, id))
 
 with dpg.window(tag="Menu",label="Menu"):
-    for rec in db.getLevelDirs(0):
+    for rec in db.getDirsWithoutParent():
         if rec =="":
             continue
         dpg.add_button(label=rec, user_data=(db.getDirID(rec), 0), callback=openDirWindow)

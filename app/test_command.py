@@ -18,25 +18,6 @@ class Api():
                 filtered.append(re[1])
         return filtered
 
-    def requestAll(self, path=""):
-        sentence = []
-        paths = []
-        dirs = []
-        cmds = []
-        args = [] 
-        sentence.append("/console/inspect")
-        sentence.append("=request=child")
-        sentence.append("=path="+path)
-        out = self.api.talk(sentence)
-        out = self.filter(out)
-        paths = self.requestOne(out, "path")
-        dirs = self.requestOne(out, "dir")
-        cmds = self.requestOne(out, "cmd")
-        args = self.requestOne(out, "arg")
-        for path in paths:
-            dirs.append(path)
-        return dirs, cmds, args
-    
     def getPath(self, dirId):
         path=str(self.db.getDirName(dirId))
         dirId=self.db.getDirParentID(dirId)
@@ -63,6 +44,7 @@ class Api():
     
     def dirLoop(self, higherID=""):
         path=self.getPath(higherID)
+        self.addCmds(path=path, dirID=higherID)
         dirs=self.requestSome(path=path, type="dir")+self.requestSome(path=path, type="path")
         for dir in dirs:
             id=self.db.insertDir(dir, higherID)
@@ -73,24 +55,16 @@ class Api():
     
     def addCmds(self, path="", dirID=""):
         cmds=self.requestSome(path=path, type="cmd")
-        cmds=self.filterCmds(cmds)
         for cmd in cmds:
-            self.db.insertCmds(dirID, cmd)
+            self.db.insertCmd(dirID, cmd)
         return
     
     def scan(self):
         dirs=self.requestSome(type="dir")+self.requestSome(type="path")
         for dir in dirs:
             id=self.db.insertDir(dir, higherID=False)
-            self.addCmds(dirID=id)
             self.dirLoop(id)
         return
-    
-    def filterCmds(self, cmds):
-        out=[]
-        for cmd in cmds:
-            out.append(self.db.filterCmds(cmd))
-        return out
 
 def main():
     
