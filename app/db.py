@@ -7,32 +7,34 @@ class Database:
             cur = con.cursor()
             self.con = con
             self.cur = cur
-            cur.execute('CREATE TABLE IF NOT EXISTS "dirs" ("id" INTEGER NOT NULL UNIQUE, "higherID" INTEGER, "dir" TEXT, "level" INTEGER NOT NULL, "bid" INTEGER, UNIQUE("dir","higherID") ON CONFLICT IGNORE, PRIMARY KEY("id" AUTOINCREMENT))')
-            cur.execute('INSERT INTO dirs (dir, level, bid) VALUES ("", 0, "")')
+            cur.execute('CREATE TABLE IF NOT EXISTS "dirs" ("id" INTEGER NOT NULL UNIQUE, "higherID" INTEGER, "dir" TEXT, UNIQUE("dir","higherID") ON CONFLICT IGNORE, PRIMARY KEY("id" AUTOINCREMENT))')
+            #cur.execute('INSERT INTO dirs (dir) VALUES ("")')
             cur.execute('CREATE TABLE IF NOT EXISTS "cmds" ("id" INTEGER NOT NULL UNIQUE, "cmd" TEXT NOT NULL, "dir_id" INTEGER NOT NULL, UNIQUE("cmd","dir_id") ON CONFLICT IGNORE, PRIMARY KEY("id" AUTOINCREMENT), FOREIGN KEY("dir_id") REFERENCES "dirs"("dir") ON DELETE CASCADE)')
             cur.execute('CREATE TABLE IF NOT EXISTS "args" ("id" INTEGER NOT NULL UNIQUE, "arg" TEXT NOT NULL, "cmd_id" INTEGER NOT NULL, UNIQUE("arg","cmd_id") ON CONFLICT IGNORE, PRIMARY KEY("id" AUTOINCREMENT), FOREIGN KEY("cmd_id") REFERENCES "cmds"("id") ON DELETE CASCADE)')
         except:
             print("Connection to DB failed")   
     
-    def filterOptions(self, opt):
-        self.cur.execute("SELECT id FROM forbidden_commands WHERE command=?", (opt,))
+    def filterCmds(self, cmd):
+        self.cur.execute("SELECT id FROM forbidden_commands WHERE command=?", (cmd,))
         if len(self.cur.fetchall()) == 0:
             return False
         else:
             return True
-
-    def insertDirs(self, dirs, level, parDir, higID=True):  
-        for dir in dirs:
-            if higID:
-                higherID=self.getDirID(parDir)
-                bid=self.getBaseID(higherID)
-            else:
-                higherID=None
-                bid=None
-            if self.cur.execute("INSERT INTO dirs (dir, level, higherID, bid) VALUES (?, ?, ?, ?)", (dir,level,higherID,bid,)):
+    
+    def insertDir(self, dir, higherID=True):
+        if higherID:
+            if self.cur.execute("INSERT INTO dirs (dir, higherID) VALUES (?, ?)", (dir,higherID,)):
                 self.con.commit()
-                continue
-            return False
+                return self.cur.lastrowid
+        else:
+            if self.cur.execute("INSERT INTO dirs (dir) VALUES (?)", (dir,)):
+                self.con.commit()
+                return self.cur.lastrowid
+        return False
+
+    def insertDirs(self, dirs, higherID=True):  
+        for dir in dirs:
+            self.insertDir(dir, higherID)
         return True
     
     def insertCommands(self, dir, cmds):
@@ -43,6 +45,15 @@ class Database:
                 self.con.commit()
             return True
         return False
+
+    def insertCmd(self, dirId, cmd):
+        if self.cur.execute("SELECT id FROM dirs WHERE id=?", (dirId,)):
+            id = self.cur.fetchone()[0]
+            self.cur.execute("INSERT INTO cmds (cmd, dir_id) VALUES (?, ?)", (cmd,id,))
+            self.con.commit()
+            return self.cur.lastrowid
+        return False
+
 
     def insertArgs(self, cmd, args, dirID=None):
         sql = "SELECT id FROM cmds WHERE cmd=?"
@@ -227,5 +238,13 @@ class Database:
     def getCmdName(self, cmdID):
         if self.cur.execute("SELECT cmd FROM cmds WHERE id=?", (cmdID,)):
             res = self.cur.fetchone()
+            return res
+        return False
+    
+    def getDirsWithoutParent(self):
+        if self.cur.execute("SELECT id FROM dirs WHERE higherID IS NULL"):
+            res = []
+            for re in self.cur.fetchall():
+                res.append(re[0])
             return res
         return False

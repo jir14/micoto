@@ -18,10 +18,7 @@ class Api():
                 filtered.append(re[1])
         return filtered
 
-    def requestAll(self, *args):
-        path = ""
-        for arg in args:
-            path = path+","+arg
+    def requestAll(self, path=""):
         sentence = []
         paths = []
         dirs = []
@@ -40,15 +37,12 @@ class Api():
             dirs.append(path)
         return dirs, cmds, args
     
-    def getPath(self, dir, bid=None):
-        path = dir
-        base = self.db.getLevelDirs(0)
-        while dir:
-            if bid and dir in base:
-                return path
-            dir = self.db.getDirParentName(dir, bid)
-            if dir:
-                path = dir+","+path
+    def getPath(self, dirId):
+        path=str(self.db.getDirName(dirId))
+        dirId=self.db.getDirParentID(dirId)
+        while dirId:
+            path=str(self.db.getDirName(dirId))+","+path
+            dirId=self.db.getDirParentID(dirId)
         return path
 
     def requestOne(self, re, type):
@@ -58,7 +52,7 @@ class Api():
                 answer.append(r["=name"])
         return answer
 
-    def requestSome(self, path, type):
+    def requestSome(self, path="", type=""):
         sentence = []
         sentence.append("/console/inspect")
         sentence.append("=request=child")
@@ -67,12 +61,49 @@ class Api():
         out = self.filter(out)
         return self.requestOne(out, type)
     
+    def dirLoop(self, higherID=""):
+        path=self.getPath(higherID)
+        dirs=self.requestSome(path=path, type="dir")+self.requestSome(path=path, type="path")
+        for dir in dirs:
+            id=self.db.insertDir(dir, higherID)
+            print(path+","+dir)
+            self.addCmds(path=path+","+dir, dirID=id)
+            self.dirLoop(id)
+        return
+    
+    def addCmds(self, path="", dirID=""):
+        cmds=self.requestSome(path=path, type="cmd")
+        cmds=self.filterCmds(cmds)
+        for cmd in cmds:
+            self.db.insertCmds(dirID, cmd)
+        return
+    
+    def scan(self):
+        dirs=self.requestSome(type="dir")+self.requestSome(type="path")
+        for dir in dirs:
+            id=self.db.insertDir(dir, higherID=False)
+            self.addCmds(dirID=id)
+            self.dirLoop(id)
+        return
+    
+    def filterCmds(self, cmds):
+        out=[]
+        for cmd in cmds:
+            out.append(self.db.filterCmds(cmd))
+        return out
+
 def main():
     
     db = DB.Database("db.db")
     api = Api("10.255.255.255", "admin", "testpass", db)
 
-    dirs, opts, args = api.requestAll()
+    api.scan()
+
+
+    
+
+
+    """dirs, opts, args = api.requestAll()
     db.insertDirs(dirs, 0, None, False)
     cmds = []
     for var in cmds:
@@ -109,7 +140,7 @@ def main():
                 argss = api.requestSome(path+","+cmdd, "arg")
                 db.insertArgs(cmdd, argss, dirID)
         a=a+1
-        
+        """
         
 
 if __name__ == '__main__':

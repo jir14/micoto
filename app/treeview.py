@@ -50,7 +50,7 @@ with dpg.window(tag="Menu", label="Menu", width=500):
     dpg.add_text("pes")
     #dpg.show_item_registry()
     with dpg.group(tag="mainTag", parent="Menu"):
-        for dirID in db.getLevelDirsIDs(0):
+        for dirID in db.getDirsWithoutParent():
             with dpg.group(horizontal=True, tag="sectionTag"+str(dirID), parent="Menu"):
                 dirName = db.getDirName(dirID)
                 if dirName=="":
