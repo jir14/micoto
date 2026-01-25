@@ -1,7 +1,7 @@
 import apiros as API
 import db as DB
 
-class Api():
+class ApiCommands():
     def __init__(self, ip, username, password, database):
         self.sk = API.open_socket(ip, 8729, True)
         #self.sk = API.open_socket(ip, 8728, False)
@@ -58,7 +58,7 @@ class Api():
         for cmd in cmds:
             self.db.insertCmd(dirID, cmd)
         return
-    
+
     def scan(self):
         dirs=self.requestSome(type="dir")+self.requestSome(type="path")
         for dir in dirs:
@@ -69,7 +69,7 @@ class Api():
 def main():
     
     db = DB.Database("db.db")
-    api = Api("10.255.255.255", "admin", "testpass", db)
+    api = ApiCommands("10.255.255.255", "admin", "testpass", db)
 
     api.scan()
 

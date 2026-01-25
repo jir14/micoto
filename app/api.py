@@ -8,13 +8,13 @@ class Api():
         self.api.login(username, password)
         self.db = db
 
-    def printDir(self, dirID, id=None, bID=None):
+    def getDir(self, dirID, id=""):
         sentence = []
         first = True
         keys = []
         values = []
         ids = []
-        path = self.db.printDirPath(dirID, bID)
+        path = self.db.printDirPath(dirID)
         if not path:
             return keys, values, ids
         sentence.append(path+"/print")
@@ -39,4 +39,62 @@ class Api():
             values = []
             values.append(val)
             ids = [id]
-        return keys, values, ids
+        help=self.getSyntax(path=path)
+        return keys, values, ids, help
+
+    def getArgs(self, cmdID):
+        sentence=[]
+        args = []
+        values = []
+        cmd = self.db.getCmdName(cmdID)[0]
+        dirID = self.db.getCmdParentID(cmdID)
+        dir = self.db.printDirPath(dirID, spacer=",")
+        path=dir+","+cmd
+        sentence.append("/console/inspect")
+        sentence.append("=request=child")
+        sentence.append("=path="+path)
+        for re in self.api.talk(sentence):
+            if re[0]=="!re":
+                vals = []
+                if re[1]["=type"]!="child":
+                    continue
+                args.append(re[1]["=name"])
+        for arg in args:
+            values.append(self.getCompletetions(path=path, arg=arg))
+        help=self.getSyntax(path=path)
+        return args, values, help
+
+    def getCompletetions(self, path="", arg=""):
+        sentence=[]
+        answer=[]
+        if arg!="":
+            path=path+","+arg
+        else:
+            path=path
+        sentence.append("/console/inspect")
+        sentence.append("=request=completion")
+        sentence.append("=path="+path)
+        for re in self.api.talk(sentence):
+            if re[0]=="!re":
+                if re[1]["=show"]=="false":
+                    continue
+                answer.append(re[1]["=completion"])
+        return answer
+    
+    def getSyntax(self, path="", arg=""):
+        sentence=[]
+        answer=dict()
+        if arg!="":
+            path=path+","+arg
+        else:
+            path=path
+        sentence.append("/console/inspect")
+        sentence.append("=request=syntax")
+        sentence.append("=path="+path)
+        for re in self.api.talk(sentence):
+            if re[0]=="!re":
+                if re[1]["=symbol-type"]=="explanation":
+                    symbol=re[1]["=symbol"]
+                    symbol=symbol.replace("<", "").replace(">", "")
+                    answer[symbol]=re[1]["=text"]
+        return answer
