@@ -18,14 +18,6 @@ class ApiCommands():
                 filtered.append(re[1])
         return filtered
 
-    def getPath(self, dirId):
-        path=str(self.db.getDirName(dirId))
-        dirId=self.db.getDirParentID(dirId)
-        while dirId:
-            path=str(self.db.getDirName(dirId))+","+path
-            dirId=self.db.getDirParentID(dirId)
-        return path
-
     def requestOne(self, re, type):
         answer = []
         for r in re:
@@ -43,7 +35,7 @@ class ApiCommands():
         return self.requestOne(out, type)
     
     def dirLoop(self, higherID=""):
-        path=self.getPath(higherID)
+        path=self.db.getDirPath(higherID)
         self.addCmds(path=path, dirID=higherID)
         dirs=self.requestSome(path=path, type="dir")+self.requestSome(path=path, type="path")
         for dir in dirs:

@@ -105,7 +105,7 @@ class Database:
             dirID = self.getDirParentID(dirID)
             if dirID:
                 path = self.getDirName(dirID)+spacer+path
-        return spacer+path
+        return path
 
     def getDirDirsIDs(self, dirID):
         if self.cur.execute("SELECT id FROM dirs WHERE higherID=?", (dirID,)):
@@ -134,7 +134,7 @@ class Database:
     def getCmdName(self, cmdID):
         if self.cur.execute("SELECT cmd FROM cmds WHERE id=?", (cmdID,)):
             res = self.cur.fetchone()
-            return res
+            return res[0]
         return False
     
     def getDirsWithoutParent(self):
@@ -151,3 +151,18 @@ class Database:
             if res:
                 return res[0]
         return False
+    
+    def getDirPath(self, dirID):
+        path=self.getDirName(dirID=dirID)
+        parDirID=self.getDirParentID(dir=dirID)
+        while parDirID:
+            path=str(self.getDirName(parDirID))+","+path
+            parDirID=self.getDirParentID(parDirID)
+        return path
+
+    def getCmdPath(self, cmdID):
+        path=""
+        cmdName=self.getCmdName(cmdID=cmdID)
+        parID=self.getCmdParentID(cmdID=cmdID)
+        path=self.getDirPath(dirID=parID)+"/"+cmdName
+        return path

@@ -8,16 +8,16 @@ class Api():
         self.api.login(username, password)
         self.db = db
 
-    def getDir(self, dirID="", id=""):
+    def getDir(self, dirID="", id="", spacer=",", begin=False):
         sentence = []
         first = True
         keys = []
         values = []
         ids = []
-        path = self.db.printDirPath(dirID)
-        if not path:
-            return keys, values, ids
-        sentence.append(path+"/print")
+        if begin:
+            path=spacer
+        path+=self.db.printDirPath(dirID)
+        sentence.append(path+spacer+"print")
         for re in self.api.talk(sentence):
             if re[0]=="!re":
                 if first:
@@ -44,9 +44,8 @@ class Api():
 
     def getArgs(self, cmdID=""):
         sentence=[]
-        args = []
-        values = []
-        cmd = self.db.getCmdName(cmdID)[0]
+        argVals=dict()
+        cmd = self.db.getCmdName(cmdID)
         dirID = self.db.getCmdParentID(cmdID)
         dir = self.db.printDirPath(dirID, spacer=",")
         path=dir+","+cmd
@@ -55,14 +54,13 @@ class Api():
         sentence.append("=path="+path)
         for re in self.api.talk(sentence):
             if re[0]=="!re":
-                vals = []
                 if re[1]["=type"]!="child":
                     continue
-                args.append(re[1]["=name"])
-        for arg in args:
-            values.append(self.getCompletetions(path=path, arg=arg))
+                arg=re[1]["=name"]
+                argVals[arg]=self.getCompletetions(path=path, arg=arg)
         help=self.getSyntax(path=path)
-        return args, values, help
+        return argVals, help
+
 
     def getCompletetions(self, path="", arg=""):
         sentence=[]
@@ -99,16 +97,19 @@ class Api():
                     answer[symbol]=re[1]["=text"]
         return answer
 
-    def checkValue(self, cmdID="", value="", arg=""):
+    def checkValues(self, cmdID="", argVals="", spacer="/"):
         sentence=[]
         answer=dict()
-        cmd = self.db.getCmdName(cmdID)[0]
+        cmd = self.db.getCmdName(cmdID)
         dirID = self.db.getCmdParentID(cmdID)
-        dir = self.db.printDirPath(dirID, spacer="/")
-        path=dir+"/"+cmd
+        dir = self.db.printDirPath(dirID, spacer=spacer)
+        path=spacer+dir+spacer+cmd
         sentence.append(path)
-        sentence.append("="+arg+"="+str(value))
+        for arg, val in argVals.items():
+            #print(str(arg)+" "+str(val))
+            sentence.append("="+arg+"="+str(val))
         sentence.append("=disabled=yes")
+        print(sentence)
         for re in self.api.talk(sentence):
             print(re)
             if re[0]=="!re":
