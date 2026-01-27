@@ -3,11 +3,11 @@ import dearpygui.dearpygui as dpg
 dpg.create_context()
 
 with dpg.window(label="Tutorial"):
-    dpg.add_collapsing_header(label="Hover me", tag="tooltip_parent")
-    #dpg.add_text("Hover me", tag="tooltip_parent")
+    dpg.add_checkbox(label="Radio Button1", tag="R1")
+    dpg.add_checkbox(label="Radio Button2", source="R1")
 
-    with dpg.tooltip("tooltip_parent"):
-        dpg.add_button(label="test")
+    dpg.add_input_text(label="Text Input 1")
+    dpg.add_input_text(label="Text Input 2", source=dpg.last_item(), password=True)
 
 dpg.create_viewport(title='Custom Title', width=800, height=600)
 dpg.setup_dearpygui()

@@ -8,7 +8,7 @@ class Api():
         self.api.login(username, password)
         self.db = db
 
-    def getDir(self, dirID, id=""):
+    def getDir(self, dirID="", id=""):
         sentence = []
         first = True
         keys = []
@@ -42,7 +42,7 @@ class Api():
         help=self.getSyntax(path=path)
         return keys, values, ids, help
 
-    def getArgs(self, cmdID):
+    def getArgs(self, cmdID=""):
         sentence=[]
         args = []
         values = []
@@ -97,4 +97,25 @@ class Api():
                     symbol=re[1]["=symbol"]
                     symbol=symbol.replace("<", "").replace(">", "")
                     answer[symbol]=re[1]["=text"]
+        return answer
+
+    def checkValue(self, cmdID="", value="", arg=""):
+        sentence=[]
+        answer=dict()
+        cmd = self.db.getCmdName(cmdID)[0]
+        dirID = self.db.getCmdParentID(cmdID)
+        dir = self.db.printDirPath(dirID, spacer="/")
+        path=dir+"/"+cmd
+        sentence.append(path)
+        sentence.append("="+arg+"="+str(value))
+        sentence.append("=disabled=yes")
+        for re in self.api.talk(sentence):
+            print(re)
+            if re[0]=="!re":
+                continue
+                #print(re[1])
+            if re[0]=="!trap":
+                mess=re[1]["=message"]
+                mess=mess.replace("=", "")
+                answer[mess[0]]=mess
         return answer
