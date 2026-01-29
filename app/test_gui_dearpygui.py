@@ -10,11 +10,14 @@ def requiredFields(sender, app_data, user_data):
     cmdID=user_data[0][2]
     argVals=user_data[1]
     argVals[user_data[2]]=app_data
-    error=api.checkValues(cmdID=cmdID, argVals=argVals)
-    if error:
-        dpg.set_value(item=str(cmdID)+"message", value=list(error.values())[0])
+    check=api.checkValues(cmdID=cmdID, argVals=argVals)
+    print(check)
+    if "message" in check:
+        dpg.set_value(item=str(cmdID)+"message", value=list(check.values())[0])
     else:
         dpg.set_value(item=str(cmdID)+"message", value="ok")
+    """if "id" in check:
+        print(check["id"])"""
     return
 
 def apply(sender, app_data, user_data):

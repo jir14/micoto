@@ -111,12 +111,16 @@ class Api():
         sentence.append("=disabled=yes")
         print(sentence)
         for re in self.api.talk(sentence):
-            print(re)
+            #print(re)
             if re[0]=="!re":
                 continue
                 #print(re[1])
-            if re[0]=="!trap":
+            elif re[0]=="!trap":
                 mess=re[1]["=message"]
                 mess=mess.replace("=", "")
                 answer[mess[0]]=mess
+            elif re[0]=="!done" and "=ret" in re[1]:
+                ret=re[1]["=ret"]
+                ret=ret.replace("*", "")
+                answer["id"]=ret
         return answer
