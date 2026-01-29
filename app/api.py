@@ -8,30 +8,54 @@ class Api():
         self.api.login(username, password)
         self.db = db
 
-    def getDir(self, dirID="", id="", spacer=",", begin=False):
-        sentence = []
-        first = True
-        keys = []
-        values = []
-        ids = []
+
+    """def getDir(self, dirID="", id="", spacer=",", begin=False):
+        sentence=[]
+        answer=dict()
         if begin:
             path=spacer
         path+=self.db.printDirPath(dirID)
         sentence.append(path+spacer+"print")
         for re in self.api.talk(sentence):
             if re[0]=="!re":
+                key=re[1]["=.id"].replace("*","")
+                del re[1]["=.id"]
+                answer[key]=re[1]
+        if id:
+            val = values[ids.index(id)]
+            values = []
+            values.append(val)
+            ids = [id]
+        help=self.getSyntax(path=path)
+        return"""
+
+
+    def getDir(self, dirID="", id="", spacer=",", begin=False):
+        sentence = []
+        first = True
+        keys = []
+        values = []
+        ids = []
+        answer=dict()
+        if begin:
+            path=spacer
+        path+=self.db.printDirPath(dirID)
+        sentence.append(path+spacer+"print")
+        for re in self.api.talk(sentence):
+            if re[0]=="!re":
+                #print(re[1])
                 if first:
                     for k in re[1].keys():
                         k = k.replace("=","")
                         if k == ".id":
-                            continue
+                            k=k.replace(".","")
                         keys.append(k)
                     first = False
                 vals = []
                 for rec in re[1].values():
                     if "*" in rec:
+                        rec=rec.replace("*","")
                         ids.append(rec.replace("*",""))
-                        continue
                     vals.append(rec)
                 values.append(vals)
         if id:
@@ -105,6 +129,7 @@ class Api():
         dir = self.db.printDirPath(dirID, spacer=spacer)
         path=spacer+dir+spacer+cmd
         sentence.append(path)
+        print(argVals)
         for arg, val in argVals.items():
             #print(str(arg)+" "+str(val))
             sentence.append("="+arg+"="+str(val))
@@ -116,11 +141,11 @@ class Api():
                 continue
                 #print(re[1])
             elif re[0]=="!trap":
-                mess=re[1]["=message"]
-                mess=mess.replace("=", "")
-                answer[mess[0]]=mess
-            elif re[0]=="!done" and "=ret" in re[1]:
+                """mess=re[1]["=message"]
+                mess=mess.replace("=", "")"""
+                answer["message"]=re[1]["=message"].replace("=", "")
+            """elif re[0]=="!done" and "=ret" in re[1]:
                 ret=re[1]["=ret"]
                 ret=ret.replace("*", "")
-                answer["id"]=ret
+                answer["id"]=ret"""
         return answer

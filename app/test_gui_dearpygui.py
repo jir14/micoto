@@ -7,17 +7,18 @@ api = API.Api("10.255.255.255", "admin", "testpass", db)
 dpg.create_context()
 
 def requiredFields(sender, app_data, user_data):
-    cmdID=user_data[0][2]
-    argVals=user_data[1]
-    argVals[user_data[2]]=app_data
+    cmdID=user_data["cmd"]
+    argVals=user_data["argVals"]
+    argVals[user_data["arg"]]=app_data
+    print(argVals)
     check=api.checkValues(cmdID=cmdID, argVals=argVals)
     #print(check)
     if "message" in check:
         dpg.set_value(item=str(cmdID)+"message", value=list(check.values())[0])
     else:
         dpg.set_value(item=str(cmdID)+"message", value="ok")
-    """if "id" in check:
-        print(check["id"])"""
+    if "id" in check:
+        print(check["id"])
     return
 
 def apply(sender, app_data, user_data):
@@ -39,18 +40,21 @@ def openArgs(sender, app_data, user_data):
                 with dpg.table(header_row=False, policy=dpg.mvTable_SizingFixedFit, width=500):
                     dpg.add_table_column()
                     dpg.add_table_column(width_stretch=True)
-                    for arg, val, hlp in zip(args, vals, help):
+                    for arg, val in zip(args, vals):
                         with dpg.table_row():
                             dpg.add_text(arg, tag=str(user_data["cmd"])+arg)
                             with dpg.tooltip(parent=str(user_data["cmd"])+arg):
-                                if len(hlp)>1:
-                                    dpg.add_text(hlp)
+                                if len(help[arg])>1:
+                                    dpg.add_text(help[arg])
                                 else:
                                     dpg.add_text("You are on your own bro")
+                            usr_data=user_data.copy() 
+                            usr_data["argVals"]=argVals
+                            usr_data["arg"]=arg
                             if len(val)>0:
-                                dpg.add_combo(tag=str(user_data["cmd"])+arg+"text", items=val, callback=requiredFields, user_data=(user_data, argVals, arg))
+                                dpg.add_combo(tag=str(usr_data["cmd"])+arg+"text", items=val, callback=requiredFields, user_data=usr_data)
                             else:
-                                dpg.add_input_text(tag=str(user_data["cmd"])+arg+"text", width=200, callback=requiredFields, user_data=(user_data, argVals, arg))
+                                dpg.add_input_text(tag=str(usr_data["cmd"])+arg+"text", width=200, callback=requiredFields, user_data=usr_data)
                 
                     with dpg.table_row():
                         dpg.add_text("test:")
@@ -108,8 +112,9 @@ def openDirWindow(sender, app_data, user_data):
             with dpg.group(horizontal=False):
                 keys, values, ids, help = api.getDir(user_data["dirId"], spacer="/", begin=True)
                 for cmd in db.getDirCmdsIDs(user_data["dirId"]):
-                    user_data["cmd"]=cmd
-                    dpg.add_button(label=db.getCmdName(cmd), callback=openArgs, user_data=user_data)
+                    usr_data=user_data.copy()
+                    usr_data["cmd"]=cmd
+                    dpg.add_button(label=db.getCmdName(cmd), callback=openArgs, user_data=usr_data)
             with dpg.group(horizontal=False):
                 with dpg.table(header_row=True, policy=dpg.mvTable_SizingFixedFit, hideable=True):
                     for key in keys:
