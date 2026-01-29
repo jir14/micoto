@@ -11,7 +11,7 @@ def requiredFields(sender, app_data, user_data):
     argVals=user_data[1]
     argVals[user_data[2]]=app_data
     check=api.checkValues(cmdID=cmdID, argVals=argVals)
-    print(check)
+    #print(check)
     if "message" in check:
         dpg.set_value(item=str(cmdID)+"message", value=list(check.values())[0])
     else:
@@ -25,13 +25,13 @@ def apply(sender, app_data, user_data):
     return
 
 def openArgs(sender, app_data, user_data):
-    lbl = "new "+str(db.getDirName(user_data[1]))
+    lbl = "new "+str(db.getDirName(user_data["dirId"]))
     uTag = dpg.generate_uuid()
     argVals=dict()
     with dpg.window(label=lbl, tag=uTag, autosize=True, on_close=lambda: dpg.delete_item(uTag)):
-        pos = user_data[0]+120
-        dpg.set_item_pos(uTag,[pos,0])
-        all, help = api.getArgs(user_data[2])
+        user_data["pos"] = user_data["pos"]+120
+        dpg.set_item_pos(uTag,[user_data["pos"],0])
+        all, help = api.getArgs(user_data["cmd"])
         args=all.keys()
         vals=all.values()
         with dpg.group(horizontal=True, parent=uTag):
@@ -41,20 +41,20 @@ def openArgs(sender, app_data, user_data):
                     dpg.add_table_column(width_stretch=True)
                     for arg, val, hlp in zip(args, vals, help):
                         with dpg.table_row():
-                            dpg.add_text(arg, tag=str(user_data[2])+arg)
-                            with dpg.tooltip(parent=str(user_data[2])+arg):
+                            dpg.add_text(arg, tag=str(user_data["cmd"])+arg)
+                            with dpg.tooltip(parent=str(user_data["cmd"])+arg):
                                 if len(hlp)>1:
                                     dpg.add_text(hlp)
                                 else:
                                     dpg.add_text("You are on your own bro")
                             if len(val)>0:
-                                dpg.add_combo(tag=str(user_data[2])+arg+"text", items=val, callback=requiredFields, user_data=(user_data, argVals, arg))
+                                dpg.add_combo(tag=str(user_data["cmd"])+arg+"text", items=val, callback=requiredFields, user_data=(user_data, argVals, arg))
                             else:
-                                dpg.add_input_text(tag=str(user_data[2])+arg+"text", width=200, callback=requiredFields, user_data=(user_data, argVals, arg))
+                                dpg.add_input_text(tag=str(user_data["cmd"])+arg+"text", width=200, callback=requiredFields, user_data=(user_data, argVals, arg))
                 
                     with dpg.table_row():
                         dpg.add_text("test:")
-                        dpg.add_text(default_value="ok", tag=str(user_data[2])+"message", wrap=150)
+                        dpg.add_text(default_value="ok", tag=str(user_data["cmd"])+"message", wrap=150)
            
             with dpg.group(horizontal=False):
                 dpg.add_button(label="apply")
@@ -62,17 +62,17 @@ def openArgs(sender, app_data, user_data):
     return
 
 def openCmds(sender, app_data, user_data):
-    lbl = db.getDirName(user_data[1])
+    lbl = db.getDirName(user_data["dirId"])
     uTag = dpg.generate_uuid()
     with dpg.window(label=lbl, tag=uTag, autosize=True, on_close=lambda: dpg.delete_item(uTag)):
-        pos = user_data[0]+120
-        dpg.set_item_pos(uTag,[pos,0])
-        keys, values, ids, help = api.getDir(user_data[1], id=user_data[2])
+        user_data["pos"] = user_data["pos"]+120
+        dpg.set_item_pos(uTag,[user_data["pos"],0])
+        keys, values, ids, help = api.getDir(user_data["dirId"], id=user_data["id"])
         with dpg.group(horizontal=True, parent=uTag):
             with dpg.group(horizontal=False):
                 for key in keys:
                     dpg.add_text(key)
-                    with dpg.tooltip(parent=str(user_data[2])+key):
+                    with dpg.tooltip(parent=str(user_data["id"])+key):
                         if len(help[key])>1:
                             dpg.add_text(help[key])
                         else:
@@ -84,46 +84,50 @@ def openCmds(sender, app_data, user_data):
             dpg.add_text("")
 
 def openDirWindow(sender, app_data, user_data):
-    lbl = db.getDirName(user_data[1])
+    lbl = db.getDirName(user_data["dirId"])
     uTag = dpg.generate_uuid()
     with dpg.window(label=lbl, tag=uTag, autosize=True, on_close=lambda: dpg.delete_item(uTag)):
-        pos = user_data[0]+120
-        dpg.set_item_pos(uTag,[pos,0])
+        user_data["pos"] = user_data["pos"]+120
+        dpg.set_item_pos(uTag,[user_data["pos"],0])
         with dpg.group(horizontal=True, parent=uTag):
             with dpg.group(horizontal=False):
-                recs = db.getDirDirsIDs(user_data[1])
-                help = api.getSyntax(db.printDirPath(user_data[1], spacer=","))
+                recs = db.getDirDirsIDs(user_data["dirId"])
+                help = api.getSyntax(db.printDirPath(user_data["dirId"], spacer=","))
                 if len(recs)!=0:
                     for rec in recs:
                         lbl=db.getDirName(rec)
-                        dpg.add_button(label=lbl, user_data=(pos, rec), callback=openDirWindow, tag=str(user_data[1])+lbl)
-                        with dpg.tooltip(parent=str(user_data[1])+lbl):
+                        usr_data=user_data.copy()
+                        usr_data["dirId"]=rec
+                        dpg.add_button(label=lbl, user_data=usr_data, callback=openDirWindow, tag=str(user_data["dirId"])+lbl)
+                        with dpg.tooltip(parent=str(user_data["dirId"])+lbl):
                             if len(help[lbl])>1:
                                 dpg.add_text(help[lbl])
                             else:
                                 dpg.add_text("You are on your own bro")
                 dpg.add_text("")
             with dpg.group(horizontal=False):
-                keys, values, ids, help = api.getDir(user_data[1], spacer="/", begin=True)
-                for cmd in db.getDirCmdsIDs(user_data[1]):
-                    dpg.add_button(label=db.getCmdName(cmd), callback=openArgs, user_data=(pos, user_data[1], cmd))
+                keys, values, ids, help = api.getDir(user_data["dirId"], spacer="/", begin=True)
+                for cmd in db.getDirCmdsIDs(user_data["dirId"]):
+                    user_data["cmd"]=cmd
+                    dpg.add_button(label=db.getCmdName(cmd), callback=openArgs, user_data=user_data)
             with dpg.group(horizontal=False):
                 with dpg.table(header_row=True, policy=dpg.mvTable_SizingFixedFit, hideable=True):
-                    print(keys)
                     for key in keys:
                         dpg.add_table_column(label=key)
                     for vals, id in zip(values, ids):
                         with dpg.table_row():
                             for value in vals:
-                                dpg.add_selectable(label=value, span_columns=True, user_data=(pos, user_data[1], id))
+                                user_data["id"]=id
+                                dpg.add_selectable(label=value, span_columns=True, user_data=user_data)
                 dpg.add_text("")
     return
 
 
 with dpg.window(tag="Main",label="Main"):
     with dpg.group(horizontal=False, parent="Main", tag="Menu"):
-        for id in db.getDirsWithoutParent():
-            dpg.add_button(label=db.getDirName(id), user_data=(0, id), callback=openDirWindow)
+        for dirId in db.getDirsWithoutParent():
+            user_data={"pos":0, "dirId":dirId}
+            dpg.add_button(label=db.getDirName(dirId), user_data=user_data, callback=openDirWindow)
 
 
 dpg.create_viewport(title='Micoto', width=1500, height=1000)
