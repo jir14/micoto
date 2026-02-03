@@ -8,35 +8,12 @@ class Api():
         self.api.login(username, password)
         self.db = db
 
-
-    """def getDir(self, dirID="", id="", spacer=",", begin=False):
-        sentence=[]
-        answer=dict()
-        if begin:
-            path=spacer
-        path+=self.db.printDirPath(dirID)
-        sentence.append(path+spacer+"print")
-        for re in self.api.talk(sentence):
-            if re[0]=="!re":
-                key=re[1]["=.id"].replace("*","")
-                del re[1]["=.id"]
-                answer[key]=re[1]
-        if id:
-            val = values[ids.index(id)]
-            values = []
-            values.append(val)
-            ids = [id]
-        help=self.getSyntax(path=path)
-        return"""
-
-
     def getDir(self, dirID="", id="", spacer=",", begin=False):
         sentence = []
         first = True
         keys = []
         values = []
         ids = []
-        answer=dict()
         if begin:
             path=spacer
         path+=self.db.printDirPath(dirID)

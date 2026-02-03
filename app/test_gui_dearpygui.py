@@ -11,13 +11,16 @@ def addDirTable(user_data):
     if dpg.does_item_exist(itemName):
         dpg.delete_item(itemName)
     keys, values, ids, help = api.getDir(user_data["dirId"], spacer="/", begin=True)
+    a=0
     with dpg.table(tag=itemName, parent=str(user_data["dirId"])+"group", header_row=True, policy=dpg.mvTable_SizingFixedFit, hideable=True):
                     for key in keys:
                         dpg.add_table_column(label=key)
-                    for vals, id in zip(values, ids):
+                    for vals in values:
+                        user_data["id"]=vals[0]
+                        vals[0]=a
+                        a+=1
                         with dpg.table_row():
                             for value in vals:
-                                user_data["id"]=id
                                 dpg.add_selectable(label=value, span_columns=True, user_data=user_data)
     return
 
