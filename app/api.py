@@ -129,12 +129,9 @@ class Api():
         dir = self.db.printDirPath(dirID, spacer=spacer)
         path=spacer+dir+spacer+cmd
         sentence.append(path)
-        print(argVals)
         for arg, val in argVals.items():
             #print(str(arg)+" "+str(val))
             sentence.append("="+arg+"="+str(val))
-        sentence.append("=disabled=yes")
-        print(sentence)
         for re in self.api.talk(sentence):
             #print(re)
             if re[0]=="!re":
