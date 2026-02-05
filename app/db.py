@@ -166,3 +166,18 @@ class Database:
         parID=self.getCmdParentID(cmdID=cmdID)
         path=self.getDirPath(dirID=parID)+"/"+cmdName
         return path
+    
+    def getDirPathIDs(self, dirID):
+        path=list()
+        path.append(dirID)
+        parent=self.getDirParentID(dir=dirID)
+        while parent:
+            path.append(parent)
+            parent=self.getDirParentID(dir=parent)
+        return path
+    
+    def getCmdPathIDs(self, cmdID):
+        dirID=self.getCmdParentID(cmdID=cmdID)
+        path=self.getDirPathIDs(dirID=dirID)
+        path.append(cmdID)
+        return path

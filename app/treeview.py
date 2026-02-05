@@ -27,16 +27,19 @@ class Treeview:
     def createDB(self, sender, appdata, userdata):
         print(self.dirsToDB)
         print(self.cmdsToDB)
-        """for key, val in zip(self.dirsToDB.keys(), self.dirsToDB.values()):
+        for key, val in zip(self.dirsToDB.keys(), self.dirsToDB.values()):
             if val:
-                print(key)"""
+                print(self.db.getDirPathIDs(key))
+        for key, val in zip(self.cmdsToDB.keys(), self.cmdsToDB.values()):
+            if val:
+                print(self.db.getCmdPathIDs(key))
         return
 
     def cmdCallback(self, sender, appdata, userdata):
         value=dpg.get_value(sender)
-        """if userdata not in self.cmdsToDB.keys():
+        if userdata not in self.cmdsToDB.keys():
             self.cmdsToDB[userdata] = True
-            return"""
+            return
         self.cmdsToDB[userdata]=value
         return
 
@@ -74,7 +77,6 @@ class Treeview:
                     for rec in recs:
                         dirName=self.db.getDirName(rec)
                         with dpg.group(horizontal=True, parent="rec"+dirid, tag="rec"+dirid+dirName):
-                            #dpg.add_checkbox(tag="check"+str(rec), parent="rec"+dirid+dirName, callback=self.dirCallback, user_data=rec)
                             dpg.add_checkbox(tag="check"+str(rec), parent="rec"+dirid+dirName, callback=self.dirCallback, user_data=rec)
                             dpg.add_tree_node(tag="dir"+str(rec), label=dirName, parent="rec"+dirid+dirName)
                         self.loop(rec)
