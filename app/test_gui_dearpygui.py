@@ -13,15 +13,15 @@ def addDirTable(user_data):
     keys, values, ids, help = api.getDir(user_data["dirId"], spacer="/", begin=True)
     a=0
     with dpg.table(tag=itemName, parent=str(user_data["dirId"])+"group", header_row=True, policy=dpg.mvTable_SizingFixedFit, hideable=True):
-                    for key in keys:
-                        dpg.add_table_column(label=key)
-                    for vals in values:
-                        user_data["id"]=vals[0]
-                        vals[0]=a
-                        a+=1
-                        with dpg.table_row():
-                            for value in vals:
-                                dpg.add_selectable(label=value, span_columns=True, user_data=user_data)
+        for key in keys:
+            dpg.add_table_column(label=key)
+            for vals in values:
+                user_data["id"]=vals[0]
+                vals[0]=a
+                a+=1
+                with dpg.table_row():
+                    for value in vals:
+                        dpg.add_selectable(label=value, span_columns=True, user_data=user_data)
     return
 
 def onClose(sender, app_data, user_data):
@@ -150,10 +150,14 @@ def openDirWindow(sender, app_data, user_data):
 
 
 with dpg.window(tag="Main",label="Main"):
-    with dpg.group(horizontal=False, parent="Main", tag="Menu"):
-        for dirId in db.getDirsWithoutParent():
-            user_data={"pos":0, "dirId":dirId}
-            dpg.add_button(label=db.getDirName(dirId), user_data=user_data, callback=openDirWindow)
+    with dpg.group(horizontal=False, parent="Main", tag="Menu", width=100):
+        with dpg.table(header_row=False):
+            dpg.add_table_column()
+            for dirId in db.getDirsWithoutParent():
+                with dpg.table_row():
+                    user_data={"pos":0, "dirId":dirId}
+                    #dpg.add_button(label=db.getDirName(dirId), user_data=user_data, callback=openDirWindow)
+                    dpg.add_selectable(label=db.getDirName(dirId), user_data=user_data, callback=openDirWindow)
 
 
 dpg.create_viewport(title='Micoto', width=1500, height=1000)

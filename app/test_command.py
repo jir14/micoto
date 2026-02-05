@@ -48,7 +48,7 @@ class ApiCommands():
     def addCmds(self, path="", dirID=""):
         cmds=self.requestSome(path=path, type="cmd")
         for cmd in cmds:
-            self.db.insertCmd(dirID, cmd)
+            cmdId=self.db.insertCmd(dirID, cmd)
         return
 
     def scan(self):

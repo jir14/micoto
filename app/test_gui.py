@@ -2,14 +2,17 @@ import dearpygui.dearpygui as dpg
 
 dpg.create_context()
 
-with dpg.window(label="Tutorial"):
-    dpg.add_checkbox(label="Radio Button1", tag="R1")
-    dpg.add_checkbox(label="Radio Button2", source="R1")
+def selectables(sender, app_data, user_data):
+    test=("alza", "czc", "datard")
+    dpg.add_listbox(items=test, parent="Selectable Tables")
 
-    dpg.add_input_text(label="Text Input 1")
-    dpg.add_input_text(label="Text Input 2", source=dpg.last_item(), password=True)
+with dpg.window(tag="Selectable Tables"):
+    with dpg.table(header_row=False):
+        dpg.add_table_column()
+        with dpg.table_row():
+            dpg.add_selectable(label="Pes", callback=selectables)
 
-dpg.create_viewport(title='Custom Title', width=800, height=600)
+dpg.create_viewport(width=800, height=600)
 dpg.setup_dearpygui()
 dpg.show_viewport()
 dpg.start_dearpygui()
