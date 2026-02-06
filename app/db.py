@@ -61,7 +61,7 @@ class Database:
     def getDirParentID(self, dir, bid=None):
         sql = "SELECT higherID FROM dirs WHERE"
         params = [dir]
-        if type(dir) is int:
+        if isinstance(dir, int):
             sql = sql+" id=?"
         else:
             sql = sql+" dir=?"
@@ -173,7 +173,7 @@ class Database:
         parent=self.getDirParentID(dir=dirID)
         while parent:
             path.append(parent)
-            parent=self.getDirParentID(dir=parent)
+            parent=self.getDirParentID(dir=parent)     
         return path
     
     def getCmdPathIDs(self, cmdID):
@@ -181,3 +181,13 @@ class Database:
         path=self.getDirPathIDs(dirID=dirID)
         path.append(cmdID)
         return path
+    
+    def dbCopy(self, secondDB="", cmdIDs="", dirIDs="", path=""):
+        self.cur.execute("ATTACH DATABASE ? AS 'COPY'", (path,))
+        for dirID, value in dirIDs.items():
+            if value:
+                self.cur.execute("INSERT INTO COPY.dirs SELECT * FROM dirs WHERE id=?", (dirID,))
+        self.con.commit()
+        self.cur.execute("DETACH DATABASE 'COPY'")
+        secondDB.con.close()
+        return

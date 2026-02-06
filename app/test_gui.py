@@ -2,17 +2,15 @@ import dearpygui.dearpygui as dpg
 
 dpg.create_context()
 
-def selectables(sender, app_data, user_data):
-    test=("alza", "czc", "datard")
-    dpg.add_listbox(items=test, parent="Selectable Tables")
+with dpg.window(label="Tutorial"):
+    dpg.add_text("Left Click Me")
+    dpg.add_text("Left Click Me")
 
-with dpg.window(tag="Selectable Tables"):
-    with dpg.table(header_row=False):
-        dpg.add_table_column()
-        with dpg.table_row():
-            dpg.add_selectable(label="Pes", callback=selectables)
+    # check out simple module for details
+    with dpg.popup(dpg.last_item(), mousebutton=dpg.mvMouseButton_Left, modal=True, tag="modal_id"):
+        dpg.add_button(label="Close", callback=lambda: dpg.configure_item("modal_id", show=False))
 
-dpg.create_viewport(width=800, height=600)
+dpg.create_viewport(title='Custom Title', width=800, height=600)
 dpg.setup_dearpygui()
 dpg.show_viewport()
 dpg.start_dearpygui()

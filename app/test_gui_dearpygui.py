@@ -2,6 +2,7 @@ import dearpygui.dearpygui as dpg
 from db import Database
 import api as API
 
+#db = Database("penis.db")
 db = Database("db.db")
 api = API.Api("10.255.255.255", "admin", "testpass", db)
 dpg.create_context()
@@ -15,13 +16,13 @@ def addDirTable(user_data):
     with dpg.table(tag=itemName, parent=str(user_data["dirId"])+"group", header_row=True, policy=dpg.mvTable_SizingFixedFit, hideable=True):
         for key in keys:
             dpg.add_table_column(label=key)
-            for vals in values:
-                user_data["id"]=vals[0]
-                vals[0]=a
-                a+=1
-                with dpg.table_row():
-                    for value in vals:
-                        dpg.add_selectable(label=value, span_columns=True, user_data=user_data)
+        for vals in values:
+            user_data["id"]=vals[0]
+            vals[0]=a
+            a+=1
+            with dpg.table_row():
+                for value in vals:
+                    dpg.add_selectable(label=value, span_columns=True, user_data=user_data)
     return
 
 def onClose(sender, app_data, user_data):
