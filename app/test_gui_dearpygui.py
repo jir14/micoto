@@ -2,8 +2,8 @@ import dearpygui.dearpygui as dpg
 from db import Database
 import api as API
 
-#db = Database("penis.db")
-db = Database("db.db")
+db = Database("penis.db")
+#db = Database("db.db")
 api = API.Api("10.255.255.255", "admin", "testpass", db)
 dpg.create_context()
 

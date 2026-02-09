@@ -187,6 +187,9 @@ class Database:
         for dirID, value in dirIDs.items():
             if value:
                 self.cur.execute("INSERT INTO COPY.dirs SELECT * FROM dirs WHERE id=?", (dirID,))
+        for cmdID, value in cmdIDs.items():
+            if value:
+                self.cur.execute("INSERT INTO COPY.cmds SELECT * FROM cmds WHERE id=?", (cmdID,))
         self.con.commit()
         self.cur.execute("DETACH DATABASE 'COPY'")
         secondDB.con.close()

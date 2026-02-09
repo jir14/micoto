@@ -24,17 +24,19 @@ class Treeview:
                         dpg.add_collapsing_header(tag="dir"+str(dirID), label=dirName, parent="sectionHorizontalTag"+str(dirID))
                         self.loop(dirID) 
     
-    def createDB(self, sender, appdata, userdata):
+    def createDBlists(self, sender, appdata, userdata):
         dirsCopy=self.dirsToDB.copy()
+        cmdsCopy=self.cmdsToDB.copy()
         for key, val in dirsCopy.items():
             if val:
                 if key=="":
                     continue
                 for rec in self.db.getDirPathIDs(key):
                     self.dirsToDB[rec]=True
-        """for key, val in zip(self.cmdsToDB.keys(), self.cmdsToDB.values()):
+        for key, val in cmdsCopy.items():
             if val:
-                print(key)"""
+                #print(key)
+                self.cmdsToDB[key]=True
         return
 
     def createDBWindow(self, sender, appdata, userdata):
@@ -55,7 +57,7 @@ class Treeview:
                     dpg.delete_item("file_dialog_id")
                 return
         copy=Database(filePath)
-        self.createDB(sender, app_data, user_data)
+        self.createDBlists(sender, app_data, user_data)
         self.db.dbCopy(secondDB=copy, cmdIDs=self.cmdsToDB, dirIDs=self.dirsToDB, path=filePath)
         dpg.delete_item(item="file_dialog_id")
         return
@@ -73,7 +75,7 @@ class Treeview:
         cmds = dpg.get_item_children("cmd"+str(userdata))[1]
         if len(cmds)>0:
             for item in cmds:
-                self.cmdsToDB[dpg.get_item_alias(item)]=value
+                self.cmdsToDB[int(dpg.get_item_alias(item)[8:])]=value
                 dpg.set_value(item, value)
         recs = dpg.get_item_children("rec"+str(userdata))[1]
         send=dpg.get_item_alias(sender)[5:]
@@ -81,8 +83,8 @@ class Treeview:
             self.dirsToDB[int(dpg.get_item_alias(sender)[5:])]=value
         if len(recs)>0:
             for item in recs:
-                dpg.set_value(item+1, value)
                 self.dirsToDB[int(dpg.get_item_alias(item+1)[5:])]=value
+                dpg.set_value(item+1, value)
                 self.dirCallback(sender=item+1, appdata=appdata, userdata=dpg.get_item_user_data(item+1))
         return
 
