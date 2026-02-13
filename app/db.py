@@ -9,7 +9,8 @@ class Database:
             self.cur = cur
             cur.execute('CREATE TABLE IF NOT EXISTS "dirs" ("id" INTEGER NOT NULL UNIQUE, "higherID" INTEGER, "dir" TEXT, UNIQUE("dir","higherID") ON CONFLICT IGNORE, PRIMARY KEY("id" AUTOINCREMENT))')
             #cur.execute('INSERT INTO dirs (dir) VALUES ("")')
-            cur.execute('CREATE TABLE IF NOT EXISTS "cmds" ("id" INTEGER NOT NULL UNIQUE, "cmd" TEXT NOT NULL, "dir_id" INTEGER NOT NULL, UNIQUE("cmd","dir_id") ON CONFLICT IGNORE, PRIMARY KEY("id" AUTOINCREMENT), FOREIGN KEY("dir_id") REFERENCES "dirs"("dir") ON DELETE CASCADE)')
+            cur.execute('CREATE TABLE IF NOT EXISTS "cmds" ("id" INTEGER NOT NULL UNIQUE, "add_cmd" INTEGER NOT NULL DEFAULT 0, "set_cmd" INTEGER NOT NULL DEFAULT 0, "remove_cmd" INTEGER NOT NULL DEFAULT 0, "disable_cmd" INTEGER NOT NULL DEFAULT 0, "comment_cmd" INTEGER NOT NULL DEFAULT 0, "dir_id" INTEGER NOT NULL, PRIMARY KEY("id" AUTOINCREMENT), FOREIGN KEY("dir_id") REFERENCES "dirs"("dir") ON DELETE CASCADE)')
+            #cur.execute('CREATE TABLE IF NOT EXISTS "cmds" ("id" INTEGER NOT NULL UNIQUE, "cmd" TEXT NOT NULL, "dir_id" INTEGER NOT NULL, UNIQUE("cmd","dir_id") ON CONFLICT IGNORE, PRIMARY KEY("id" AUTOINCREMENT), FOREIGN KEY("dir_id") REFERENCES "dirs"("dir") ON DELETE CASCADE)')
             #cur.execute('CREATE TABLE IF NOT EXISTS "args" ("id" INTEGER NOT NULL UNIQUE, "arg" TEXT NOT NULL, "cmd_id" INTEGER NOT NULL, UNIQUE("arg","cmd_id") ON CONFLICT IGNORE, PRIMARY KEY("id" AUTOINCREMENT), FOREIGN KEY("cmd_id") REFERENCES "cmds"("id") ON DELETE CASCADE)')
         except:
             print("Connection to DB failed")   
@@ -46,10 +47,18 @@ class Database:
             return True
         return False
 
-    def insertCmd(self, dirId, cmd):
+    """def insertCmd(self, dirId, cmd):
         if self.cur.execute("SELECT id FROM dirs WHERE id=?", (dirId,)):
             id = self.cur.fetchone()[0]
             self.cur.execute("INSERT INTO cmds (cmd, dir_id) VALUES (?, ?)", (cmd,id,))
+            self.con.commit()
+            return self.cur.lastrowid
+        return False"""
+    
+    def insertCmd(self, dirId, vals):
+        if self.cur.execute("SELECT id FROM dirs WHERE id=?", (dirId,)):
+            id = self.cur.fetchone()[0]
+            self.cur.execute("INSERT INTO cmds ('add_cmd', 'set_cmd', 'remove_cmd', 'disable_cmd', 'comment_cmd', dir_id) VALUES (?, ?, ?, ?, ?, ?)", (vals["add"],vals["set"],vals["remove"],vals["disable"],vals["comment"],id,))
             self.con.commit()
             return self.cur.lastrowid
         return False
@@ -80,11 +89,12 @@ class Database:
         return False
     
     def getDirCmds(self, dirID):
-        if self.cur.execute("SELECT cmd FROM cmds WHERE dir_id=?", (dirID,)):
-            res = []
-            for re in self.cur.fetchall():
-                res.append(re[0])
-            return res
+        if self.cur.execute("SELECT add_cmd, set_cmd, remove_cmd, disable_cmd, comment_cmd FROM cmds WHERE dir_id=?", (dirID,)):
+            res=[]
+            for re in self.cur.fetchone():
+                res.append(re)
+            vals={"add":res[0], "set":res[1], "remove":res[2], "disable":res[3], "comment":res[4]}
+            return vals
         return False
 
     def getCmdID(self, dirID):
@@ -132,9 +142,9 @@ class Database:
         return False
     
     def getCmdName(self, cmdID):
-        if self.cur.execute("SELECT cmd FROM cmds WHERE id=?", (cmdID,)):
+        """if self.cur.execute("SELECT cmd FROM cmds WHERE id=?", (cmdID,)):
             res = self.cur.fetchone()
-            return res[0]
+            return res[0]"""
         return False
     
     def getDirsWithoutParent(self):
@@ -187,9 +197,10 @@ class Database:
         for dirID, value in dirIDs.items():
             if value:
                 self.cur.execute("INSERT INTO COPY.dirs SELECT * FROM dirs WHERE id=?", (dirID,))
-        for cmdID, value in cmdIDs.items():
-            if value:
-                self.cur.execute("INSERT INTO COPY.cmds SELECT * FROM cmds WHERE id=?", (cmdID,))
+        for dirids in cmdIDs:
+            self.cur.execute("INSERT INTO COPY.cmds SELECT * FROM cmds WHERE dir_id=?", (dirids,))
+            for key, val in cmdIDs[dirids].items():
+                self.cur.execute(f"UPDATE COPY.cmds SET {key+"_cmd"}=? WHERE dir_id=?", (val,dirID,))
         self.con.commit()
         self.cur.execute("DETACH DATABASE 'COPY'")
         secondDB.con.close()

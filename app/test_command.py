@@ -47,8 +47,21 @@ class ApiCommands():
     
     def addCmds(self, path="", dirID=""):
         cmds=self.requestSome(path=path, type="cmd")
+        vals={"add": 0, "set":0, "remove":0, "disable":0, "comment":0}
         for cmd in cmds:
-            cmdId=self.db.insertCmd(dirID, cmd)
+            match cmd:
+                case "add":
+                    vals["add"]=1
+                case "set":
+                    vals["set"]=1
+                case "remove":
+                    vals["remove"]=1
+                case "disable":
+                    vals["disable"]=1
+                case "comment":
+                    vals["comment"]=1
+        print(vals)
+        cmdId=self.db.insertCmd(dirID, vals)
         return
 
     def scan(self):

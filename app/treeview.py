@@ -19,7 +19,7 @@ class Treeview:
                     dirName = self.db.getDirName(dirID)
                     if dirName=="":
                         continue
-                    dpg.add_checkbox(parent="sectionTag"+str(dirID), callback=self.dirCallback, user_data=dirID)
+                    dpg.add_checkbox(tag="check"+dirName, parent="sectionTag"+str(dirID), callback=self.dirCallback, user_data=dirID)
                     with dpg.group(horizontal=False, parent="sectionTag"+str(dirID), tag="sectionHorizontalTag"+str(dirID)):
                         dpg.add_collapsing_header(tag="dir"+str(dirID), label=dirName, parent="sectionHorizontalTag"+str(dirID))
                         self.loop(dirID) 
@@ -33,10 +33,6 @@ class Treeview:
                     continue
                 for rec in self.db.getDirPathIDs(key):
                     self.dirsToDB[rec]=True
-        for key, val in cmdsCopy.items():
-            if val:
-                #print(key)
-                self.cmdsToDB[key]=True
         return
 
     def createDBWindow(self, sender, appdata, userdata):
@@ -63,11 +59,11 @@ class Treeview:
         return
 
     def cmdCallback(self, sender, appdata, userdata):
-        value=dpg.get_value(sender)
+        """value=dpg.get_value(sender)
         if userdata not in self.cmdsToDB.keys():
             self.cmdsToDB[userdata] = True
             return
-        self.cmdsToDB[userdata]=value
+        self.cmdsToDB[userdata]=value"""
         return
 
     def dirCallback(self, sender, appdata, userdata):
@@ -75,30 +71,33 @@ class Treeview:
         cmds = dpg.get_item_children("cmd"+str(userdata))[1]
         if len(cmds)>0:
             for item in cmds:
-                self.cmdsToDB[int(dpg.get_item_alias(item)[8:])]=value
+                self.cmdsToDB[userdata]=({dpg.get_item_label(item=item):value})
                 dpg.set_value(item, value)
         recs = dpg.get_item_children("rec"+str(userdata))[1]
-        send=dpg.get_item_alias(sender)[5:]
-        if send!="":
-            self.dirsToDB[int(dpg.get_item_alias(sender)[5:])]=value
         if len(recs)>0:
             for item in recs:
                 self.dirsToDB[int(dpg.get_item_alias(item+1)[5:])]=value
                 dpg.set_value(item+1, value)
                 self.dirCallback(sender=item+1, appdata=appdata, userdata=dpg.get_item_user_data(item+1))
+        self.dirRootLoop(dirId=userdata, value=value)
         return
 
+    def dirRootLoop(self, dirId="", value=""):
+        par=dirId
+        while par:
+            self.dirsToDB[par]=value
+            par=self.db.getDirParentID(par)
+        return
+    
     def loop(self, dirID):
         dirid=str(dirID)
         with dpg.group(horizontal=False, parent="dir"+dirid, tag="group"+dirid):
             cmds = self.db.getDirCmds(dirID)
             with dpg.group(horizontal=True, parent="group"+dirid, tag="cmd"+dirid):
                 if len(cmds)>0:
-                    for cmd in self.db.getDirCmdsIDs(dirID):
-                        cmdName=self.db.getCmdName(cmd)
-                        if cmd=="":
-                            continue
-                        dpg.add_checkbox(label=cmdName, tag="checkCmd"+str(cmd), parent="cmd"+dirid, callback=self.cmdCallback, user_data=cmd)
+                    for key, val in cmds.items():
+                        if val:
+                            dpg.add_checkbox(label=key, tag="checkCmd"+dirid+str(key), parent="cmd"+dirid, callback=self.cmdCallback, user_data=key)
 
             recs = self.db.getDirDirsIDs(dirID)
             with dpg.group(horizontal=False, parent="group"+dirid, tag="rec"+dirid):
