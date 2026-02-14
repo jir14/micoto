@@ -7,6 +7,7 @@ dpg.create_context()
 class conf_gui():
     def __init__(self):
         self.db=Database("penis.db")
+        #self.db=Database("cock.db")
         #self.db=Database("db.db")
         self.api=API.Api("10.255.255.255", "admin", "testpass", self.db)
         with dpg.window(tag="Main",label="Main"):
@@ -65,7 +66,7 @@ class conf_gui():
         return
 
     def openArgs(self, sender, app_data, user_data):
-        lbl = "new "+str(self.self.db.getDirName(user_data["dirId"]))
+        lbl = "new "+str(self.db.getDirName(user_data["dirId"]))
         uTag = str(dpg.generate_uuid())
         user_data=user_data.copy()
         user_data["tag"]=uTag
@@ -73,7 +74,7 @@ class conf_gui():
         with dpg.window(label=lbl, tag=uTag, autosize=True, on_close=self.onClose, user_data=user_data):
             user_data["pos"] = user_data["pos"]+120
             dpg.set_item_pos(uTag,[user_data["pos"],0])
-            all, help = self.api.getArgs(user_data["cmd"])
+            all, help = self.api.getArgs(dirID=user_data["dirId"], cmd=user_data["cmd"])
             args=all.keys()
             vals=all.values()
             with dpg.group(horizontal=True, parent=uTag):
@@ -151,11 +152,19 @@ class conf_gui():
                                     dpg.add_text("You are on your own bro")
                     dpg.add_text("")
                 with dpg.group(horizontal=False):
-                    keys, values, ids, help = self.api.getDir(user_data["dirId"], spacer="/", begin=True)
+                    cmds = self.db.getDirCmds(user_data["dirId"])
+                    if cmds:
+                        for key, val in cmds.items():
+                            usr_data=user_data.copy()
+                            usr_data["cmd"]=key
+                            if val:
+                                dpg.add_button(label=key, callback=self.openArgs, user_data=usr_data)
+
+                    """keys, values, ids, help = self.api.getDir(user_data["dirId"], spacer="/", begin=True)
                     for cmd in self.db.getDirCmdsIDs(user_data["dirId"]):
                         usr_data=user_data.copy()
                         usr_data["cmd"]=cmd
-                        dpg.add_button(label=self.db.getCmdName(cmd), callback=self.openArgs, user_data=usr_data)
+                        dpg.add_button(label=self.db.getCmdName(cmd), callback=self.openArgs, user_data=usr_data)"""
                 with dpg.group(tag=str(user_data["dirId"])+"group", horizontal=False):
                     self.addDirTable(user_data=user_data)
                     dpg.add_text("")

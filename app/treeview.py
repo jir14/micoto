@@ -6,9 +6,8 @@ import os
 dpg.create_context()
 
 class Treeview:
-    def __init__(self, dbName, ipAddress, username, password):
+    def __init__(self, dbName):
         self.db = Database(dbName)
-        self.api = API.Api(ipAddress, username, password, self.db)
         self.dirsToDB=dict()
         self.cmdsToDB=dict()
         with dpg.window(tag="Menu", label="Menu", width=500):
@@ -26,7 +25,6 @@ class Treeview:
     
     def createDBlists(self, sender, appdata, userdata):
         dirsCopy=self.dirsToDB.copy()
-        cmdsCopy=self.cmdsToDB.copy()
         for key, val in dirsCopy.items():
             if val:
                 if key=="":
@@ -52,18 +50,19 @@ class Treeview:
                     dpg.add_text(e, wrap=450)
                     dpg.delete_item("file_dialog_id")
                 return
-        copy=Database(filePath)
+        Database(filePath)
         self.createDBlists(sender, app_data, user_data)
-        self.db.dbCopy(secondDB=copy, cmdIDs=self.cmdsToDB, dirIDs=self.dirsToDB, path=filePath)
+        self.db.dbCopy(cmdIDs=self.cmdsToDB, dirIDs=self.dirsToDB, path=filePath)
         dpg.delete_item(item="file_dialog_id")
         return
 
     def cmdCallback(self, sender, appdata, userdata):
-        """value=dpg.get_value(sender)
+        value=dpg.get_value(sender)
+        self.dirRootLoop(dirId=userdata, value=value)
         if userdata not in self.cmdsToDB.keys():
-            self.cmdsToDB[userdata] = True
+            self.cmdsToDB[userdata] = {dpg.get_item_label(sender): value}
             return
-        self.cmdsToDB[userdata]=value"""
+        self.cmdsToDB[userdata][dpg.get_item_label(sender)]=value
         return
 
     def dirCallback(self, sender, appdata, userdata):
@@ -71,7 +70,9 @@ class Treeview:
         cmds = dpg.get_item_children("cmd"+str(userdata))[1]
         if len(cmds)>0:
             for item in cmds:
-                self.cmdsToDB[userdata]=({dpg.get_item_label(item=item):value})
+                if userdata not in self.cmdsToDB.keys():
+                    self.cmdsToDB[userdata]={}
+                self.cmdsToDB[userdata][dpg.get_item_label(item=item)] = value
                 dpg.set_value(item, value)
         recs = dpg.get_item_children("rec"+str(userdata))[1]
         if len(recs)>0:
@@ -83,7 +84,7 @@ class Treeview:
         return
 
     def dirRootLoop(self, dirId="", value=""):
-        par=dirId
+        par=int(dirId)
         while par:
             self.dirsToDB[par]=value
             par=self.db.getDirParentID(par)
@@ -97,7 +98,7 @@ class Treeview:
                 if len(cmds)>0:
                     for key, val in cmds.items():
                         if val:
-                            dpg.add_checkbox(label=key, tag="checkCmd"+dirid+str(key), parent="cmd"+dirid, callback=self.cmdCallback, user_data=key)
+                            dpg.add_checkbox(label=key, tag="checkCmd"+dirid+str(key), parent="cmd"+dirid, callback=self.cmdCallback, user_data=dirid)
 
             recs = self.db.getDirDirsIDs(dirID)
             with dpg.group(horizontal=False, parent="group"+dirid, tag="rec"+dirid):
@@ -110,7 +111,7 @@ class Treeview:
                         self.loop(rec)
         return
 
-tree=Treeview("db.db", "10.255.255.255", "admin", "testpass")
+tree=Treeview("db.db")
 
 dpg.create_viewport(title='Micoto', width=1500, height=1000)
 dpg.setup_dearpygui()

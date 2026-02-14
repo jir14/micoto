@@ -43,11 +43,9 @@ class Api():
         help=self.getSyntax(path=path)
         return keys, values, ids, help
 
-    def getArgs(self, cmdID=""):
+    def getArgs(self, dirID="", cmd=""):
         sentence=[]
         argVals=dict()
-        cmd = self.db.getCmdName(cmdID)
-        dirID = self.db.getCmdParentID(cmdID)
         dir = self.db.printDirPath(dirID, spacer=",")
         path=dir+","+cmd
         sentence.append("/console/inspect")

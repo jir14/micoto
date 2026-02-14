@@ -9,7 +9,7 @@ class Database:
             self.cur = cur
             cur.execute('CREATE TABLE IF NOT EXISTS "dirs" ("id" INTEGER NOT NULL UNIQUE, "higherID" INTEGER, "dir" TEXT, UNIQUE("dir","higherID") ON CONFLICT IGNORE, PRIMARY KEY("id" AUTOINCREMENT))')
             #cur.execute('INSERT INTO dirs (dir) VALUES ("")')
-            cur.execute('CREATE TABLE IF NOT EXISTS "cmds" ("id" INTEGER NOT NULL UNIQUE, "add_cmd" INTEGER NOT NULL DEFAULT 0, "set_cmd" INTEGER NOT NULL DEFAULT 0, "remove_cmd" INTEGER NOT NULL DEFAULT 0, "disable_cmd" INTEGER NOT NULL DEFAULT 0, "comment_cmd" INTEGER NOT NULL DEFAULT 0, "dir_id" INTEGER NOT NULL, PRIMARY KEY("id" AUTOINCREMENT), FOREIGN KEY("dir_id") REFERENCES "dirs"("dir") ON DELETE CASCADE)')
+            cur.execute('CREATE TABLE IF NOT EXISTS "cmds" ("id" INTEGER NOT NULL UNIQUE, "add_cmd" INTEGER NOT NULL DEFAULT 0, "set_cmd" INTEGER NOT NULL DEFAULT 0, "remove_cmd" INTEGER NOT NULL DEFAULT 0, "disable_cmd" INTEGER NOT NULL DEFAULT 0, "comment_cmd" INTEGER NOT NULL DEFAULT 0, "dir_id" INTEGER NOT NULL, UNIQUE("dir_id"), PRIMARY KEY("id" AUTOINCREMENT), FOREIGN KEY("dir_id") REFERENCES "dirs"("dir") ON DELETE CASCADE)')
             #cur.execute('CREATE TABLE IF NOT EXISTS "cmds" ("id" INTEGER NOT NULL UNIQUE, "cmd" TEXT NOT NULL, "dir_id" INTEGER NOT NULL, UNIQUE("cmd","dir_id") ON CONFLICT IGNORE, PRIMARY KEY("id" AUTOINCREMENT), FOREIGN KEY("dir_id") REFERENCES "dirs"("dir") ON DELETE CASCADE)')
             #cur.execute('CREATE TABLE IF NOT EXISTS "args" ("id" INTEGER NOT NULL UNIQUE, "arg" TEXT NOT NULL, "cmd_id" INTEGER NOT NULL, UNIQUE("arg","cmd_id") ON CONFLICT IGNORE, PRIMARY KEY("id" AUTOINCREMENT), FOREIGN KEY("cmd_id") REFERENCES "cmds"("id") ON DELETE CASCADE)')
         except:
@@ -90,11 +90,9 @@ class Database:
     
     def getDirCmds(self, dirID):
         if self.cur.execute("SELECT add_cmd, set_cmd, remove_cmd, disable_cmd, comment_cmd FROM cmds WHERE dir_id=?", (dirID,)):
-            res=[]
-            for re in self.cur.fetchone():
-                res.append(re)
-            vals={"add":res[0], "set":res[1], "remove":res[2], "disable":res[3], "comment":res[4]}
-            return vals
+            res=self.cur.fetchone()
+            if res:
+                return {"add":res[0], "set":res[1], "remove":res[2], "disable":res[3], "comment":res[4]}
         return False
 
     def getCmdID(self, dirID):
@@ -197,11 +195,11 @@ class Database:
         for dirID, value in dirIDs.items():
             if value:
                 self.cur.execute("INSERT INTO COPY.dirs SELECT * FROM dirs WHERE id=?", (dirID,))
-        for dirids in cmdIDs:
-            self.cur.execute("INSERT INTO COPY.cmds SELECT * FROM cmds WHERE dir_id=?", (dirids,))
-            for key, val in cmdIDs[dirids].items():
-                self.cur.execute(f"UPDATE COPY.cmds SET {key+"_cmd"}=? WHERE dir_id=?", (val,dirID,))
+        for dirID in cmdIDs:
+            vals={"add": 0, "set":0, "remove":0, "disable":0, "comment":0}
+            for key, val in cmdIDs[dirID].items():
+                vals[key]=val
+            self.cur.execute("INSERT INTO COPY.cmds ('add_cmd', 'set_cmd', 'remove_cmd', 'disable_cmd', 'comment_cmd', dir_id) VALUES (?, ?, ?, ?, ?, ?)", (vals["add"],vals["set"],vals["remove"],vals["disable"],vals["comment"],dirID,))
         self.con.commit()
         self.cur.execute("DETACH DATABASE 'COPY'")
-        secondDB.con.close()
         return

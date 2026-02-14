@@ -41,7 +41,7 @@ class ApiCommands():
         for dir in dirs:
             id=self.db.insertDir(dir, higherID)
             print(path+","+dir)
-            self.addCmds(path=path+","+dir, dirID=id)
+            #.addCmds(path=path+","+dir, dirID=id)
             self.dirLoop(id)
         return
     
@@ -60,7 +60,6 @@ class ApiCommands():
                     vals["disable"]=1
                 case "comment":
                     vals["comment"]=1
-        print(vals)
         cmdId=self.db.insertCmd(dirID, vals)
         return
 
