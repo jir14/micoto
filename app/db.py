@@ -22,7 +22,7 @@ class Database:
         else:
             return True
     
-    def insertDir(self, dir, higherID=True, type=""):
+    def insertDir(self, dir, higherID=True):
         if higherID:
             if self.cur.execute("INSERT INTO dirs (dir, higherID) VALUES (?, ?)", (dir,higherID,)):
                 self.con.commit()
