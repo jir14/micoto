@@ -24,15 +24,10 @@ class Api():
                 if first:
                     for k in re[1].keys():
                         k = k.replace("=","")
-                        if k == ".id":
-                            k=k.replace(".","")
                         keys.append(k)
                     first = False
                 vals = []
                 for rec in re[1].values():
-                    if "*" in rec:
-                        rec=rec.replace("*","")
-                        ids.append(rec.replace("*",""))
                     vals.append(rec)
                 values.append(vals)
         if id:
@@ -96,28 +91,18 @@ class Api():
                     answer[symbol]=re[1]["=text"]
         return answer
 
-    def checkValues(self, cmdID="", argVals="", spacer="/"):
+    def checkValues(self, dirID="", cmdName="", argVals="", spacer="/"):
         sentence=[]
         answer=dict()
-        cmd = self.db.getCmdName(cmdID)
-        dirID = self.db.getCmdParentID(cmdID)
         dir = self.db.printDirPath(dirID, spacer=spacer)
-        path=spacer+dir+spacer+cmd
+        path=spacer+dir+spacer+cmdName
         sentence.append(path)
         for arg, val in argVals.items():
-            #print(str(arg)+" "+str(val))
             sentence.append("="+arg+"="+str(val))
         for re in self.api.talk(sentence):
             #print(re)
             if re[0]=="!re":
                 continue
-                #print(re[1])
             elif re[0]=="!trap":
-                """mess=re[1]["=message"]
-                mess=mess.replace("=", "")"""
                 answer["message"]=re[1]["=message"].replace("=", "")
-            """elif re[0]=="!done" and "=ret" in re[1]:
-                ret=re[1]["=ret"]
-                ret=ret.replace("*", "")
-                answer["id"]=ret"""
         return answer

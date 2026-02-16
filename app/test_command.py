@@ -41,13 +41,12 @@ class ApiCommands():
         for dir in dirs:
             id=self.db.insertDir(dir, higherID)
             print(path+","+dir)
-            #.addCmds(path=path+","+dir, dirID=id)
             self.dirLoop(id)
         return
     
     def addCmds(self, path="", dirID=""):
         cmds=self.requestSome(path=path, type="cmd")
-        vals={"add": 0, "set":0, "remove":0, "disable":0, "comment":0}
+        vals={"add": 0, "set":0, "remove":0, "enable":0, "disable":0, "comment":0}
         for cmd in cmds:
             match cmd:
                 case "add":
@@ -56,13 +55,15 @@ class ApiCommands():
                     vals["set"]=1
                 case "remove":
                     vals["remove"]=1
+                case "enable":
+                    vals["enable"]=1
                 case "disable":
                     vals["disable"]=1
                 case "comment":
                     vals["comment"]=1
-        cmdId=self.db.insertCmd(dirID, vals)
+        self.db.insertCmd(dirID, vals)
         return
-
+    
     def scan(self):
         dirs=self.requestSome(type="dir")+self.requestSome(type="path")
         for dir in dirs:
@@ -77,49 +78,6 @@ def main():
 
     api.scan()
 
-
-    
-
-
-    """dirs, opts, args = api.requestAll()
-    db.insertDirs(dirs, 0, None, False)
-    cmds = []
-    for var in cmds:
-        if db.filterOptions(var):
-            continue
-        cmds.append(var)
-
-    db.insertCommands("", cmds)
-    for cmd in cmds:
-        args = api.requestSome(cmd, "arg")
-        db.insertArgs(cmd, args)
-
-    for dir in dirs:
-        path = api.getPath(dir)
-        print(path)
-        dirss, cmdss, argss = api.requestAll(path)
-        db.insertDirs(dirss, 1, dir)
-        db.insertCommands(dir, cmdss)
-        for cmdd in cmdss:
-            argss = api.requestSome(path+cmdd, "arg")
-            db.insertArgs(cmdd, argss)
-
-    a=2
-    while a<10:
-        dirs, bids = db.getLevelDirs(a-1, True)
-        for dir, bid in zip(dirs, bids):
-            path = api.getPath(dir, bid)
-            print(path)
-            dirss, cmdss, argss = api.requestAll(path)
-            db.insertDirs(dirss, a, dir)
-            db.insertCommands(dir, cmdss)
-            dirID = db.getDirID(dir, bid=bid)
-            for cmdd in cmdss:
-                argss = api.requestSome(path+","+cmdd, "arg")
-                db.insertArgs(cmdd, argss, dirID)
-        a=a+1
-        """
-        
 
 if __name__ == '__main__':
 	main()
