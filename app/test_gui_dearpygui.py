@@ -36,7 +36,8 @@ class conf_gui():
                             dpg.add_selectable(tag=str(value), label=value, span_columns=True, user_data=user_data, callback=self.addDevToList)
                             continue
                         dpg.add_selectable(label=value, span_columns=True, user_data=user_data, callback=self.addDevToList)
-        return
+                return True
+        return False
 
     def addDevToList(self, sender, app_data, user_data):
         print(sender)
@@ -167,7 +168,7 @@ class conf_gui():
                                     dpg.add_button(label=key, callback=self.openArgs, user_data=usr_data)
 
                     with dpg.group(tag=str(user_data["dirId"])+"group", horizontal=False):
-                        self.addDirTable(user_data=user_data)
+                        val=self.addDirTable(user_data=user_data)
                         dpg.add_text("")
         return
 
