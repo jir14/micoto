@@ -1,7 +1,6 @@
 import dearpygui.dearpygui as dpg
 from db import Database
-import api as API
-import time
+import api_old as API
 
 dpg.create_context()
 

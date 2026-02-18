@@ -1,14 +1,14 @@
 import apiros as API
 
 class Api():
-    def __init__(self, devList, db=None):
-        #self.sk = API.open_socket(ip, 8729, True)
+    def __init__(self, ip, username, password, db=None):
+        self.sk = API.open_socket(ip, 8729, True)
         #self.sk = API.open_socket(ip, 8728, False)
-        #self.api = API.ApiRos(self.sk)
-        #self.api.login(username, password)
+        self.api = API.ApiRos(self.sk)
+        self.api.login(username, password)
         self.db = db
 
-    def getDir(self, dirID="", id="", spacer=",", begin=False):
+    def getDir(self, dirID="", id="", spacer=",", begin=False, pathDef=""):
         sentence = []
         first = True
         keys = []
@@ -16,7 +16,7 @@ class Api():
         ids = []
         if begin:
             path=spacer
-        path+=self.db.printDirPath(dirID)
+        path+=pathDef
         sentence.append(path+spacer+"print")
         for re in self.api.talk(sentence):
             if re[0]=="!re":
