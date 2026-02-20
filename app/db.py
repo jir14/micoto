@@ -120,7 +120,8 @@ class Database:
             res = []
             for re in self.cur.fetchall():
                 res.append(re[0])
-            return res
+            if len(res)>0:
+                return res
         return False
     
     def getLevelDirsIDs(self, level):

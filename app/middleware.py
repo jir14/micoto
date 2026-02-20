@@ -34,7 +34,7 @@ class middleware():
         return self.db.getDirCmds(dirID=dirId)
     
     def getDir(self, dirId="", id="", spacer="", begin=False):
-        keys, values, ids, help = self.api.getDir(id=id, spacer=spacer, begin=begin, pathDef=self.printDirPath(dirId=dirId, spacer=spacer))
+        keys, values, help = self.api.getDir(id=id, spacer=spacer, begin=begin, pathDef=self.printDirPath(dirId=dirId, spacer=spacer))
         if keys:
-            return keys, values, ids, help
-        return False, False, False, False
+            return keys, values, help
+        return False, False, False

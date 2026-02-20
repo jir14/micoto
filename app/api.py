@@ -9,7 +9,6 @@ class Api():
         first = True
         keys = []
         values = []
-        ids = []
         if begin:
             path=spacer
         path+=pathDef
@@ -31,7 +30,7 @@ class Api():
             values.append(val)
             ids = [id]
         help=self.getSyntax(path=path)
-        return keys, values, ids, help
+        return keys, values, help
 
     def getArgs(self, cmd="", pathDef=""):
         sentence=[]
