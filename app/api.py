@@ -1,14 +1,10 @@
-import apiros as API
+import device as device
 
 class Api():
-    def __init__(self, devList, db=None):
-        #self.sk = API.open_socket(ip, 8729, True)
-        #self.sk = API.open_socket(ip, 8728, False)
-        #self.api = API.ApiRos(self.sk)
-        #self.api.login(username, password)
-        self.db = db
+    def __init__(self, device=""):
+        self.apiros=device["10.255.255.255"].getApiros()
 
-    def getDir(self, dirID="", id="", spacer=",", begin=False):
+    def getDir(self, id="", spacer=",", pathDef="", begin=False):
         sentence = []
         first = True
         keys = []
@@ -16,11 +12,10 @@ class Api():
         ids = []
         if begin:
             path=spacer
-        path+=self.db.printDirPath(dirID)
+        path+=pathDef
         sentence.append(path+spacer+"print")
-        for re in self.api.talk(sentence):
+        for re in self.apiros.talk(sentence):
             if re[0]=="!re":
-                #print(re[1])
                 if first:
                     for k in re[1].keys():
                         k = k.replace("=","")
@@ -38,15 +33,14 @@ class Api():
         help=self.getSyntax(path=path)
         return keys, values, ids, help
 
-    def getArgs(self, dirID="", cmd=""):
+    def getArgs(self, cmd="", pathDef=""):
         sentence=[]
         argVals=dict()
-        dir = self.db.printDirPath(dirID, spacer=",")
-        path=dir+","+cmd
+        path=pathDef+","+cmd
         sentence.append("/console/inspect")
         sentence.append("=request=child")
         sentence.append("=path="+path)
-        for re in self.api.talk(sentence):
+        for re in self.apiros.talk(sentence):
             if re[0]=="!re":
                 if re[1]["=type"]!="child":
                     continue
@@ -83,7 +77,7 @@ class Api():
         sentence.append("/console/inspect")
         sentence.append("=request=syntax")
         sentence.append("=path="+path)
-        for re in self.api.talk(sentence):
+        for re in self.apiros.talk(sentence):
             if re[0]=="!re":
                 if re[1]["=symbol-type"]=="explanation":
                     symbol=re[1]["=symbol"]
@@ -91,12 +85,10 @@ class Api():
                     answer[symbol]=re[1]["=text"]
         return answer
 
-    def checkValues(self, dirID="", cmdName="", argVals="", spacer="/"):
+    def checkValues(self, argVals="", pathDef=""):
         sentence=[]
         answer=dict()
-        dir = self.db.printDirPath(dirID, spacer=spacer)
-        path=spacer+dir+spacer+cmdName
-        sentence.append(path)
+        sentence.append(pathDef)
         for arg, val in argVals.items():
             sentence.append("="+arg+"="+str(val))
         for re in self.api.talk(sentence):

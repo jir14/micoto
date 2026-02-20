@@ -4,8 +4,8 @@ class Api():
     def __init__(self, ip, username, password, db=None):
         self.sk = API.open_socket(ip, 8729, True)
         #self.sk = API.open_socket(ip, 8728, False)
-        self.api = API.ApiRos(self.sk)
-        self.api.login(username, password)
+        self.apiros = API.ApiRos(self.sk)
+        self.apiros.login(username, password)
         self.db = db
 
     def getDir(self, dirID="", id="", spacer=",", begin=False, pathDef=""):
@@ -18,7 +18,7 @@ class Api():
             path=spacer
         path+=pathDef
         sentence.append(path+spacer+"print")
-        for re in self.api.talk(sentence):
+        for re in self.apiros.talk(sentence):
             if re[0]=="!re":
                 #print(re[1])
                 if first:
@@ -46,7 +46,7 @@ class Api():
         sentence.append("/console/inspect")
         sentence.append("=request=child")
         sentence.append("=path="+path)
-        for re in self.api.talk(sentence):
+        for re in self.apiros.talk(sentence):
             if re[0]=="!re":
                 if re[1]["=type"]!="child":
                     continue
@@ -66,7 +66,7 @@ class Api():
         sentence.append("/console/inspect")
         sentence.append("=request=completion")
         sentence.append("=path="+path)
-        for re in self.api.talk(sentence):
+        for re in self.apiros.talk(sentence):
             if re[0]=="!re":
                 if re[1]["=show"]=="false":
                     continue
@@ -83,7 +83,7 @@ class Api():
         sentence.append("/console/inspect")
         sentence.append("=request=syntax")
         sentence.append("=path="+path)
-        for re in self.api.talk(sentence):
+        for re in self.apiros.talk(sentence):
             if re[0]=="!re":
                 if re[1]["=symbol-type"]=="explanation":
                     symbol=re[1]["=symbol"]
@@ -99,7 +99,7 @@ class Api():
         sentence.append(path)
         for arg, val in argVals.items():
             sentence.append("="+arg+"="+str(val))
-        for re in self.api.talk(sentence):
+        for re in self.apiros.talk(sentence):
             #print(re)
             if re[0]=="!re":
                 continue

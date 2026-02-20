@@ -1,14 +1,18 @@
 import apiros as apiros
 import db as DB
+import api as api
 import api_old as api_old
+import device as device
 
 class middleware():
     def __init__(self, cmdDbFile="", devList=""):
         #self.db=DB.Database(dbFile=cmdDbFile)
         #self.api=api.api()
+        #self.devs=devList
         self.db=DB.Database("db.db")
-        self.api=api_old.Api(ip="10.255.255.255", username="admin", password="testpass")
-        self.devs=devList
+        #self.api=api_old.Api(ip="10.255.255.255", username="admin", password="testpass")
+        dev=device.device("BC-TEST","10.255.255.255","admin","testpass")
+        self.api=api.Api({"10.255.255.255" : dev})
         pass
 
     def getDirsWithoutParent(self):
@@ -30,8 +34,7 @@ class middleware():
         return self.db.getDirCmds(dirID=dirId)
     
     def getDir(self, dirId="", id="", spacer="", begin=False):
-        keys, values, ids, help = self.api.getDir(dirID=dirId, id=id, spacer=spacer, begin=begin, pathDef=self.printDirPath(dirId=dirId, spacer=spacer))
-        print(keys)
+        keys, values, ids, help = self.api.getDir(id=id, spacer=spacer, begin=begin, pathDef=self.printDirPath(dirId=dirId, spacer=spacer))
         if keys:
             return keys, values, ids, help
         return False, False, False, False
