@@ -38,3 +38,9 @@ class middleware():
         if keys:
             return keys, values, help
         return False, False, False
+    
+    def getArgs(self, dirId="", cmd="", spacer=","):
+        return self.api.getArgs(cmd, pathDef=self.printDirPath(dirId=dirId, spacer=spacer))
+    
+    def checkValues(self, argVals="", dirId="", cmdName="", spacer="/"):
+        return self.api.checkValues(argVals=argVals, pathDef=spacer+self.printDirPath(dirId=dirId, spacer=spacer)+spacer+cmdName)

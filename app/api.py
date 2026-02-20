@@ -9,6 +9,7 @@ class Api():
         first = True
         keys = []
         values = []
+        path=""
         if begin:
             path=spacer
         path+=pathDef
@@ -59,7 +60,7 @@ class Api():
         sentence.append("/console/inspect")
         sentence.append("=request=completion")
         sentence.append("=path="+path)
-        for re in self.api.talk(sentence):
+        for re in self.apiros.talk(sentence):
             if re[0]=="!re":
                 if re[1]["=show"]=="false":
                     continue
@@ -90,8 +91,7 @@ class Api():
         sentence.append(pathDef)
         for arg, val in argVals.items():
             sentence.append("="+arg+"="+str(val))
-        for re in self.api.talk(sentence):
-            #print(re)
+        for re in self.apiros.talk(sentence):
             if re[0]=="!re":
                 continue
             elif re[0]=="!trap":
