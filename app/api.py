@@ -91,6 +91,7 @@ class Api():
         sentence.append(pathDef)
         for arg, val in argVals.items():
             sentence.append("="+arg+"="+str(val))
+        print(sentence)
         for re in self.apiros.talk(sentence):
             if re[0]=="!re":
                 continue

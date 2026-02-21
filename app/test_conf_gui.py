@@ -7,13 +7,12 @@ class conf_gui():
     def __init__(self):
         self.middle=middle.middleware()
         with dpg.window(tag="Main",label="Main"):
-            with dpg.group(horizontal=False, parent="Main", tag="Menu", width=100):
+            with dpg.group(horizontal=False, parent="Main", tag="Menu", width=100, height=dpg.get_item_height("Main")):
                 with dpg.table(header_row=False):
                     dpg.add_table_column()
                     for dirId in self.middle.getDirsWithoutParent():
                         with dpg.table_row():
-                            user_data={"pos":0, "dirId":dirId}
-                            #dpg.add_selectable(label=self.middle.getDirName(dirId), user_data=user_data, callback=self.openDirWindow)       
+                            user_data={"pos":0, "dirId":dirId}       
                             dpg.add_button(label=self.middle.getDirName(dirId), user_data=user_data, callback=self.openDirWindow)
         pass
 
@@ -23,7 +22,8 @@ class conf_gui():
             dpg.focus_item(lbl)
             return
         user_data["tag"]=lbl
-        with dpg.window(label=lbl, tag=lbl, autosize=True, on_close=lambda: dpg.delete_item(lbl), user_data=user_data):
+        user_data["selected"]=[]
+        with dpg.window(label=lbl, tag=lbl, width=1000, autosize=True, on_close=self.onClose, user_data=user_data):
             user_data["pos"] = user_data["pos"]+120
             dpg.set_item_pos(lbl ,[user_data["pos"],0])
             keys, values, help = self.middle.getDir(user_data["dirId"], spacer="/", begin=True)
@@ -43,7 +43,6 @@ class conf_gui():
                                             usr_data=user_data.copy()
                                             usr_data["cmd"]=key
                                             if val:
-                                                #dpg.add_button(label=key, user_data=usr_data)
                                                 dpg.add_button(label=key, callback=self.openCmds, user_data=usr_data)
                                 with dpg.group(tag=str(user_data["dirId"])+"group"+lbl, horizontal=False, parent=str(user_data["dirId"])+lbl):
                                     self.addDirTable(user_data=usr_data, lbl=lbl)
@@ -58,10 +57,8 @@ class conf_gui():
                                         cmds = self.middle.getDirCmds(usr_data["dirId"])
                                         if cmds:
                                             for key, val in cmds.items():
-                                                #usr_data=user_data.copy()
                                                 usr_data["cmd"]=key
                                                 if val:
-                                                    #dpg.add_button(label=key, user_data=usr_data)
                                                     dpg.add_button(label=key, callback=self.openCmds, user_data=usr_data)
                                     with dpg.group(tag=str(usr_data["dirId"])+"group"+lbl, horizontal=False, parent=str(usr_data["dirId"])+lbl):
                                         self.addDirTable(user_data=usr_data)
@@ -93,14 +90,60 @@ class conf_gui():
                             usr_data=user_data.copy()
                             usr_data["cmd"]=key
                             if val:
-                                #dpg.add_button(label=key, user_data=user_data)
                                 dpg.add_button(label=key, callback=self.openCmds, user_data=usr_data)
                 with dpg.group(tag=str(user_data["dirId"])+"group"+lbl, horizontal=False, parent=lbl):
                     self.addDirTable(user_data=user_data, lbl=lbl)
                 dpg.add_text("")
         return
+    
+    def openCmds(self, sender, app_data, user_data):
+        lbl = "new "+self.middle.getDirName(user_data["dirId"])
+        uTag = dpg.generate_uuid()
+        usr_data=user_data.copy()
+        print(sender)
+        print("openCmds")
+        print(usr_data)
+        usr_data["tag"]=uTag
+        usr_data[uTag]=dict()
+        with dpg.window(label=lbl, tag=uTag, autosize=True, on_close=self.onClose, user_data=usr_data):
+            usr_data["pos"] = usr_data["pos"]+120
+            dpg.set_item_pos(uTag,[usr_data["pos"],0])
+            all, help = self.middle.getArgs(dirId=usr_data["dirId"], cmd=usr_data["cmd"])
+            args=all.keys()
+            vals=all.values()
+            with dpg.group(horizontal=True, parent=uTag):
+                with dpg.group(horizontal=False):
+                    with dpg.table(header_row=False, policy=dpg.mvTable_SizingFixedFit, width=500):
+                        dpg.add_table_column()
+                        dpg.add_table_column(width_stretch=True)
+                        for arg, val in zip(args, vals):
+                            with dpg.table_row():
+                                dpg.add_text(arg, tag=str(uTag)+str(usr_data["cmd"])+arg)
+                                with dpg.tooltip(parent=str(uTag)+str(usr_data["cmd"])+arg):
+                                    if len(help[arg])>1:
+                                        dpg.add_text(help[arg])
+                                    else:
+                                        dpg.add_text("You are on your own bro")
+                                if len(val)>0:
+                                    dpg.add_combo(tag=str(uTag)+str(usr_data["cmd"])+arg+"text", items=val, callback=self.addToArgVals, user_data=(usr_data, arg))
+                                else:
+                                    dpg.add_input_text(tag=str(uTag)+str(usr_data["cmd"])+arg+"text", width=200, callback=self.addToArgVals, user_data=(usr_data, arg))
+                                if arg=="numbers" and len(usr_data["selected"])>0:
+                                    dpg.configure_item(str(uTag)+str(usr_data["cmd"])+arg+"text", default_value=','.join(usr_data["selected"]))
+                                    usr_data[uTag]["numbers"]=dpg.get_value(str(uTag)+str(usr_data["cmd"])+arg+"text")
+                    
+                        with dpg.table_row():
+                            dpg.add_text("test:")
+                            dpg.add_text(default_value="fill in the required fields", tag=str(uTag)+str(usr_data["cmd"])+"message", wrap=150)
+            
+                with dpg.group(horizontal=False):
+                    dpg.add_button(label="apply", callback=self.apply, user_data=usr_data)
+                    dpg.add_button(label="cancel", callback=self.onClose, user_data=usr_data)
+        return
 
     def addDirTable(self, user_data, lbl=""):
+        print("table")
+        print(user_data)
         itemName=str(user_data["dirId"])+"table"+lbl
         if dpg.does_item_exist(itemName):
             dpg.delete_item(itemName)
@@ -116,48 +159,8 @@ class conf_gui():
                                 dpg.add_selectable(label=value, span_columns=True, user_data=user_data, callback=self.addDevToList)
                                 continue
                             dpg.add_selectable(label=value, span_columns=True)
-                return True
+            return True
         return False
-    
-    def openCmds(self, sender, app_data, user_data):
-        lbl = "new "+self.middle.getDirName(user_data["dirId"])
-        uTag = dpg.generate_uuid()
-        user_data=user_data.copy()
-        user_data["tag"]=uTag
-        user_data[uTag]=dict()
-        user_data["selected"]=[]
-        with dpg.window(label=lbl, tag=uTag, autosize=True, on_close=self.onClose, user_data=user_data):
-            user_data["pos"] = user_data["pos"]+120
-            dpg.set_item_pos(uTag,[user_data["pos"],0])
-            all, help = self.middle.getArgs(dirId=user_data["dirId"], cmd=user_data["cmd"])
-            args=all.keys()
-            vals=all.values()
-            with dpg.group(horizontal=True, parent=uTag):
-                with dpg.group(horizontal=False):
-                    with dpg.table(header_row=False, policy=dpg.mvTable_SizingFixedFit, width=500):
-                        dpg.add_table_column()
-                        dpg.add_table_column(width_stretch=True)
-                        for arg, val in zip(args, vals):
-                            with dpg.table_row():
-                                dpg.add_text(arg, tag=str(uTag)+str(user_data["cmd"])+arg)
-                                with dpg.tooltip(parent=str(uTag)+str(user_data["cmd"])+arg):
-                                    if len(help[arg])>1:
-                                        dpg.add_text(help[arg])
-                                    else:
-                                        dpg.add_text("You are on your own bro")
-                                if len(val)>0:
-                                    dpg.add_combo(tag=str(uTag)+str(user_data["cmd"])+arg+"text", items=val, callback=self.addToArgVals, user_data=(user_data, arg))
-                                else:
-                                    dpg.add_input_text(tag=str(uTag)+str(user_data["cmd"])+arg+"text", width=200, callback=self.addToArgVals, user_data=(user_data, arg))
-                    
-                        with dpg.table_row():
-                            dpg.add_text("test:")
-                            dpg.add_text(default_value="fill in the required fields", tag=str(uTag)+str(user_data["cmd"])+"message", wrap=150)
-            
-                with dpg.group(horizontal=False):
-                    dpg.add_button(label="apply", callback=self.apply, user_data=user_data)
-                    dpg.add_button(label="cancel", callback=lambda: dpg.delete_item(uTag))
-        return
 
     def apply(self, sender, app_data, user_data):
         cmdName=user_data["cmd"]
@@ -167,8 +170,8 @@ class conf_gui():
             dpg.set_value(item=str(user_data["tag"])+cmdName+"message", value=list(check.values())[0])
         else:
             dpg.set_value(item=str(user_data["tag"])+cmdName+"message", value="ok")
-            self.addDirTable(user_data=user_data, lbl=self.middle.getDirName(user_data["dirId"]))
-            dpg.delete_item(user_data["tag"])
+            self.onClose(sender=self,app_data=app_data,user_data=user_data)
+            argVals["numbers"]=[]
         return
 
     def onClose(self, sender, app_data, user_data):
@@ -178,11 +181,16 @@ class conf_gui():
         return
     
     def addDevToList(self, sender, app_data, user_data):
-        print(sender)
-        print(app_data)
+        snd=dpg.get_item_label(sender)
+        if app_data:
+            if snd in user_data["selected"]:
+                return
+            user_data["selected"].append(snd)
+        else:
+            if snd in user_data["selected"]:
+                user_data["selected"].remove(snd)
+        print("addDevToList")
         print(user_data)
-        print(dpg.get_item_label(sender))
-        #user_data["selected"].append()
         return
     
     def addToArgVals(self, sender, app_data, user_data):
