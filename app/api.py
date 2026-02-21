@@ -9,18 +9,22 @@ class Api():
         first = True
         keys = []
         values = []
+        help=[]
         path=""
+        error=False
         if begin:
             path=spacer
         path+=pathDef
         sentence.append(path+spacer+"print")
         for re in self.apiros.talk(sentence):
+            if re[0]=="!trap":
+                return keys, values, [], re[1]
             if re[0]=="!re":
-                if first:
-                    for k in re[1].keys():
+                for k in re[1].keys():
+                    k = k.replace("=","")
+                    if k not in keys:
                         k = k.replace("=","")
                         keys.append(k)
-                    first = False
                 vals = []
                 for rec in re[1].values():
                     vals.append(rec)
@@ -31,7 +35,8 @@ class Api():
             values.append(val)
             ids = [id]
         help=self.getSyntax(path=path)
-        return keys, values, help
+        return keys, values, help, error
+
 
     def getArgs(self, cmd="", pathDef=""):
         sentence=[]
@@ -91,7 +96,6 @@ class Api():
         sentence.append(pathDef)
         for arg, val in argVals.items():
             sentence.append("="+arg+"="+str(val))
-        print(sentence)
         for re in self.apiros.talk(sentence):
             if re[0]=="!re":
                 continue

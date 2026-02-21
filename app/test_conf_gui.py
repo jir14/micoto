@@ -25,7 +25,7 @@ class conf_gui():
         with dpg.window(label=lbl, tag=lbl, width=1000, autosize=True, on_close=self.onClose, user_data=user_data):
             user_data["pos"] = user_data["pos"]+120
             dpg.set_item_pos(lbl ,[user_data["pos"],0])
-            keys, values, help = self.middle.getDir(user_data["dirId"], spacer="/", begin=True)
+            keys, values, help, error = self.middle.getDir(user_data["dirId"], spacer="/", begin=True)
             recs = self.middle.getDirDirsIDs(user_data["dirId"])
             if keys and recs:
                 with dpg.group(horizontal=True):
@@ -90,8 +90,8 @@ class conf_gui():
                             usr_data["cmd"]=key
                             if val:
                                 dpg.add_button(label=key, callback=self.openCmds, user_data=usr_data)
-                with dpg.group(tag=str(user_data["dirId"])+"group"+lbl, horizontal=False, parent=lbl):
-                    self.addDirTable(user_data=user_data, lbl=lbl)
+                        with dpg.group(tag=str(user_data["dirId"])+"group"+lbl, horizontal=False, parent=lbl):
+                            self.addDirTable(user_data=user_data, lbl=lbl)
                 dpg.add_text("")
         return
     
@@ -101,10 +101,11 @@ class conf_gui():
         usr_data=user_data.copy()
         usr_data["selected"]=[]
 
-        table=dpg.get_item_children(str(user_data["dirId"])+"table"+str(user_data["tag"]))[1]
-        for r in table:
-            if dpg.get_value(dpg.get_item_children(r)[1][0]):
-                usr_data["selected"].append(dpg.get_item_label(dpg.get_item_children(r)[1][0]))
+        if dpg.does_item_exist(str(user_data["dirId"])+"table"+str(user_data["tag"])):
+            table=dpg.get_item_children(str(user_data["dirId"])+"table"+str(user_data["tag"]))[1]
+            for r in table:
+                if dpg.get_value(dpg.get_item_children(r)[1][0]):
+                    usr_data["selected"].append(dpg.get_item_label(dpg.get_item_children(r)[1][0]))
 
         usr_data["tag"]=uTag
         usr_data[uTag]=dict()
@@ -148,7 +149,10 @@ class conf_gui():
         itemName=str(user_data["dirId"])+"table"+lbl
         if dpg.does_item_exist(itemName):
             dpg.delete_item(itemName)
-        keys, values, help = self.middle.getDir(user_data["dirId"], spacer="/", begin=True)
+        keys, values, help, error = self.middle.getDir(user_data["dirId"], spacer="/", begin=True)
+        if error:
+            dpg.add_text(error, tag=itemName, parent=str(user_data["dirId"])+"group"+lbl)
+            return False
         if keys:
             with dpg.table(tag=itemName, parent=str(user_data["dirId"])+"group"+lbl, header_row=True, policy=dpg.mvTable_SizingFixedFit, hideable=True):
                 for key in keys:

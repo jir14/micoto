@@ -34,10 +34,12 @@ class middleware():
         return self.db.getDirCmds(dirID=dirId)
     
     def getDir(self, dirId="", id="", spacer="", begin=False):
-        keys, values, help = self.api.getDir(id=id, spacer=spacer, begin=begin, pathDef=self.printDirPath(dirId=dirId, spacer=spacer))
-        if keys:
-            return keys, values, help
-        return False, False, False
+        keys, values, help, error = self.api.getDir(id=id, spacer=spacer, begin=begin, pathDef=self.printDirPath(dirId=dirId, spacer=spacer))
+        if error:
+            if "=category" in error.keys():
+                if error["=category"]!="0":
+                    return False, False, False, error["=message"]
+        return keys, values, help, []
     
     def getArgs(self, dirId="", cmd="", spacer=","):
         return self.api.getArgs(cmd, pathDef=self.printDirPath(dirId=dirId, spacer=spacer))
