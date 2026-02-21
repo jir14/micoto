@@ -22,7 +22,6 @@ class conf_gui():
             dpg.focus_item(lbl)
             return
         user_data["tag"]=lbl
-        user_data["selected"]=[]
         with dpg.window(label=lbl, tag=lbl, width=1000, autosize=True, on_close=self.onClose, user_data=user_data):
             user_data["pos"] = user_data["pos"]+120
             dpg.set_item_pos(lbl ,[user_data["pos"],0])
@@ -100,9 +99,13 @@ class conf_gui():
         lbl = "new "+self.middle.getDirName(user_data["dirId"])
         uTag = dpg.generate_uuid()
         usr_data=user_data.copy()
-        print(sender)
-        print("openCmds")
-        print(usr_data)
+        usr_data["selected"]=[]
+
+        table=dpg.get_item_children(str(user_data["dirId"])+"table"+str(user_data["tag"]))[1]
+        for r in table:
+            if dpg.get_value(dpg.get_item_children(r)[1][0]):
+                usr_data["selected"].append(dpg.get_item_label(dpg.get_item_children(r)[1][0]))
+
         usr_data["tag"]=uTag
         usr_data[uTag]=dict()
         with dpg.window(label=lbl, tag=uTag, autosize=True, on_close=self.onClose, user_data=usr_data):
@@ -142,8 +145,6 @@ class conf_gui():
         return
 
     def addDirTable(self, user_data, lbl=""):
-        print("table")
-        print(user_data)
         itemName=str(user_data["dirId"])+"table"+lbl
         if dpg.does_item_exist(itemName):
             dpg.delete_item(itemName)
@@ -156,7 +157,7 @@ class conf_gui():
                     with dpg.table_row():
                         for value in vals:
                             if "*" in value:
-                                dpg.add_selectable(label=value, span_columns=True, user_data=user_data, callback=self.addDevToList)
+                                dpg.add_selectable(label=value, span_columns=True)
                                 continue
                             dpg.add_selectable(label=value, span_columns=True)
             return True
@@ -179,20 +180,7 @@ class conf_gui():
         self.addDirTable(user_data=user_data, lbl=self.middle.getDirName(user_data["dirId"]))
         dpg.delete_item(user_data["tag"])
         return
-    
-    def addDevToList(self, sender, app_data, user_data):
-        snd=dpg.get_item_label(sender)
-        if app_data:
-            if snd in user_data["selected"]:
-                return
-            user_data["selected"].append(snd)
-        else:
-            if snd in user_data["selected"]:
-                user_data["selected"].remove(snd)
-        print("addDevToList")
-        print(user_data)
-        return
-    
+
     def addToArgVals(self, sender, app_data, user_data):
         arg=user_data[1]
         user_data=user_data[0]
