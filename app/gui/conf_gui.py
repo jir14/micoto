@@ -3,11 +3,13 @@ import app.middleware as middle
 import ast as ast
 
 class conf_gui():
-    def __init__(self, cntx=""):
-        self.cntx=dpg.create_context()
-        #self.cntx=cntx
+    def __init__(self, cntx=False):
+        if cntx:
+            self.cntx=cntx
+        else:
+            self.cntx=dpg.create_context()
         self.middle=middle.middleware()
-        with dpg.window(tag="Main",label="Main"):
+        with dpg.window(tag="Main", label="Main"):
             with dpg.group(horizontal=False, parent="Main", tag="Menu", width=100, height=dpg.get_item_height("Main")):
                 with dpg.table(header_row=False):
                     dpg.add_table_column()
@@ -295,7 +297,7 @@ test=conf_gui(cntx=dpg.create_context())
 
 
 
-dpg.create_viewport(title='Micoto', width=1500, height=1000)
+dpg.create_viewport(title='Micoto - configure', width=1500, height=1000)
 dpg.setup_dearpygui()
 dpg.show_viewport()
 dpg.show_item_registry()

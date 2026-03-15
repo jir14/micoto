@@ -2,9 +2,7 @@ import dearpygui.dearpygui as dpg
 from app.db.db_crypto import DBConn
 import re as re
 import os.path as path
-import gui.conf_gui as confgui
-
-dpg.create_context()
+import app.gui.conf_gui as confgui
 
 class GUI:
     def __init__(self):
@@ -123,6 +121,7 @@ with dpg.window(tag="devList", label="List of available devices") as devList:
     with dpg.group(horizontal=True):
         dpg.add_button(label="Add device", tag="AddButton", show=False, callback=gui.openAdd, user_data=gui)
         dpg.add_button(label="Remove selected devices", tag="DelButton", show=False, callback=gui.delDev, user_data=gui)
+        dpg.add_button(label="Config", callback=confgui.conf_gui())
 
 with dpg.theme() as ipThemeCorrect:
     with dpg.theme_component(dpg.mvAll):
@@ -133,6 +132,8 @@ with dpg.theme() as ipTheme:
         with dpg.theme_component(dpg.mvAll):
             dpg.add_theme_color(dpg.mvThemeCol_FrameBg, (200, 0, 0), category=dpg.mvThemeCat_Core)
             dpg.add_theme_style(dpg.mvStyleVar_FrameRounding, 0, category=dpg.mvThemeCat_Core)
+
+cntx=dpg.create_context()
 
 dpg.create_viewport(title='Micoto', width=700, height=500)
 dpg.setup_dearpygui()
