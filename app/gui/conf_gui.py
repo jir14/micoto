@@ -1,13 +1,18 @@
 import dearpygui.dearpygui as dpg
 import app.middleware as middle
 import ast as ast
+import sys
 
 class conf_gui():
-    def __init__(self, cntx=False):
-        if cntx:
-            self.cntx=cntx
-        else:
-            self.cntx=dpg.create_context()
+    def __init__(self, txt=""):
+        dpg.create_viewport(title='Micoto - configure', width=1500, height=1000)
+        dpg.setup_dearpygui()
+        dpg.show_viewport()
+        dpg.show_item_registry()
+        dpg.set_primary_window("Main", True)
+        dpg.start_dearpygui()
+        dpg.destroy_context()
+        print(txt)
         self.middle=middle.middleware()
         with dpg.window(tag="Main", label="Main"):
             with dpg.group(horizontal=False, parent="Main", tag="Menu", width=100, height=dpg.get_item_height("Main")):
@@ -293,14 +298,5 @@ class conf_gui():
         print(user_data["selected"])
         return
 
-test=conf_gui(cntx=dpg.create_context())
-
-
-
-dpg.create_viewport(title='Micoto - configure', width=1500, height=1000)
-dpg.setup_dearpygui()
-dpg.show_viewport()
-dpg.show_item_registry()
-dpg.set_primary_window("Main", True)
-dpg.start_dearpygui()
-dpg.destroy_context()
+if __name__ == "__main__":
+    conf_gui(sys.argv[1])
