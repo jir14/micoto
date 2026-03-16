@@ -10,19 +10,24 @@ class GUI():
     def __init__(self):
         
         self.db = None
-        self.dbPath = None
-        self.dbPass = None
+        self.devDbPath = None
+        self.devDbPass = None
+        self.cmdDbPath = None
         self.selectedList = []
 
-        with dpg.window(tag="devList", label="List of available devices") as devList:
+        with dpg.window(tag="devList", label="List of available devices", on_close=lambda: print("close")) as devList:
             with dpg.menu_bar():
-                
                 with dpg.menu(label="DB files"):
-                    #dpg.add_menu_item(label="Device DB", callback=dbfd.show_file_dialog, user_data="device")
-                    dpg.add_menu_item(label="Device DB", callback=self.dbFilePopup, user_data={"txt":"device"})
-                    dpg.add_menu_item(label="Command DB")
+                    dfd=FileDialog(tag="dfd",callback=self.setDevDbPath, show_dir_size=False, modal=True, allow_drag=False, default_path="..", multi_selection=False, file_filter=".db")
+                    dpg.add_menu_item(label="Device DB file", callback=dfd.show_file_dialog)
+                    dpg.add_menu_item(label="Device DB password", callback=self.setDevDbPassWindow)
+                    cfd=FileDialog(callback=self.setDevDbPass, show_dir_size=False, modal=True, allow_drag=False, default_path="..", multi_selection=False, file_filter=".db")
+                    dpg.add_menu_item(label="Command DB", callback=cfd.show_file_dialog)
+                with dpg.menu(label="Admin"):
+                    #cndd=FileDialog(callback=self.setDevDbPass, show_dir_size=False, dirs_only=True, modal=True, allow_drag=False, default_path="..", multi_selection=False)
+                    #dpg.add_menu_item(label="Create new device db", callback=cndd.show_file_dialog())
+                    dpg.add_menu_item(label="New device to db", callback=self.openDeviceAddWindow)
 
-            
             with dpg.group(horizontal=True):
                 dpg.add_button(label="Add device", tag="AddButton")
                 dpg.add_button(label="Remove selected devices", tag="DelButton")
@@ -36,23 +41,95 @@ class GUI():
         dpg.start_dearpygui()
         dpg.destroy_context()
 
-    def dbFilePopup(self, sender, app_data, user_data):
-        fd=FileDialog(callback=lambda x: (dpg.configure_item("Choose file", default_value=x[0])), show_dir_size=False, modal=True, allow_drag=False, default_path="..", multi_selection=False, file_filter=".db")
-        fd.show_file_dialog()
-        with dpg.window(label=user_data["txt"]+" db file select", tag="FilePopup"):
+    def setDevDbPath(self, path):
+        self.devDbPath=path[0]
+    
+    def setDevDbPass(self, password):
+        self.devDbPass=password
+        dpg.delete_item("dbPassPopup")
+    
+    def setCmdDb(self, path):
+        self.cmdDbPath=path
+
+    def centerItem(self, tag):
+        Main_width=dpg.get_item_width("devList")
+        Main_heigh=dpg.get_item_height("devList")
+        Window_width=dpg.get_item_width(tag)
+        Window_height=dpg.get_item_height(tag)
+        dpg.set_item_pos(tag, [int(Main_width/2-Window_width/2), int(Main_heigh/2-Window_height/2)])
+
+    def openDeviceAddWindow(self, sender, app_data, user_data):
+        with dpg.window(label="Add device", width=400, tag="AddWindow", on_close=lambda: dpg.delete_item("AddWindow")) as addWindow:
+            with dpg.group():
+                ipItem = dpg.add_input_text(label="Device IP", tag="DevIP", callback=self.ipValidation)
+                dpg.add_input_text(label="Device Username", tag="DevUser")
+                dpg.add_input_text(label="Device password", tag="DevPass", password=True)
+            with dpg.group(horizontal=True):
+                dpg.add_button(label="Add", tag="Add", callback=self.addDeviceToDb, user_data=user_data, enabled=False)
+                dpg.add_text("Trying to add device...", tag="Adding", show=False)
+            dpg.bind_item_theme(ipItem, self.ipTheme)
+        self.centerItem(addWindow)
+
+    def addDeviceToDb(self):
+        dpg.configure_item("Add", enabled=False)
+        dpg.configure_item("Adding", show=True)
+        if self.db.insert(dpg.get_value("DevIP"), dpg.get_value("DevUser"), dpg.get_value("DevPass")):
+            dpg.delete_item("devTable")
+            self.drawTable()
+            dpg.delete_item("AddWindow")
+        else:
+            with dpg.window(label="Error", tag="Error", modal=True, no_close=True) as modal_id:
+                dpg.add_text("Device with same IP already exists!")
+                dpg.add_button(label="Ok", width=75, user_data=(modal_id, True), callback=lambda: dpg.delete_item("Error"))
+                dpg.configure_item("Adding", show=False)
+
+    def setDevDbPassWindow(self):
+        with dpg.window(label="Device DB password", tag="dbPassPopup", modal=True, autosize=True) as window:
             with dpg.table(header_row=False):
                 dpg.add_table_column()
                 dpg.add_table_column()
                 with dpg.table_row():
-                    dpg.add_text(" "+user_data["txt"]+" db file")
-                    dpg.add_input_text(tag="Choose file", readonly=True)
+                    dpg.add_text("device db file")
+                    dpg.add_input_text(tag="devDbPath", readonly=True, default_value=self.devDbPath)
                 with dpg.table_row():
-                    dpg.add_text(" "+user_data+" db file")
+                    dpg.add_text("device DB password")
                     dpg.add_input_text(tag="DBPassword", password=True)
+            dpg.add_button(label="apply", callback=self.setDevDbPass, user_data=dpg.get_value("DBPassword"))
+        dpg.render_dearpygui_frame()
+        self.centerItem("dbPassPopup")
 
-    def printDirs(self, selected_files):
-        for file in selected_files:
-            dpg.configure_item("Choose file", default_value=file)
+    def decrypt(self):
+        if self.devDbPath and self.devDbPass and self.cmdDbPath:
+            self.db = DBConn(self.devDbPath, self.devDbPass)
+            self.drawTable()
+
+    def drawTable(self):
+        with dpg.table(header_row=True, policy=dpg.mvTable_SizingFixedFit, parent="devList", tag="devTable"):
+            dpg.add_table_column(label="Name")
+            dpg.add_table_column(label="IP") 
+            for rec in self.db.selectAll():
+                with dpg.table_row():
+                    dpg.add_text(rec[1])
+                    dpg.add_selectable(label=rec[2], span_columns=True, callback=self.selected)
+
+    def ipValidation(self):
+        if re.match(r"^(((?!25?[6-9])[12]\d|[1-9])?\d\.?\b){4}$", dpg.get_value("DevIP")):
+            dpg.bind_item_theme("DevIP", self.ipThemeCorrect)
+            dpg.configure_item("Add", enabled=True)
+        else:
+            dpg.bind_item_theme("DevIP", self.ipTheme)
+            dpg.configure_item("Add", enabled=False)
+
+    with dpg.theme() as ipThemeCorrect:
+        with dpg.theme_component(dpg.mvAll):
+            dpg.add_theme_color(dpg.mvThemeCol_FrameBg, (0, 0, 0), category=dpg.mvThemeCat_Core)
+            dpg.add_theme_style(dpg.mvStyleVar_FrameRounding, 0, category=dpg.mvThemeCat_Core)
+
+    with dpg.theme() as ipTheme:
+            with dpg.theme_component(dpg.mvAll):
+                dpg.add_theme_color(dpg.mvThemeCol_FrameBg, (200, 0, 0), category=dpg.mvThemeCat_Core)
+                dpg.add_theme_style(dpg.mvStyleVar_FrameRounding, 0, category=dpg.mvThemeCat_Core)
+
 
 
 if __name__ == "__main__":
