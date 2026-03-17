@@ -18,14 +18,14 @@ class GUI():
         with dpg.window(tag="devList", label="List of available devices", on_close=lambda: print("close")) as devList:
             with dpg.menu_bar():
                 with dpg.menu(label="DB files"):
-                    dfd=FileDialog(tag="dfd",callback=self.setDevDbPath, show_dir_size=False, modal=True, allow_drag=False, default_path="..", multi_selection=False, file_filter=".db")
+                    dfd=FileDialog(tag="dfd", callback=self.setDevDbPath, show_dir_size=False, modal=True, allow_drag=False, default_path="..", multi_selection=False, file_filter=".db")
                     dpg.add_menu_item(label="Device DB file", callback=dfd.show_file_dialog)
                     dpg.add_menu_item(label="Device DB password", callback=self.setDevDbPassWindow)
                     cfd=FileDialog(callback=self.setDevDbPass, show_dir_size=False, modal=True, allow_drag=False, default_path="..", multi_selection=False, file_filter=".db")
                     dpg.add_menu_item(label="Command DB", callback=cfd.show_file_dialog)
                 with dpg.menu(label="Admin"):
-                    #cndd=FileDialog(callback=self.setDevDbPass, show_dir_size=False, dirs_only=True, modal=True, allow_drag=False, default_path="..", multi_selection=False)
-                    #dpg.add_menu_item(label="Create new device db", callback=cndd.show_file_dialog())
+                    cndd=FileDialog(tag="cndd", callback=self.createNewDevDbFile, show_dir_size=False, dirs_only=True, modal=True, allow_drag=False, default_path="..", multi_selection=False)
+                    dpg.add_menu_item(label="Create new device db", callback=cndd.show_file_dialog)
                     dpg.add_menu_item(label="New device to db", callback=self.openDeviceAddWindow)
 
             with dpg.group(horizontal=True):
@@ -40,6 +40,11 @@ class GUI():
         dpg.set_primary_window(devList, True)
         dpg.start_dearpygui()
         dpg.destroy_context()
+
+    def setDevDbFile(self, sender, app_data, user_data):
+        self.setDevDbPath([path.join(user_data, dpg.get_value("fileName")+".db")])
+        self.setDevDbPass(dpg.get_value("DBPassword"))
+        self.decrypt()
 
     def setDevDbPath(self, path):
         self.devDbPath=path[0]
@@ -70,19 +75,6 @@ class GUI():
             dpg.bind_item_theme(ipItem, self.ipTheme)
         self.centerItem(addWindow)
 
-    def addDeviceToDb(self):
-        dpg.configure_item("Add", enabled=False)
-        dpg.configure_item("Adding", show=True)
-        if self.db.insert(dpg.get_value("DevIP"), dpg.get_value("DevUser"), dpg.get_value("DevPass")):
-            dpg.delete_item("devTable")
-            self.drawTable()
-            dpg.delete_item("AddWindow")
-        else:
-            with dpg.window(label="Error", tag="Error", modal=True, no_close=True) as modal_id:
-                dpg.add_text("Device with same IP already exists!")
-                dpg.add_button(label="Ok", width=75, user_data=(modal_id, True), callback=lambda: dpg.delete_item("Error"))
-                dpg.configure_item("Adding", show=False)
-
     def setDevDbPassWindow(self):
         with dpg.window(label="Device DB password", tag="dbPassPopup", modal=True, autosize=True) as window:
             with dpg.table(header_row=False):
@@ -98,8 +90,39 @@ class GUI():
         dpg.render_dearpygui_frame()
         self.centerItem("dbPassPopup")
 
+    def createNewDevDbFile(self, dir):
+        with dpg.window(label="Choose file name", tag="NewDbFileName") as wnd:
+            with dpg.table(header_row=False):
+                dpg.add_table_column()
+                dpg.add_table_column()
+                with dpg.table_row():
+                    dpg.add_text("file name")
+                    dpg.add_input_text(tag="fileName")
+                with dpg.table_row():
+                    dpg.add_text("device DB password")
+                    dpg.add_input_text(tag="DBPassword", password=True)  
+                with dpg.table_row():
+                    dpg.add_text()
+                    dpg.add_button(label="create", callback=self.setDevDbFile, user_data=dir[0])
+        self.centerItem(wnd)
+
+    def addDeviceToDb(self):
+        dpg.configure_item("Add", enabled=False)
+        dpg.configure_item("Adding", show=True)
+        if self.db.insert(dpg.get_value("DevIP"), dpg.get_value("DevUser"), dpg.get_value("DevPass")):
+            dpg.delete_item("devTable")
+            self.drawTable()
+            dpg.delete_item("AddWindow")
+        else:
+            with dpg.window(label="Error", tag="Error", modal=True, no_close=True) as modal_id:
+                dpg.add_text("Device with same IP already exists!")
+                dpg.add_button(label="Ok", width=75, user_data=(modal_id, True), callback=lambda: dpg.delete_item("Error"))
+                dpg.configure_item("Adding", show=False)
+
     def decrypt(self):
-        if self.devDbPath and self.devDbPass and self.cmdDbPath:
+        if self.devDbPath and self.devDbPass:
+            if dpg.does_item_exist("NewDbFileName"):
+                dpg.delete_item("NewDbFileName")
             self.db = DBConn(self.devDbPath, self.devDbPass)
             self.drawTable()
 
