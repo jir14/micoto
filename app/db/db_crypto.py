@@ -48,6 +48,12 @@ class DBConn:
             res.append(row)
         return res
 
+    def selectDevUserAndPass(self, devIp):
+        self.cur.execute("SELECT devUser, devPass, devIv FROM devices WHERE devIp=?", (devIp,))
+        self.con.commit()
+        row=list(self.cur.fetchone())
+        return {row[0]:self.decrypt(row[1], row[2]).strip()}
+
     def select(self, query, decrypt=True):
         ans = self.query(query)
         for row in self.query(query):

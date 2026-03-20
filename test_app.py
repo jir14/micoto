@@ -3,6 +3,7 @@ from app.db.db_crypto import DBConn
 import re
 import os.path as path
 from app.gui.file_dialog.fdialog import FileDialog
+import subprocess
 
 cntx=dpg.create_context()
 
@@ -21,16 +22,17 @@ class GUI():
                     dfd=FileDialog(tag="dfd", callback=self.setDevDbPath, show_dir_size=False, modal=True, allow_drag=False, default_path="..", multi_selection=False, file_filter=".db")
                     dpg.add_menu_item(label="Device DB file", callback=dfd.show_file_dialog)
                     dpg.add_menu_item(label="Device DB password", callback=self.setDevDbPassWindow)
-                    cfd=FileDialog(callback=self.setDevDbPass, show_dir_size=False, modal=True, allow_drag=False, default_path="..", multi_selection=False, file_filter=".db")
+                    cfd=FileDialog(callback=self.setCmdDb, show_dir_size=False, modal=True, allow_drag=False, default_path="..", multi_selection=False, file_filter=".db")
                     dpg.add_menu_item(label="Command DB", callback=cfd.show_file_dialog)
+                    dpg.add_menu_item(label="decrypt", callback=self.decrypt)
                 with dpg.menu(label="Admin"):
                     cndd=FileDialog(tag="cndd", callback=self.createNewDevDbFile, show_dir_size=False, dirs_only=True, modal=True, allow_drag=False, default_path="..", multi_selection=False)
                     dpg.add_menu_item(label="Create new device db", callback=cndd.show_file_dialog)
                     dpg.add_menu_item(label="New device to db", callback=self.openDeviceAddWindow)
 
             with dpg.group(horizontal=True):
-                dpg.add_button(label="Add device", tag="AddButton")
-                dpg.add_button(label="Remove selected devices", tag="DelButton")
+                dpg.add_button(label="connect", tag="ConnectButton", callback=self.connect)
+                dpg.add_button(label="log", tag="LogButton")
                 #dpg.add_button(label="Add device", tag="AddButton", callback=self.openAdd)
                 #dpg.add_button(label="Remove selected devices", tag="DelButton", callback=self.delDev)
         
@@ -43,14 +45,15 @@ class GUI():
 
     def setDevDbFile(self, sender, app_data, user_data):
         self.setDevDbPath([path.join(user_data, dpg.get_value("fileName")+".db")])
-        self.setDevDbPass(dpg.get_value("DBPassword"))
+        self.setDevDbPass()
         self.decrypt()
 
     def setDevDbPath(self, path):
         self.devDbPath=path[0]
     
-    def setDevDbPass(self, password):
-        self.devDbPass=password
+    def setDevDbPass(self):
+        self.devDbPass=dpg.get_value("DBPassword")
+        print(self.devDbPass)
         dpg.delete_item("dbPassPopup")
     
     def setCmdDb(self, path):
@@ -86,9 +89,9 @@ class GUI():
                 with dpg.table_row():
                     dpg.add_text("device DB password")
                     dpg.add_input_text(tag="DBPassword", password=True)
-            dpg.add_button(label="apply", callback=self.setDevDbPass, user_data=dpg.get_value("DBPassword"))
+            dpg.add_button(label="apply", callback=self.setDevDbPass)
         dpg.render_dearpygui_frame()
-        self.centerItem("dbPassPopup")
+        self.centerItem(window)
 
     def createNewDevDbFile(self, dir):
         with dpg.window(label="Choose file name", tag="NewDbFileName") as wnd:
@@ -135,6 +138,14 @@ class GUI():
                     dpg.add_text(rec[1])
                     dpg.add_selectable(label=rec[2], span_columns=True, callback=self.selected)
 
+    def selected(self, app_data):
+        devIpAddr = dpg.get_item_label(app_data)
+
+        if devIpAddr in self.selectedList:
+            self.selectedList.remove(devIpAddr)
+        else:
+            self.selectedList.append(devIpAddr)
+
     def ipValidation(self):
         if re.match(r"^(((?!25?[6-9])[12]\d|[1-9])?\d\.?\b){4}$", dpg.get_value("DevIP")):
             dpg.bind_item_theme("DevIP", self.ipThemeCorrect)
@@ -142,6 +153,14 @@ class GUI():
         else:
             dpg.bind_item_theme("DevIP", self.ipTheme)
             dpg.configure_item("Add", enabled=False)
+
+    def connect(self):
+        conList=dict()
+        for devIp in self.selectedList:
+            conList[devIp]=self.db.selectDevUserAndPass(devIp)
+        print(conList)
+        subprocess.run(["python3", "app/gui/conf_gui.py", str(conList)])
+        return
 
     with dpg.theme() as ipThemeCorrect:
         with dpg.theme_component(dpg.mvAll):

@@ -1,7 +1,8 @@
 import dearpygui.dearpygui as dpg
-import app.middleware as middle
+import middleware as middle
 import ast as ast
 import sys
+import json
 
 class conf_gui():
     def __init__(self, txt=""):
@@ -13,6 +14,8 @@ class conf_gui():
         dpg.start_dearpygui()
         dpg.destroy_context()
         print(txt)
+        obj=json.loads(txt)
+        print(obj)
         self.middle=middle.middleware()
         with dpg.window(tag="Main", label="Main"):
             with dpg.group(horizontal=False, parent="Main", tag="Menu", width=100, height=dpg.get_item_height("Main")):

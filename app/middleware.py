@@ -1,6 +1,4 @@
-import app.api.apiros as apiros
 import app.db.db as DB
-import app.api.api as api
 import app.device as device
 
 class middleware():
