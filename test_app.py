@@ -1,7 +1,7 @@
 import dearpygui.dearpygui as dpg
 from app.db.db_crypto import DBConn
 import re
-import os.path as path
+import os
 from app.gui.file_dialog.fdialog import FileDialog
 import subprocess
 
@@ -44,7 +44,7 @@ class GUI():
         dpg.destroy_context()
 
     def setDevDbFile(self, sender, app_data, user_data):
-        self.setDevDbPath([path.join(user_data, dpg.get_value("fileName")+".db")])
+        self.setDevDbPath([os.path.join(user_data, dpg.get_value("fileName")+".db")])
         self.setDevDbPass()
         self.decrypt()
 
@@ -53,11 +53,10 @@ class GUI():
     
     def setDevDbPass(self):
         self.devDbPass=dpg.get_value("DBPassword")
-        print(self.devDbPass)
         dpg.delete_item("dbPassPopup")
     
     def setCmdDb(self, path):
-        self.cmdDbPath=path
+        self.cmdDbPath=path[0]
 
     def centerItem(self, tag):
         Main_width=dpg.get_item_width("devList")
@@ -155,11 +154,13 @@ class GUI():
             dpg.configure_item("Add", enabled=False)
 
     def connect(self):
+        if (self.devDbPath or self.devDbPass or self.cmdDbPath) is None:
+            return
         conList=dict()
         for devIp in self.selectedList:
             conList[devIp]=self.db.selectDevUserAndPass(devIp)
-        print(conList)
-        subprocess.run(["python3", "app/gui/conf_gui.py", str(conList)])
+        
+        subprocess.run(["python3", os.path.dirname(os.path.realpath(__file__))+"/app/conf_gui.py", str(self.cmdDbPath), str(conList)])
         return
 
     with dpg.theme() as ipThemeCorrect:

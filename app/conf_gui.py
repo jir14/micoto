@@ -2,21 +2,12 @@ import dearpygui.dearpygui as dpg
 import middleware as middle
 import ast as ast
 import sys
-import json
 
 class conf_gui():
-    def __init__(self, txt=""):
-        dpg.create_viewport(title='Micoto - configure', width=1500, height=1000)
-        dpg.setup_dearpygui()
-        dpg.show_viewport()
-        dpg.show_item_registry()
-        dpg.set_primary_window("Main", True)
-        dpg.start_dearpygui()
-        dpg.destroy_context()
-        print(txt)
-        obj=json.loads(txt)
-        print(obj)
-        self.middle=middle.middleware()
+    def __init__(self, cmdDbPath="" , devs=""):
+        dpg.create_context()
+        devices=ast.literal_eval(devs)
+        self.middle=middle.middleware(cmdDbFile=cmdDbPath, devices=devices)
         with dpg.window(tag="Main", label="Main"):
             with dpg.group(horizontal=False, parent="Main", tag="Menu", width=100, height=dpg.get_item_height("Main")):
                 with dpg.table(header_row=False):
@@ -25,7 +16,13 @@ class conf_gui():
                         with dpg.table_row():
                             user_data={"pos":0, "dirId":dirId}       
                             dpg.add_button(label=self.middle.getDirName(dirId), user_data=user_data, callback=self.openDirWindow)
-        pass
+        dpg.create_viewport(title='Micoto - configure', width=1500, height=1000)
+        dpg.setup_dearpygui()
+        dpg.show_viewport()
+        dpg.show_item_registry()
+        dpg.set_primary_window("Main", True)
+        dpg.start_dearpygui()
+        dpg.destroy_context()
 
     def openDirWindow(self, sender, app_data, user_data):
         lbl = self.middle.printDirPath(user_data["dirId"], spacer="/")
@@ -302,4 +299,4 @@ class conf_gui():
         return
 
 if __name__ == "__main__":
-    conf_gui(sys.argv[1])
+    conf_gui(sys.argv[1], sys.argv[2])
