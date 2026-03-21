@@ -6,7 +6,7 @@ This programme is part of my bachelor's degree. Current state of this project is
 The programme can be run by `python3 test_app.py`.
 
 ## Running app
-![Running app](docs/running_app.webm)
+![Running app](docs/running_app.mov)
 
 ## App is using these libraries/addons
 ### sqlite3
