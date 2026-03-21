@@ -159,8 +159,7 @@ class GUI():
         conList=dict()
         for devIp in self.selectedList:
             conList[devIp]=self.db.selectDevUserAndPass(devIp)
-        
-        subprocess.run(["python3", os.path.dirname(os.path.realpath(__file__))+"/app/conf_gui.py", str(self.cmdDbPath), str(conList)])
+        subprocess.Popen(["python3", os.path.dirname(os.path.realpath(__file__))+"/app/conf_gui.py", str(self.cmdDbPath), str(conList)])
         return
 
     with dpg.theme() as ipThemeCorrect:

@@ -8,19 +8,20 @@ class conf_gui():
         dpg.create_context()
         devices=ast.literal_eval(devs)
         self.middle=middle.middleware(cmdDbFile=cmdDbPath, devices=devices)
-        with dpg.window(tag="Main", label="Main"):
-            with dpg.group(horizontal=False, parent="Main", tag="Menu", width=100, height=dpg.get_item_height("Main")):
+        with dpg.window(label="Main") as MainWindow:
+            with dpg.group(horizontal=False, parent=MainWindow, tag="Menu", width=100, height=dpg.get_item_height(MainWindow)):
                 with dpg.table(header_row=False):
                     dpg.add_table_column()
                     for dirId in self.middle.getDirsWithoutParent():
                         with dpg.table_row():
                             user_data={"pos":0, "dirId":dirId}       
                             dpg.add_button(label=self.middle.getDirName(dirId), user_data=user_data, callback=self.openDirWindow)
-        dpg.create_viewport(title='Micoto - configure', width=1500, height=1000)
+        name=", ".join(list(devices.keys()))
+        dpg.create_viewport(title='Micoto - configure '+name, width=1500, height=1000)
         dpg.setup_dearpygui()
         dpg.show_viewport()
         dpg.show_item_registry()
-        dpg.set_primary_window("Main", True)
+        dpg.set_primary_window(MainWindow, True)
         dpg.start_dearpygui()
         dpg.destroy_context()
 
@@ -295,7 +296,7 @@ class conf_gui():
                 if len(selected[devIp])==0:
                     selected.pop(devIp)
         user_data=user_data[0]
-        print(user_data["selected"])
+        #print(user_data["selected"])
         return
 
 if __name__ == "__main__":

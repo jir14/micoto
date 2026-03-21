@@ -1,23 +1,26 @@
 # micoto
 Mikrotik Configuration Tool
 
-This programme is part of my bachelor's degree. Current state is SEMESTRAL THESIS of this project.
+This programme is part of my bachelor's degree. Current state of this project is BACHELOR THESIS.
 
 The programme can be run by `python3 test_app.py`.
 
-## Welcome screen
-At lunch the app welcomes you with dialog show below. You can choose to use existing DB file or create new.<br />
-![Welcome screen](docs/Impl_welcome.png)
+## Running app
+![Running app](docs/running_app.webm)
 
-## Main window
-There is a view of the main app window. Now it consist of devices saved in DB file and self-explanatory function buttons.<br />
-![Main window](docs/Impl_main_window.png)
+## App is using these libraries/addons
+### sqlite3
+[sqlite3 docs](https://docs.python.org/3/library/sqlite3.html)
 
-## Device management
-### Adding device
-The picture shows the process of adding new device after clicking "Add" button. You have to fill the device ip field as well as device username and password.<br />
-![Add window](docs/Impl_add_device.png)
+### cryptography
+[cryptography docs](https://cryptography.io/en/latest/hazmat/primitives/symmetric-encryption/)
 
-### Deleting
-Process of deleting items is shown below. You can select one or multiple rows at once and simply remove them by pressing "Remove selected devices". Given rows are deleted from the DB immediately. The whole table of devices is refreshed so that only devices which exists in DB are shown.<br />
-![Showcase of deletion](docs/Impl_device_select.png)
+### DearPyGui
+[DearPyGui github](https://github.com/hoffstadt/DearPyGui)
+
+### File dialog
+[File dialog](https://github.com/totallynotdrait/file_dialog)
+
+# Requirements
+sqlite3, dearpygui, cryptography, psutil
+Run `pip install sqlite3 dearpygui vryptography psutil`.
