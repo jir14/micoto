@@ -1,5 +1,5 @@
-import app.db.db as DB
-import app.device as device
+import db.db as DB
+import device as device
 
 class middleware():
     def __init__(self, cmdDbFile="", devList=""):

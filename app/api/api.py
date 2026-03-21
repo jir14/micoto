@@ -1,4 +1,3 @@
-import app.api.apiros as API
 
 class Api():
     def __init__(self, device=""):
