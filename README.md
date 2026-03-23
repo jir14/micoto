@@ -22,5 +22,5 @@ The programme can be run by `python3 test_app.py`.
 [File dialog](https://github.com/totallynotdrait/file_dialog)
 
 # Requirements
-sqlite3, dearpygui, cryptography, psutil
-Run `pip install sqlite3 dearpygui vryptography psutil`.
+sqlite3, dearpygui, cryptography, psutils
+Run `pip install dearpygui cryptography psutil`.
