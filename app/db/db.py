@@ -3,13 +3,11 @@ import sqlite3
 class Database:
     def __init__(self, dbFile):
         try:
-            con = sqlite3.connect(dbFile, check_same_thread=False)
-            cur = con.cursor()
-            self.con = con
-            self.cur = cur
-            cur.execute('CREATE TABLE IF NOT EXISTS "dirs" ("id" INTEGER NOT NULL UNIQUE, "higherID" INTEGER, "dir" TEXT, UNIQUE("dir","higherID") ON CONFLICT IGNORE, PRIMARY KEY("id" AUTOINCREMENT))')
+            self.con = sqlite3.connect(dbFile, check_same_thread=False)
+            self.cur = self.con.cursor()
+            self.cur.execute('CREATE TABLE IF NOT EXISTS "dirs" ("id" INTEGER NOT NULL UNIQUE, "higherID" INTEGER, "dir" TEXT, UNIQUE("dir","higherID") ON CONFLICT IGNORE, PRIMARY KEY("id" AUTOINCREMENT))')
             #cur.execute('INSERT INTO dirs (dir) VALUES ("")')
-            cur.execute('CREATE TABLE IF NOT EXISTS "cmds" ("id" INTEGER NOT NULL UNIQUE, "add_cmd" INTEGER NOT NULL DEFAULT 0, "set_cmd" INTEGER NOT NULL DEFAULT 0, "remove_cmd" INTEGER NOT NULL DEFAULT 0, "enable_cmd" INTEGER NOT NULL DEFAULT 0, "disable_cmd" INTEGER NOT NULL DEFAULT 0, "comment_cmd" INTEGER NOT NULL DEFAULT 0, "dir_id" INTEGER NOT NULL, UNIQUE("dir_id"), PRIMARY KEY("id" AUTOINCREMENT), FOREIGN KEY("dir_id") REFERENCES "dirs"("dir") ON DELETE CASCADE)')
+            self.cur.execute('CREATE TABLE IF NOT EXISTS "cmds" ("id" INTEGER NOT NULL UNIQUE, "add_cmd" INTEGER NOT NULL DEFAULT 0, "set_cmd" INTEGER NOT NULL DEFAULT 0, "remove_cmd" INTEGER NOT NULL DEFAULT 0, "enable_cmd" INTEGER NOT NULL DEFAULT 0, "disable_cmd" INTEGER NOT NULL DEFAULT 0, "comment_cmd" INTEGER NOT NULL DEFAULT 0, "dir_id" INTEGER NOT NULL, UNIQUE("dir_id"), PRIMARY KEY("id" AUTOINCREMENT), FOREIGN KEY("dir_id") REFERENCES "dirs"("dir") ON DELETE CASCADE)')
             #cur.execute('CREATE TABLE IF NOT EXISTS "cmds" ("id" INTEGER NOT NULL UNIQUE, "cmd" TEXT NOT NULL, "dir_id" INTEGER NOT NULL, UNIQUE("cmd","dir_id") ON CONFLICT IGNORE, PRIMARY KEY("id" AUTOINCREMENT), FOREIGN KEY("dir_id") REFERENCES "dirs"("dir") ON DELETE CASCADE)')
             #cur.execute('CREATE TABLE IF NOT EXISTS "args" ("id" INTEGER NOT NULL UNIQUE, "arg" TEXT NOT NULL, "cmd_id" INTEGER NOT NULL, UNIQUE("arg","cmd_id") ON CONFLICT IGNORE, PRIMARY KEY("id" AUTOINCREMENT), FOREIGN KEY("cmd_id") REFERENCES "cmds"("id") ON DELETE CASCADE)')
         except:

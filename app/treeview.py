@@ -1,14 +1,14 @@
 import dearpygui.dearpygui as dpg
-from app.db.db import Database
+from db.db import Database
 import os
-
-dpg.create_context()
+import sys
 
 class Treeview:
     def __init__(self, dbName):
         self.db = Database(dbName)
         self.dirsToDB=dict()
         self.cmdsToDB=dict()
+        dpg.create_context()
         with dpg.window(tag="Menu", label="Menu", width=500):
             dpg.add_button(label="Save as", callback=self.createDBWindow)
             dpg.show_item_registry()
@@ -110,8 +110,11 @@ class Treeview:
                         self.loop(rec)
         return
 
-tree=Treeview("db.db")
 
+
+if __name__ == "__main__":
+    tree=Treeview(sys.argv[1])
+    
 dpg.create_viewport(title='Micoto', width=1500, height=1000)
 dpg.setup_dearpygui()
 dpg.show_viewport()

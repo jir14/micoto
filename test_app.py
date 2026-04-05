@@ -29,6 +29,8 @@ class GUI():
                     cndd=FileDialog(tag="cndd", callback=self.createNewDevDbFile, show_dir_size=False, dirs_only=True, modal=True, allow_drag=False, default_path="..", multi_selection=False)
                     dpg.add_menu_item(label="Create new device db", callback=cndd.show_file_dialog)
                     dpg.add_menu_item(label="New device to db", callback=self.openDeviceAddWindow)
+                    cmdd=FileDialog(tag="cmdd", callback=self.treeview, show_dir_size=False, modal=True, allow_drag=False, default_path="..", multi_selection=False, file_filter=".db")
+                    dpg.add_menu_item(label="Command map", callback=cmdd.show_file_dialog)
 
             with dpg.group(horizontal=True):
                 dpg.add_button(label="connect", tag="ConnectButton", callback=self.connect)
@@ -161,6 +163,9 @@ class GUI():
             conList[devIp]=self.db.selectDevUserAndPass(devIp)
         subprocess.Popen(["py", os.path.dirname(os.path.realpath(__file__))+"/app/conf_gui.py", str(self.cmdDbPath), str(conList)])
         return
+    
+    def treeview(self, file):
+        subprocess.Popen(["py", os.path.dirname(os.path.realpath(__file__))+"/app/treeview.py", file[0]])
 
     with dpg.theme() as ipThemeCorrect:
         with dpg.theme_component(dpg.mvAll):
