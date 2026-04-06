@@ -2,13 +2,24 @@ import dearpygui.dearpygui as dpg
 import middleware as middle
 import ast as ast
 import sys
+from EditThemePlugin import EditThemePlugin
 
 class conf_gui():
     def __init__(self, cmdDbPath="" , devs=""):
         dpg.create_context()
-        devices=ast.literal_eval(devs)
+
+        with dpg.font_registry():
+            #default_font=dpg.add_font("../themes/OpenSans.ttf", 15*2)
+            default_font=dpg.add_font("../themes/Roboto.ttf", 15*2)
+            dpg.set_global_font_scale(0.5)
+        dpg.bind_font(default_font)
+
+        devices=ast.literal_eval(devs)        
         self.middle=middle.middleware(cmdDbFile=cmdDbPath, devices=devices)
         with dpg.window(label="Main") as MainWindow:
+            
+            #EditThemePlugin()
+            
             with dpg.group(horizontal=False, parent=MainWindow, tag="Menu", width=100, height=dpg.get_item_height(MainWindow)):
                 with dpg.table(header_row=False):
                     dpg.add_table_column()
@@ -17,6 +28,34 @@ class conf_gui():
                             user_data={"pos":0, "dirId":dirId}       
                             dpg.add_button(label=self.middle.getDirName(dirId), user_data=user_data, callback=self.openDirWindow)
         name=", ".join(list(devices.keys()))
+        
+        with dpg.theme() as GlobalTheme:
+            with dpg.theme_component(dpg.mvAll):
+                dpg.add_theme_style(dpg.mvStyleVar_WindowPadding, 10, 10)
+                dpg.add_theme_style(dpg.mvStyleVar_FramePadding, 10, 2)
+                dpg.add_theme_style(dpg.mvStyleVar_CellPadding, 4, 2)
+                dpg.add_theme_style(dpg.mvStyleVar_ItemSpacing, 10, 4)
+                dpg.add_theme_style(dpg.mvStyleVar_ItemInnerSpacing, 10, 2)
+                dpg.add_theme_style(dpg.mvStyleVar_GrabMinSize, 20)
+                dpg.add_theme_style(dpg.mvStyleVar_WindowBorderSize, 1)
+                dpg.add_theme_style(dpg.mvStyleVar_PopupBorderSize, 1)
+                dpg.add_theme_style(dpg.mvStyleVar_FrameBorderSize, 0.5)
+                dpg.add_theme_style(dpg.mvStyleVar_WindowRounding, 12)
+                dpg.add_theme_style(dpg.mvStyleVar_ChildRounding, 12)
+                dpg.add_theme_style(dpg.mvStyleVar_FrameRounding, 12)
+                dpg.add_theme_style(dpg.mvStyleVar_PopupRounding, 12)
+                dpg.add_theme_style(dpg.mvStyleVar_ScrollbarRounding, 12)
+                dpg.add_theme_style(dpg.mvStyleVar_GrabRounding, 12)
+                dpg.add_theme_style(dpg.mvStyleVar_TabRounding, 12)
+                dpg.add_theme_style(dpg.mvStyleVar_WindowTitleAlign, 0.5, 0.5)
+                dpg.add_theme_style(dpg.mvStyleVar_TableAngledHeadersTextAlign, 0.5, 0.5)
+                dpg.add_theme_style(dpg.mvStyleVar_ButtonTextAlign, 0.5, 0.5)
+
+        dpg.bind_theme(GlobalTheme)
+        
+        dpg.show_style_editor()
+        
+
         dpg.create_viewport(title='Micoto - configure '+name, width=1500, height=1000)
         dpg.setup_dearpygui()
         dpg.show_viewport()

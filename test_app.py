@@ -2,8 +2,9 @@ import dearpygui.dearpygui as dpg
 from app.db.db_crypto import DBConn
 import re
 import os
-from app.gui.file_dialog.fdialog import FileDialog
+#from app.gui.file_dialog.fdialog import FileDialog
 import subprocess
+from app.EditThemePlugin import EditThemePlugin
 
 cntx=dpg.create_context()
 
@@ -16,28 +17,34 @@ class GUI():
         self.cmdDbPath = None
         self.selectedList = []
 
+        with dpg.font_registry():
+            #default_font=dpg.add_font("../themes/OpenSans.ttf", 15*2)
+            default_font=dpg.add_font("./themes/Roboto.ttf", 15*2)
+            dpg.set_global_font_scale(0.5)
+        dpg.bind_font(default_font)
+
         with dpg.window(tag="devList", label="List of available devices", on_close=lambda: print("close")) as devList:
+            #EditThemePlugin()
             with dpg.menu_bar():
                 with dpg.menu(label="DB files"):
-                    dfd=FileDialog(tag="dfd", callback=self.setDevDbPath, show_dir_size=False, modal=True, allow_drag=False, default_path="..", multi_selection=False, file_filter=".db")
-                    dpg.add_menu_item(label="Device DB file", callback=dfd.show_file_dialog)
+                    #dfd=FileDialog(tag="dfd", callback=self.setDevDbPath, show_dir_size=False, modal=True, allow_drag=False, default_path="..", multi_selection=False, file_filter=".db")
+                    #dpg.add_menu_item(label="Device DB file", callback=dfd.show_file_dialog)
                     dpg.add_menu_item(label="Device DB password", callback=self.setDevDbPassWindow)
-                    cfd=FileDialog(callback=self.setCmdDb, show_dir_size=False, modal=True, allow_drag=False, default_path="..", multi_selection=False, file_filter=".db")
-                    dpg.add_menu_item(label="Command DB", callback=cfd.show_file_dialog)
+                    #cfd=FileDialog(callback=self.setCmdDb, show_dir_size=False, modal=True, allow_drag=False, default_path="..", multi_selection=False, file_filter=".db")
+                    #dpg.add_menu_item(label="Command DB", callback=cfd.show_file_dialog)
                     dpg.add_menu_item(label="decrypt", callback=self.decrypt)
                 with dpg.menu(label="Admin"):
-                    cndd=FileDialog(tag="cndd", callback=self.createNewDevDbFile, show_dir_size=False, dirs_only=True, modal=True, allow_drag=False, default_path="..", multi_selection=False)
-                    dpg.add_menu_item(label="Create new device db", callback=cndd.show_file_dialog)
+                    #cndd=FileDialog(tag="cndd", callback=self.createNewDevDbFile, show_dir_size=False, dirs_only=True, modal=True, allow_drag=False, default_path="..", multi_selection=False)
+                    #dpg.add_menu_item(label="Create new device db", callback=cndd.show_file_dialog)
                     dpg.add_menu_item(label="New device to db", callback=self.openDeviceAddWindow)
-                    cmdd=FileDialog(tag="cmdd", callback=self.treeview, show_dir_size=False, modal=True, allow_drag=False, default_path="..", multi_selection=False, file_filter=".db")
-                    dpg.add_menu_item(label="Command map", callback=cmdd.show_file_dialog)
+                    #cmdd=FileDialog(tag="cmdd", callback=self.treeview, show_dir_size=False, modal=True, allow_drag=False, default_path="..", multi_selection=False, file_filter=".db")
+                    #dpg.add_menu_item(label="Command map", callback=cmdd.show_file_dialog)
 
             with dpg.group(horizontal=True):
                 dpg.add_button(label="connect", tag="ConnectButton", callback=self.connect)
-                dpg.add_button(label="log", tag="LogButton")
-                #dpg.add_button(label="Add device", tag="AddButton", callback=self.openAdd)
-                #dpg.add_button(label="Remove selected devices", tag="DelButton", callback=self.delDev)
-        
+
+        #dpg.show_font_manager()
+
         dpg.create_viewport(title='Micoto', width=1200, height=1000)
         dpg.setup_dearpygui()
         dpg.show_viewport()
@@ -178,7 +185,10 @@ class GUI():
                 dpg.add_theme_style(dpg.mvStyleVar_FrameRounding, 0, category=dpg.mvThemeCat_Core)
 
 
-
 if __name__ == "__main__":
+    """with dpg.font_registry():
+        default_font = dpg.add_font("OpenSans.ttf", 20)
+        second_font = dpg.add_font("OpenSans.ttf", 10)
+    dpg.bind_font(default_font)"""
     gui=GUI()
     
