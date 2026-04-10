@@ -27,11 +27,13 @@ class GUI():
             #EditThemePlugin()
             with dpg.menu_bar():
                 with dpg.menu(label="DB files"):
-                    #dfd=FileDialog(tag="dfd", callback=self.setDevDbPath, show_dir_size=False, modal=True, allow_drag=False, default_path="..", multi_selection=False, file_filter=".db")
-                    #dpg.add_menu_item(label="Device DB file", callback=dfd.show_file_dialog)
+                    with dpg.file_dialog(modal=True, show=False, tag="dfd", callback=self.setDevDbPath, width=700 ,height=400):
+                        dpg.add_file_extension(".db", custom_text="Devices")
+                    dpg.add_menu_item(label="Device DB file", callback=lambda: dpg.show_item("dfd"))
                     dpg.add_menu_item(label="Device DB password", callback=self.setDevDbPassWindow)
-                    #cfd=FileDialog(callback=self.setCmdDb, show_dir_size=False, modal=True, allow_drag=False, default_path="..", multi_selection=False, file_filter=".db")
-                    #dpg.add_menu_item(label="Command DB", callback=cfd.show_file_dialog)
+                    with dpg.file_dialog(modal=True, show=False, tag="cfd", callback=self.setCmdDb, width=700 ,height=400):
+                        dpg.add_file_extension(".db", custom_text="Commands")
+                    dpg.add_menu_item(label="Command DB", callback=lambda: dpg.show_item("cfd"))
                     dpg.add_menu_item(label="decrypt", callback=self.decrypt)
                 with dpg.menu(label="Admin"):
                     #cndd=FileDialog(tag="cndd", callback=self.createNewDevDbFile, show_dir_size=False, dirs_only=True, modal=True, allow_drag=False, default_path="..", multi_selection=False)
@@ -57,15 +59,17 @@ class GUI():
         self.setDevDbPass()
         self.decrypt()
 
-    def setDevDbPath(self, path):
-        self.devDbPath=path[0]
+    def setDevDbPath(self, sender, path):
+        dpg.hide_item(sender)
+        self.devDbPath=path["file_path_name"]
     
     def setDevDbPass(self):
         self.devDbPass=dpg.get_value("DBPassword")
         dpg.delete_item("dbPassPopup")
     
-    def setCmdDb(self, path):
-        self.cmdDbPath=path[0]
+    def setCmdDb(self, sender, path):
+        dpg.hide_item(sender)
+        self.cmdDbPath=path["file_path_name"]
 
     def centerItem(self, tag):
         Main_width=dpg.get_item_width("devList")

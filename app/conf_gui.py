@@ -2,6 +2,7 @@ import dearpygui.dearpygui as dpg
 import middleware as middle
 import ast as ast
 import sys
+import os.path as paths
 from EditThemePlugin import EditThemePlugin
 
 class conf_gui():
@@ -10,7 +11,7 @@ class conf_gui():
 
         with dpg.font_registry():
             #default_font=dpg.add_font("../themes/OpenSans.ttf", 15*2)
-            default_font=dpg.add_font("../themes/Roboto.ttf", 15*2)
+            default_font=dpg.add_font("./themes/Roboto.ttf", 15*2)
             dpg.set_global_font_scale(0.5)
         dpg.bind_font(default_font)
 
