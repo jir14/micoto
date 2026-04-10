@@ -8,6 +8,7 @@ class Treeview:
         self.db = Database(dbName)
         self.dirsToDB=dict()
         self.cmdsToDB=dict()
+
         dpg.create_context()
         with dpg.window(tag="Menu", label="Menu", width=500):
             dpg.add_button(label="Save as", callback=self.createDBWindow)

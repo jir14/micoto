@@ -12,7 +12,7 @@ class DBConn:
             self.con = con
             self.cur = cur
         except:
-            return False      
+            print()     
 
     def encrypt(self, text):
         iv = os.urandom(16)

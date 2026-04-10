@@ -2,7 +2,6 @@ import dearpygui.dearpygui as dpg
 import middleware as middle
 import ast as ast
 import sys
-import os.path as paths
 from EditThemePlugin import EditThemePlugin
 
 class conf_gui():

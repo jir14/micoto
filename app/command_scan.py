@@ -1,5 +1,6 @@
 import api.apiros as API
 import db.db as DB
+import sys
 
 class ApiCommands():
     def __init__(self, ip, username, password, database):
@@ -74,13 +75,13 @@ class ApiCommands():
             self.dirLoop(id)
         return
 
-def main():
+def main(dbFile="default-commands.db"):
     
-    db = DB.Database("db.db")
+    db = DB.Database(dbFile)
     api = ApiCommands("10.255.255.255", "admin", "testpass", db)
 
     api.scan()
 
 
 if __name__ == '__main__':
-	main()
+	main(sys.argv[1])

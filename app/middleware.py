@@ -40,7 +40,7 @@ class middleware():
         pathDef=self.printDirPath(dirId=dirId, spacer=spacer)
         for dev in self.devList:
             ip=dev.getDevIp()
-            resDict[ip]=dev.api.getDirTableData(id=id, spacer=spacer, begin=begin, pathDef=pathDef)
+            resDict[ip]= dev.api.getDirTableData(id=id, spacer=spacer, begin=begin, pathDef=pathDef)
             if "error" in resDict[ip]:
                 resDict[ip]=False
             continue
