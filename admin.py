@@ -28,11 +28,11 @@ class GUI():
             with dpg.menu_bar():
                 with dpg.menu(label="DB files"):
                     with dpg.file_dialog(modal=True, show=False, tag="dfd", callback=self.PROXYsetDevDbPath, width=700, height=400):
-                        dpg.add_file_extension(".db", custom_text="Devices")
+                        dpg.add_file_extension(".db", custom_text="[DB File]")
                     dpg.add_menu_item(label="Device DB file", callback=lambda: dpg.show_item("dfd"))
                     dpg.add_menu_item(label="Device DB password", callback=self.setDevDbPassWindow)
                     with dpg.file_dialog(modal=True, show=False, tag="cfd", callback=self.PROXYsetCmdDb, width=700, height=400):
-                        dpg.add_file_extension(".db", custom_text="Commands")
+                        dpg.add_file_extension(".db", custom_text="[DB File]")
                     dpg.add_menu_item(label="Command DB", callback=lambda: dpg.show_item("cfd"))
                     dpg.add_menu_item(label="decrypt", callback=self.decrypt)
                 with dpg.menu(label="Admin"):
@@ -66,7 +66,7 @@ class GUI():
         self.decrypt()
 
     def setDevDbPath(self, path):
-        self.devDbPath=path[0]
+        self.devDbPath=path
 
     def PROXYsetDevDbPath(self, sender, path):
         dpg.hide_item(sender)
@@ -200,7 +200,7 @@ class GUI():
         self.drawTable()
 
     def connect(self):
-        if (self.devDbPath or self.devDbPass or self.cmdDbPath) is None:
+        if (self.devDbPath or self.devDbPass or self.cmdDbPath) is None or len(self.selectedList)==0:
             return
         conList=dict()
         for devIp in self.selectedList:

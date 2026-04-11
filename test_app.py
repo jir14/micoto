@@ -24,7 +24,8 @@ class GUI():
         dpg.bind_font(default_font)
 
         with dpg.window(tag="devList", label="List of available devices") as devList:
-            #EditThemePlugin()
+            #theme=EditThemePlugin()
+
             with dpg.menu_bar():
                 with dpg.menu(label="DB files"):
                     with dpg.file_dialog(modal=True, show=False, tag="dfd", callback=self.setDevDbPath, width=700, height=400):
@@ -35,11 +36,14 @@ class GUI():
                         dpg.add_file_extension(".db", custom_text="[DB File]")
                     dpg.add_menu_item(label="Command DB", callback=lambda: dpg.show_item("cfd"))
                     dpg.add_menu_item(label="decrypt", callback=self.decrypt)
+                with dpg.menu(label="Theme"):
+                    EditThemePlugin()
+                    dpg.add_menu_item(label="Fonts", callback=lambda: dpg.show_font_manager())
+                    #dpg.show_font_manager()
+
 
             with dpg.group(horizontal=True):
                 dpg.add_button(label="connect", tag="ConnectButton", callback=self.connect)
-
-        #dpg.show_font_manager()
 
         dpg.create_viewport(title='Micoto', width=1200, height=1000)
         dpg.setup_dearpygui()
@@ -102,14 +106,13 @@ class GUI():
 
     def selected(self, app_data):
         devIpAddr = dpg.get_item_label(app_data)
-
         if devIpAddr in self.selectedList:
             self.selectedList.remove(devIpAddr)
         else:
             self.selectedList.append(devIpAddr)
 
     def connect(self):
-        if (self.devDbPath or self.devDbPass or self.cmdDbPath) is None:
+        if (self.devDbPath or self.devDbPass or self.cmdDbPath) is None or len(self.selectedList)==0:
             return
         conList=dict()
         for devIp in self.selectedList:

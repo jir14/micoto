@@ -7,8 +7,8 @@
 ## DearPyGui
 [DearPyGui github](https://github.com/hoffstadt/DearPyGui)
 
-## File dialog
-[File dialog](https://github.com/totallynotdrait/file_dialog)
+## Theme Plugin
+[DearPyGui_EditThemePlugin](https://github.com/awcook97/DearPyGui_EditThemePlugin)
 
 # Requirements
-sqlite3, dearpygui, cryptography, psutil
+sqlite3, dearpygui, cryptography

@@ -7,7 +7,6 @@ from EditThemePlugin import EditThemePlugin
 class conf_gui():
     def __init__(self, cmdDbPath="" , devs=""):
         dpg.create_context()
-
         with dpg.font_registry():
             #default_font=dpg.add_font("../themes/OpenSans.ttf", 15*2)
             default_font=dpg.add_font("./themes/Roboto.ttf", 15*2)
