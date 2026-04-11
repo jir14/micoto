@@ -9,7 +9,7 @@ The programme can be run by `py test_app.py`.
 ![Running app](docs/running_app.gif)
 
 ## Theme customization
-[customuzations](docs/theme_editor.png)
+![customizations](docs/theme_editor.png)
 
 ## App is using these libraries/addons
 ## sqlite3
