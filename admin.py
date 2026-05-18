@@ -34,7 +34,7 @@ class GUI():
                     with dpg.file_dialog(modal=True, show=False, tag="cfd", callback=self.PROXYsetCmdDb, width=700, height=400):
                         dpg.add_file_extension(".db", custom_text="[DB File]")
                     dpg.add_menu_item(label="Command DB", callback=lambda: dpg.show_item("cfd"))
-                    dpg.add_menu_item(label="decrypt", callback=self.decrypt)
+                    dpg.add_menu_item(label="decrypt", callback=self.decrypt, user_data=False)
                 with dpg.menu(label="Admin"):
                     with dpg.file_dialog(modal=True, show=False, tag="cndd", callback=self.createNewDevDbFile, width=700, height=400, directory_selector=True):
                         dpg.add_file_extension(".db")
@@ -61,9 +61,9 @@ class GUI():
         dpg.destroy_context()
 
     def setDevDbFile(self, sender, app_data, user_data):
-        self.setDevDbPath([os.path.join(user_data, dpg.get_value("fileName")+".db")])
+        self.setDevDbPath([os.path.join(user_data, dpg.get_value("fileName")+".db")][0])
         self.setDevDbPass()
-        self.decrypt()
+        self.decrypt(user_data=True)
 
     def setDevDbPath(self, path):
         self.devDbPath=path
@@ -161,14 +161,21 @@ class GUI():
                 dpg.add_button(label="Ok", width=75, user_data=(modal_id, True), callback=lambda: dpg.delete_item("Error"))
                 dpg.configure_item("Adding", show=False)
 
-    def decrypt(self):
+    def decrypt(self, sender="", app_data="", user_data=""):
         if self.devDbPath and self.devDbPass:
             if dpg.does_item_exist("NewDbFileName"):
                 dpg.delete_item("NewDbFileName")
-            self.db = DBConn(self.devDbPath, self.devDbPass)
-            self.drawTable()
+            self.db = DBConn(self.devDbPath, self.devDbPass, createFile=user_data)
+            e = self.db.checkDevFile()
+            if e==True:
+                self.drawTable()
+            else:
+                self.errorWindow(e)
 
     def drawTable(self):
+        if dpg.does_item_exist("devTable"):
+            dpg.delete_item("devTable")
+            self.selectedList = []
         with dpg.table(header_row=True, policy=dpg.mvTable_SizingFixedFit, parent="devList", tag="devTable"):
             dpg.add_table_column(label="Name")
             dpg.add_table_column(label="IP") 
@@ -205,7 +212,13 @@ class GUI():
         conList=dict()
         for devIp in self.selectedList:
             conList[devIp]=self.db.selectDevUserAndPass(devIp)
-        subprocess.Popen(["py", os.path.dirname(os.path.realpath(__file__))+"/app/conf_gui.py", str(self.cmdDbPath), str(conList)])
+        try:
+            p = subprocess.Popen(["py", os.path.dirname(os.path.realpath(__file__))+"/app/conf_gui.py", str(self.cmdDbPath), str(conList)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            stdout, stderr = p.communicate()
+            if p.returncode != 0:
+                self.errorWindow("can not open configuration window")
+        except:
+            print()
         return
     
     def treeview(self, sender, app_data):
@@ -214,7 +227,17 @@ class GUI():
     def commandScan(self, sender, app_data):
         with dpg.window(tag="cmdscan"):
             dpg.add_text("Command scan running in the background")
-        subprocess.Popen(["py", os.path.dirname(os.path.realpath(__file__))+"/app/command_scan.py", app_data["file_path_name"]], stdout=subprocess.PIPE, universal_newlines=True)
+            dpg.add_text(label="output")
+        #subprocess.Popen(["py", os.path.dirname(os.path.realpath(__file__))+"/app/command_scan.py", app_data["file_path_name"]])
+        subprocess.run(["py", os.path.dirname(os.path.realpath(__file__))+"/app/command_scan.py", app_data["file_path_name"]], shell=True, check=True, stderr=subprocess.STDOUT)
+
+    def errorWindow(self, msg=""):
+        dpg.split_frame()
+        with dpg.window(label="Error", tag="ErrorWindow", modal=True) as errwnd:
+            dpg.add_text("Error: "+str(msg))
+            dpg.add_button(label="close", callback=lambda: dpg.delete_item(errwnd))
+        self.centerItem(errwnd)
+
 
     with dpg.theme() as ipThemeCorrect:
         with dpg.theme_component(dpg.mvAll):

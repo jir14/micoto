@@ -1,18 +1,24 @@
 import sqlite3
 
 class Database:
-    def __init__(self, dbFile):
+    def __init__(self, dbFile, create=False):
         try:
             self.con = sqlite3.connect(dbFile, check_same_thread=False)
             self.cur = self.con.cursor()
-            self.cur.execute('CREATE TABLE IF NOT EXISTS "dirs" ("id" INTEGER NOT NULL UNIQUE, "higherID" INTEGER, "dir" TEXT, UNIQUE("dir","higherID") ON CONFLICT IGNORE, PRIMARY KEY("id" AUTOINCREMENT))')
-            #cur.execute('INSERT INTO dirs (dir) VALUES ("")')
-            self.cur.execute('CREATE TABLE IF NOT EXISTS "cmds" ("id" INTEGER NOT NULL UNIQUE, "add_cmd" INTEGER NOT NULL DEFAULT 0, "set_cmd" INTEGER NOT NULL DEFAULT 0, "remove_cmd" INTEGER NOT NULL DEFAULT 0, "enable_cmd" INTEGER NOT NULL DEFAULT 0, "disable_cmd" INTEGER NOT NULL DEFAULT 0, "comment_cmd" INTEGER NOT NULL DEFAULT 0, "dir_id" INTEGER NOT NULL, UNIQUE("dir_id"), PRIMARY KEY("id" AUTOINCREMENT), FOREIGN KEY("dir_id") REFERENCES "dirs"("dir") ON DELETE CASCADE)')
-            #cur.execute('CREATE TABLE IF NOT EXISTS "cmds" ("id" INTEGER NOT NULL UNIQUE, "cmd" TEXT NOT NULL, "dir_id" INTEGER NOT NULL, UNIQUE("cmd","dir_id") ON CONFLICT IGNORE, PRIMARY KEY("id" AUTOINCREMENT), FOREIGN KEY("dir_id") REFERENCES "dirs"("dir") ON DELETE CASCADE)')
-            #cur.execute('CREATE TABLE IF NOT EXISTS "args" ("id" INTEGER NOT NULL UNIQUE, "arg" TEXT NOT NULL, "cmd_id" INTEGER NOT NULL, UNIQUE("arg","cmd_id") ON CONFLICT IGNORE, PRIMARY KEY("id" AUTOINCREMENT), FOREIGN KEY("cmd_id") REFERENCES "cmds"("id") ON DELETE CASCADE)')
+            if create:
+                self.cur.execute('CREATE TABLE IF NOT EXISTS "dirs" ("id" INTEGER NOT NULL UNIQUE, "higherID" INTEGER, "dir" TEXT, UNIQUE("dir","higherID") ON CONFLICT IGNORE, PRIMARY KEY("id" AUTOINCREMENT))')
+                self.cur.execute('CREATE TABLE IF NOT EXISTS "cmds" ("id" INTEGER NOT NULL UNIQUE, "add_cmd" INTEGER NOT NULL DEFAULT 0, "set_cmd" INTEGER NOT NULL DEFAULT 0, "remove_cmd" INTEGER NOT NULL DEFAULT 0, "enable_cmd" INTEGER NOT NULL DEFAULT 0, "disable_cmd" INTEGER NOT NULL DEFAULT 0, "comment_cmd" INTEGER NOT NULL DEFAULT 0, "dir_id" INTEGER NOT NULL, UNIQUE("dir_id"), PRIMARY KEY("id" AUTOINCREMENT), FOREIGN KEY("dir_id") REFERENCES "dirs"("dir") ON DELETE CASCADE)')
+            self.checkCmdFile()
         except:
-            print("Connection to DB failed")   
-    
+            print("Connection to DB failed")
+
+    def checkCmdFile(self):
+        try:
+            self.cur.execute("SELECT * FROM dirs").fetchall()
+            self.cur.execute("SELECT * FROM cmds").fetchall()
+        except sqlite3.OperationalError as e:
+            return e
+
     def filterOptions(self, opt):
         self.cur.execute("SELECT id FROM forbidden_commands WHERE command=?", (opt,))
         if len(self.cur.fetchall()) == 0:
@@ -44,14 +50,6 @@ class Database:
                 self.con.commit()
             return True
         return False
-
-    """def insertCmd(self, dirId, cmd):
-        if self.cur.execute("SELECT id FROM dirs WHERE id=?", (dirId,)):
-            id = self.cur.fetchone()[0]
-            self.cur.execute("INSERT INTO cmds (cmd, dir_id) VALUES (?, ?)", (cmd,id,))
-            self.con.commit()
-            return self.cur.lastrowid
-        return False"""
     
     def insertCmd(self, dirId, vals):
         if self.cur.execute("SELECT id FROM dirs WHERE id=?", (dirId,)):

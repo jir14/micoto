@@ -77,7 +77,7 @@ class ApiCommands():
 
 def main(dbFile="default-commands.db"):
     
-    db = DB.Database(dbFile)
+    db = DB.Database(dbFile, create=True)
     api = ApiCommands("10.255.255.255", "admin", "testpass", db)
 
     api.scan()

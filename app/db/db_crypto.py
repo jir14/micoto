@@ -3,16 +3,26 @@ from ..api.apiros import ApiRos as apiros
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 class DBConn:
-    def __init__(self, dbFile, masterPass):
+    def __init__(self, dbFile, masterPass, createFile=False):
         try:
             con = sqlite3.connect(dbFile)
             cur = con.cursor()
-            cur.execute("CREATE TABLE IF NOT EXISTS devices(id INTEGER PRIMARY KEY AUTOINCREMENT, devHost VARCHAR(255), devIp VARCHAR(255), devUser VARCHAR(255), devPass VARCHAR(255), devIv VARCHAR(255))")
+            print(createFile)
+            if createFile:
+                cur.execute("CREATE TABLE IF NOT EXISTS devices(id INTEGER PRIMARY KEY AUTOINCREMENT, devHost VARCHAR(255), devIp VARCHAR(255), devUser VARCHAR(255), devPass VARCHAR(255), devIv VARCHAR(255))")
             self.masterPass = masterPass.encode().ljust(32)[:32]
             self.con = con
             self.cur = cur
         except:
             print()     
+
+    def checkDevFile(self):
+        try:
+            self.cur.execute("SELECT * FROM devices").fetchall()
+        except sqlite3.OperationalError as e:
+            return e
+        else:
+            return True
 
     def encrypt(self, text):
         iv = os.urandom(16)
