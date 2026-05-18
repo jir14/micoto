@@ -225,11 +225,14 @@ class GUI():
         subprocess.Popen(["py", os.path.dirname(os.path.realpath(__file__))+"/app/treeview.py", app_data["file_path_name"]])
 
     def commandScan(self, sender, app_data):
+        if len(self.selectedList)!=1:
+            self.errorWindow("select one device to scan commands from")
+            return
         with dpg.window(tag="cmdscan"):
             dpg.add_text("Command scan running in the background")
             dpg.add_text(label="output")
-        #subprocess.Popen(["py", os.path.dirname(os.path.realpath(__file__))+"/app/command_scan.py", app_data["file_path_name"]])
-        subprocess.run(["py", os.path.dirname(os.path.realpath(__file__))+"/app/command_scan.py", app_data["file_path_name"]], shell=True, check=True, stderr=subprocess.STDOUT)
+        subprocess.Popen(["py", os.path.dirname(os.path.realpath(__file__))+"/app/command_scan.py", app_data["file_path_name"], str(self.selectedList[0]), str(self.db.selectDevUserAndPass(self.selectedList[0]))])
+        #subprocess.run(["py", os.path.dirname(os.path.realpath(__file__))+"/app/command_scan.py", app_data["file_path_name"]], shell=True, check=True, stderr=subprocess.STDOUT)
 
     def errorWindow(self, msg=""):
         dpg.split_frame()
@@ -237,7 +240,6 @@ class GUI():
             dpg.add_text("Error: "+str(msg))
             dpg.add_button(label="close", callback=lambda: dpg.delete_item(errwnd))
         self.centerItem(errwnd)
-
 
     with dpg.theme() as ipThemeCorrect:
         with dpg.theme_component(dpg.mvAll):

@@ -1,6 +1,7 @@
 import api.apiros as API
 import db.db as DB
 import sys
+import ast as ast
 
 class ApiCommands():
     def __init__(self, ip, username, password, database):
@@ -75,13 +76,14 @@ class ApiCommands():
             self.dirLoop(id)
         return
 
-def main(dbFile="default-commands.db"):
-    
+def main(dbFile="default-commands.db", devIp="", device=""):
     db = DB.Database(dbFile, create=True)
-    api = ApiCommands("10.255.255.255", "admin", "testpass", db)
+    dev = ast.literal_eval(device)
+    api = ApiCommands(devIp, list(dev.keys())[0], list(dev.values())[0].decode(), db)
+    #api = ApiCommands("10.255.255.255", "admin", "testpass", db)
 
     api.scan()
 
 
 if __name__ == '__main__':
-	main(sys.argv[1])
+	main(sys.argv[1], sys.argv[2], sys.argv[3])

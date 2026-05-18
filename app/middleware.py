@@ -3,15 +3,8 @@ import device as device
 
 class middleware():
     def __init__(self, cmdDbFile="", devices=dict()):
-        #self.db=DB.Database(dbFile=cmdDbFile)
-        #self.api=api.api()
-        #self.devs=devList
-        #self.db=DB.Database("db.db")
         self.db=DB.Database(dbFile=cmdDbFile)
-        #self.api=api_old.Api(ip="10.255.255.255", username="admin", password="testpass")
         self.devList=[]
-        #self.devList.append(device.Device("10.255.255.255","admin","testpass"))
-        #self.devList.append(device.Device("10.255.255.254","admin","testpass"))
         for devIp, params in devices.items():
             for username, password in params.items():
                 self.devList.append(device.Device(devIp, username, password.decode()))    
