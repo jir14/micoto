@@ -23,24 +23,21 @@ class GUI():
             dpg.set_global_font_scale(0.5)
         dpg.bind_font(default_font)
 
-        with dpg.window(tag="devList", label="List of available devices") as devList:
-            #theme=EditThemePlugin()
-
+        with dpg.window(tag="devList", label="List of available devices", on_close=lambda: print("close")) as devList:
+            #EditThemePlugin()
             with dpg.menu_bar():
                 with dpg.menu(label="DB files"):
-                    with dpg.file_dialog(modal=True, show=False, tag="dfd", callback=self.setDevDbPath, width=700, height=400):
+                    with dpg.file_dialog(modal=True, show=False, tag="dfd", callback=self.PROXYsetDevDbPath, width=700, height=400):
                         dpg.add_file_extension(".db", custom_text="[DB File]")
                     dpg.add_menu_item(label="Device DB file", callback=lambda: dpg.show_item("dfd"))
                     dpg.add_menu_item(label="Device DB password", callback=self.setDevDbPassWindow)
-                    with dpg.file_dialog(modal=True, show=False, tag="cfd", callback=self.setCmdDb, width=700, height=400):
+                    with dpg.file_dialog(modal=True, show=False, tag="cfd", callback=self.PROXYsetCmdDb, width=700, height=400):
                         dpg.add_file_extension(".db", custom_text="[DB File]")
                     dpg.add_menu_item(label="Command DB", callback=lambda: dpg.show_item("cfd"))
-                    dpg.add_menu_item(label="decrypt", callback=self.decrypt)
+                    dpg.add_menu_item(label="decrypt", callback=self.decrypt, user_data=False)
                 with dpg.menu(label="Theme"):
                     EditThemePlugin()
                     dpg.add_menu_item(label="Fonts", callback=lambda: dpg.show_font_manager())
-                    #dpg.show_font_manager()
-
 
             with dpg.group(horizontal=True):
                 dpg.add_button(label="connect", tag="ConnectButton", callback=self.connect)
@@ -52,17 +49,28 @@ class GUI():
         dpg.start_dearpygui()
         dpg.destroy_context()
 
-    def setDevDbPath(self, sender, path):
+    def setDevDbFile(self, sender, app_data, user_data):
+        self.setDevDbPath([os.path.join(user_data, dpg.get_value("fileName")+".db")][0])
+        self.setDevDbPass()
+        self.decrypt(user_data=True)
+
+    def setDevDbPath(self, path):
+        self.devDbPath=path
+
+    def PROXYsetDevDbPath(self, sender, path):
         dpg.hide_item(sender)
-        self.devDbPath=path["file_path_name"]
+        self.setDevDbPath(path["file_path_name"])
     
     def setDevDbPass(self):
         self.devDbPass=dpg.get_value("DBPassword")
         dpg.delete_item("dbPassPopup")
     
-    def setCmdDb(self, sender, path):
+    def setCmdDb(self, path):
+        self.cmdDbPath=path
+
+    def PROXYsetCmdDb(self, sender, path):
         dpg.hide_item(sender)
-        self.cmdDbPath=path["file_path_name"]
+        self.setCmdDb(path["file_path_name"])
 
     def centerItem(self, tag):
         Main_width=dpg.get_item_width("devList")
@@ -86,16 +94,21 @@ class GUI():
         dpg.render_dearpygui_frame()
         self.centerItem(window)
 
-    def decrypt(self):
+    def decrypt(self, sender="", app_data="", user_data=""):
         if self.devDbPath and self.devDbPass:
             if dpg.does_item_exist("NewDbFileName"):
                 dpg.delete_item("NewDbFileName")
-            self.db = DBConn(self.devDbPath, self.devDbPass)
-            self.drawTable()
+            self.db = DBConn(self.devDbPath, self.devDbPass, createFile=user_data)
+            e = self.db.checkDevFile()
+            if e==True:
+                self.drawTable()
+            else:
+                self.annonceWindow(e)
 
     def drawTable(self):
         if dpg.does_item_exist("devTable"):
             dpg.delete_item("devTable")
+            self.selectedList = []
         with dpg.table(header_row=True, policy=dpg.mvTable_SizingFixedFit, parent="devList", tag="devTable"):
             dpg.add_table_column(label="Name")
             dpg.add_table_column(label="IP") 
@@ -106,6 +119,7 @@ class GUI():
 
     def selected(self, app_data):
         devIpAddr = dpg.get_item_label(app_data)
+
         if devIpAddr in self.selectedList:
             self.selectedList.remove(devIpAddr)
         else:
@@ -117,8 +131,32 @@ class GUI():
         conList=dict()
         for devIp in self.selectedList:
             conList[devIp]=self.db.selectDevUserAndPass(devIp)
-        subprocess.Popen(["py", os.path.dirname(os.path.realpath(__file__))+"/app/conf_gui.py", str(self.cmdDbPath), str(conList)])
+        try:
+            p = subprocess.Popen(["py", os.path.dirname(os.path.realpath(__file__))+"/app/conf_gui.py", str(self.cmdDbPath), str(conList)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            stdout, stderr = p.communicate()
+            if p.returncode != 0:
+                self.annonceWindow("can not open configuration window")
+        except:
+            print()
         return
+
+    def annonceWindow(self, msg="", type="Error"):
+        dpg.split_frame()
+        with dpg.window(label="Annonce", tag="AnnonceWindow", modal=True) as annwnd:
+            dpg.add_text(type+": "+str(msg))
+            dpg.add_button(label="close", callback=lambda: dpg.delete_item(annwnd))
+        self.centerItem(annwnd)
+
+    with dpg.theme() as ipThemeCorrect:
+        with dpg.theme_component(dpg.mvAll):
+            dpg.add_theme_color(dpg.mvThemeCol_FrameBg, (0, 0, 0), category=dpg.mvThemeCat_Core)
+            dpg.add_theme_style(dpg.mvStyleVar_FrameRounding, 0, category=dpg.mvThemeCat_Core)
+
+    with dpg.theme() as ipTheme:
+            with dpg.theme_component(dpg.mvAll):
+                dpg.add_theme_color(dpg.mvThemeCol_FrameBg, (200, 0, 0), category=dpg.mvThemeCat_Core)
+                dpg.add_theme_style(dpg.mvStyleVar_FrameRounding, 0, category=dpg.mvThemeCat_Core)
+
 
 if __name__ == "__main__":
     gui=GUI()

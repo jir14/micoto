@@ -2,7 +2,6 @@ import dearpygui.dearpygui as dpg
 from app.db.db_crypto import DBConn
 import re
 import os
-#from app.gui.file_dialog.fdialog import FileDialog
 import subprocess
 from app.EditThemePlugin import EditThemePlugin
 
@@ -18,13 +17,11 @@ class GUI():
         self.selectedList = []
 
         with dpg.font_registry():
-            #default_font=dpg.add_font("../themes/OpenSans.ttf", 15*2)
             default_font=dpg.add_font("./themes/Roboto.ttf", 15*2)
             dpg.set_global_font_scale(0.5)
         dpg.bind_font(default_font)
 
         with dpg.window(tag="devList", label="List of available devices", on_close=lambda: print("close")) as devList:
-            #EditThemePlugin()
             with dpg.menu_bar():
                 with dpg.menu(label="DB files"):
                     with dpg.file_dialog(modal=True, show=False, tag="dfd", callback=self.PROXYsetDevDbPath, width=700, height=400):
@@ -35,6 +32,9 @@ class GUI():
                         dpg.add_file_extension(".db", custom_text="[DB File]")
                     dpg.add_menu_item(label="Command DB", callback=lambda: dpg.show_item("cfd"))
                     dpg.add_menu_item(label="decrypt", callback=self.decrypt, user_data=False)
+                with dpg.menu(label="Theme"):
+                    EditThemePlugin()
+                    dpg.add_menu_item(label="Fonts", callback=lambda: dpg.show_font_manager())
                 with dpg.menu(label="Admin"):
                     with dpg.file_dialog(modal=True, show=False, tag="cndd", callback=self.createNewDevDbFile, width=700, height=400, directory_selector=True):
                         dpg.add_file_extension(".db")
@@ -50,8 +50,6 @@ class GUI():
                 dpg.add_button(label="connect", tag="ConnectButton", callback=self.connect)
                 dpg.add_button(label="add device", callback=self.openDeviceAddWindow)
                 dpg.add_button(label="delete selected", callback=self.delDev)
-
-        #dpg.show_font_manager()
 
         dpg.create_viewport(title='Micoto', width=1200, height=1000)
         dpg.setup_dearpygui()
@@ -170,7 +168,7 @@ class GUI():
             if e==True:
                 self.drawTable()
             else:
-                self.errorWindow(e)
+                self.annonceWindow(e)
 
     def drawTable(self):
         if dpg.does_item_exist("devTable"):
@@ -216,30 +214,43 @@ class GUI():
             p = subprocess.Popen(["py", os.path.dirname(os.path.realpath(__file__))+"/app/conf_gui.py", str(self.cmdDbPath), str(conList)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             stdout, stderr = p.communicate()
             if p.returncode != 0:
-                self.errorWindow("can not open configuration window")
+                self.annonceWindow("can not open configuration window")
         except:
             print()
         return
     
     def treeview(self, sender, app_data):
-        subprocess.Popen(["py", os.path.dirname(os.path.realpath(__file__))+"/app/treeview.py", app_data["file_path_name"]])
+        try:
+            p = subprocess.Popen(["py", os.path.dirname(os.path.realpath(__file__))+"/app/treeview.py", app_data["file_path_name"]])
+            stdout, stderr = p.communicate()
+            if p.returncode != 0:
+                self.annonceWindow("can not open treeview")
+        except:
+            self.annonceWindow("can not open treeview")
 
     def commandScan(self, sender, app_data):
         if len(self.selectedList)!=1:
-            self.errorWindow("select one device to scan commands from")
+            self.annonceWindow("select one device to scan commands from")
             return
-        with dpg.window(tag="cmdscan"):
-            dpg.add_text("Command scan running in the background")
-            dpg.add_text(label="output")
-        subprocess.Popen(["py", os.path.dirname(os.path.realpath(__file__))+"/app/command_scan.py", app_data["file_path_name"], str(self.selectedList[0]), str(self.db.selectDevUserAndPass(self.selectedList[0]))])
-        #subprocess.run(["py", os.path.dirname(os.path.realpath(__file__))+"/app/command_scan.py", app_data["file_path_name"]], shell=True, check=True, stderr=subprocess.STDOUT)
+        with dpg.window(tag="cmdscan") as cmdscan:
+                dpg.add_text("Command scan running in the background")
+                dpg.add_text("you can close this window")
+        try:
+            p = subprocess.Popen(["py", os.path.dirname(os.path.realpath(__file__))+"/app/command_scan.py", app_data["file_path_name"], str(self.selectedList[0]), str(self.db.selectDevUserAndPass(self.selectedList[0]))])
+            stdout, stderr = p.communicate()
+            if p.returncode != 0:
+                self.annonceWindow("scan failed")
+            if p.returncode == 0:
+                self.annonceWindow("scan completed", type="Success")
+        except:
+            self.annonceWindow("scan failed")
 
-    def errorWindow(self, msg=""):
+    def annonceWindow(self, msg="", type="Error"):
         dpg.split_frame()
-        with dpg.window(label="Error", tag="ErrorWindow", modal=True) as errwnd:
-            dpg.add_text("Error: "+str(msg))
-            dpg.add_button(label="close", callback=lambda: dpg.delete_item(errwnd))
-        self.centerItem(errwnd)
+        with dpg.window(label=type, tag="AnnonceWindow", modal=True) as annwnd:
+            dpg.add_text(type+": "+str(msg))
+            dpg.add_button(label="close", callback=lambda: dpg.delete_item(annwnd))
+        self.centerItem(annwnd)
 
     with dpg.theme() as ipThemeCorrect:
         with dpg.theme_component(dpg.mvAll):
@@ -253,9 +264,5 @@ class GUI():
 
 
 if __name__ == "__main__":
-    """with dpg.font_registry():
-        default_font = dpg.add_font("OpenSans.ttf", 20)
-        second_font = dpg.add_font("OpenSans.ttf", 10)
-    dpg.bind_font(default_font)"""
     gui=GUI()
     

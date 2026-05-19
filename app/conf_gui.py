@@ -8,7 +8,6 @@ class conf_gui():
     def __init__(self, cmdDbPath="" , devs=""):
         dpg.create_context()
         with dpg.font_registry():
-            #default_font=dpg.add_font("../themes/OpenSans.ttf", 15*2)
             default_font=dpg.add_font("./themes/Roboto.ttf", 15*2)
             dpg.set_global_font_scale(0.5)
         dpg.bind_font(default_font)
@@ -16,9 +15,10 @@ class conf_gui():
         devices=ast.literal_eval(devs)        
         self.middle=middle.middleware(cmdDbFile=cmdDbPath, devices=devices)
         with dpg.window(label="Main") as MainWindow:
-            
-            #EditThemePlugin()
-            
+            with dpg.menu_bar():
+                with dpg.menu(label="Theme"):
+                    EditThemePlugin()
+                    dpg.add_menu_item(label="Fonts", callback=lambda: dpg.show_font_manager())
             with dpg.group(horizontal=False, parent=MainWindow, tag="Menu", width=100, height=dpg.get_item_height(MainWindow)):
                 with dpg.table(header_row=False):
                     dpg.add_table_column()
@@ -50,15 +50,10 @@ class conf_gui():
                 dpg.add_theme_style(dpg.mvStyleVar_TableAngledHeadersTextAlign, 0.5, 0.5)
                 dpg.add_theme_style(dpg.mvStyleVar_ButtonTextAlign, 0.5, 0.5)
 
-        dpg.bind_theme(GlobalTheme)
-        
-        dpg.show_style_editor()
-        
 
         dpg.create_viewport(title='Micoto - configure '+name, width=1500, height=1000)
         dpg.setup_dearpygui()
         dpg.show_viewport()
-        dpg.show_item_registry()
         dpg.set_primary_window(MainWindow, True)
         dpg.start_dearpygui()
         dpg.destroy_context()

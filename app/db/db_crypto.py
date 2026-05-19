@@ -7,7 +7,6 @@ class DBConn:
         try:
             con = sqlite3.connect(dbFile)
             cur = con.cursor()
-            print(createFile)
             if createFile:
                 cur.execute("CREATE TABLE IF NOT EXISTS devices(id INTEGER PRIMARY KEY AUTOINCREMENT, devHost VARCHAR(255), devIp VARCHAR(255), devUser VARCHAR(255), devPass VARCHAR(255), devIv VARCHAR(255))")
             self.masterPass = masterPass.encode().ljust(32)[:32]

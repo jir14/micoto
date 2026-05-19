@@ -2,6 +2,19 @@ import dearpygui.dearpygui as dpg
 from db.db import Database
 import os
 import sys
+from EditThemePlugin import EditThemePlugin
+
+"""
+db = DBConn(app_data["file_path_name"], self.devDbPass)
+        e = db.checkDevFile()
+        if e==True:
+            subprocess.Popen(["py", os.path.dirname(os.path.realpath(__file__))+"/app/treeview.py", app_data["file_path_name"]])
+        else:
+            self.annonceWindow(e)
+        return
+"""
+
+
 
 class Treeview:
     def __init__(self, dbName):
@@ -9,10 +22,15 @@ class Treeview:
         self.dirsToDB=dict()
         self.cmdsToDB=dict()
 
+        self.dbTest()
+
         dpg.create_context()
         with dpg.window(tag="Menu", label="Menu", width=500):
+            with dpg.menu_bar():
+                with dpg.menu(label="Theme"):
+                    EditThemePlugin()
+                    dpg.add_menu_item(label="Fonts", callback=lambda: dpg.show_font_manager())
             dpg.add_button(label="Save as", callback=self.createDBWindow)
-            dpg.show_item_registry()
             for dirID in self.db.getDirsWithoutParent():
                 with dpg.group(horizontal=True, tag="sectionTag"+str(dirID), parent="Menu"):
                     dirName = self.db.getDirName(dirID)
@@ -23,6 +41,11 @@ class Treeview:
                         dpg.add_collapsing_header(tag="dir"+str(dirID), label=dirName, parent="sectionHorizontalTag"+str(dirID))
                         self.loop(dirID) 
     
+    def dbTest(self):
+        e = self.db.checkCmdFile()
+        if e!=True:
+            return
+
     def createDBlists(self, sender, appdata, userdata):
         dirsCopy=self.dirsToDB.copy()
         for key, val in dirsCopy.items():
