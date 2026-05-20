@@ -7,10 +7,10 @@ from EditThemePlugin import EditThemePlugin
 class conf_gui():
     def __init__(self, cmdDbPath="" , devs=""):
         dpg.create_context()
-        """with dpg.font_registry():
+        with dpg.font_registry():
             default_font=dpg.add_font("./themes/Roboto.ttf", 15*2)
             dpg.set_global_font_scale(0.5)
-        dpg.bind_font(default_font)"""
+        dpg.bind_font(default_font)
 
         devices=ast.literal_eval(devs)        
         self.middle=middle.middleware(cmdDbFile=cmdDbPath, devices=devices)
@@ -57,13 +57,12 @@ class conf_gui():
                                     cmds = self.middle.getDirCmds(user_data["dirId"])
                                     if cmds:
                                         for key, val in cmds.items():
-                                            usr_data=dict(user_data)
+                                            usr_data=user_data.copy()
                                             usr_data["cmd"]=key
-                                            usr_data["selected"]=user_data["selected"]
                                             if val:
                                                 dpg.add_button(label=key, callback=self.openCmds, user_data=usr_data)
-                                with dpg.group(tag=str(user_data["dirId"])+"group"+user_data["tag"], horizontal=False, parent=str(user_data["dirId"])+lbl):
-                                    self.addDirTable(user_data=user_data)
+                                with dpg.group(tag=str(usr_data["dirId"])+"group"+usr_data["tag"], horizontal=False, parent=str(usr_data["dirId"])+lbl):
+                                    self.addDirTable(user_data=usr_data)
                         if recs:
                             for rec in recs:
                                 lbl=self.middle.printDirPath(rec, spacer="/")
@@ -121,7 +120,6 @@ class conf_gui():
         return
 
     def openCmds(self, sender, app_data, user_data):
-        print(user_data["selected"])
         lbl = self.middle.printDirPath(user_data["dirId"], spacer="/")+"/"+str(dpg.get_item_label(sender))
         if dpg.does_item_exist(lbl):
             dpg.focus_item(lbl)
@@ -202,7 +200,7 @@ class conf_gui():
                             dpg.add_table_column(label=" ", no_hide=True)
                             for ip, devs in commons.items():
                                 with dpg.table_row():
-                                    dpg.add_selectable(label=ip, tag=ip+","+str(user_data["dirId"]), user_data=[user_data, commons[ip]], span_columns=True, callback=self.tableCallback, default_value=False)
+                                    dpg.add_selectable(label=ip, tag=ip+","+str(user_data["dirId"]), user_data=[user_data, commons[ip]], span_columns=True, callback=self.tableCallback)
                                     with dpg.tooltip(parent=ip+","+str(user_data["dirId"])):
                                         for devIp, dev in devs.items():
                                             with dpg.collapsing_header(label=devIp, default_open=True, bullet=True):

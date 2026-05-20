@@ -133,6 +133,7 @@ class GUI():
             conList[devIp]=self.db.selectDevUserAndPass(devIp)
         try:
             p = subprocess.Popen(["py", os.path.dirname(os.path.realpath(__file__))+"/app/conf_gui.py", str(self.cmdDbPath), str(conList)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            #p = subprocess.Popen(["py", os.path.dirname(os.path.realpath(__file__))+"/app/conf_gui_old.py", str(self.cmdDbPath), str(conList)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             stdout, stderr = p.communicate()
             if p.returncode != 0:
                 self.annonceWindow("can not open configuration window")
