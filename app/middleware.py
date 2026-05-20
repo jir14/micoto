@@ -70,6 +70,14 @@ class middleware():
                     comKeyVal[row[key]][devIp].append(row)
         return comKeyVal
 
+    def commonFiltered(self, keyVal=""):
+        out = dict()
+        for ip, vals in keyVal.items():
+            out[ip]=[]
+            for val in vals:
+                if ".id" in val:
+                    out[ip].append(val[".id"])
+        return out
 
 
     def getDir(self, dirId="", id="", spacer="", begin=False):

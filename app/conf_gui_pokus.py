@@ -1,16 +1,18 @@
+import copy
 import dearpygui.dearpygui as dpg
 import middleware as middle
 import ast as ast
 import sys
 from EditThemePlugin import EditThemePlugin
+import window as wnd
 
 class conf_gui():
     def __init__(self, cmdDbPath="" , devs=""):
         dpg.create_context()
-        with dpg.font_registry():
+        """with dpg.font_registry():
             default_font=dpg.add_font("./themes/Roboto.ttf", 15*2)
             dpg.set_global_font_scale(0.5)
-        dpg.bind_font(default_font)
+        dpg.bind_font(default_font)"""
 
         devices=ast.literal_eval(devs)        
         self.middle=middle.middleware(cmdDbFile=cmdDbPath, devices=devices)
@@ -36,87 +38,48 @@ class conf_gui():
         dpg.destroy_context()
 
     def openDirWindow(self, sender, app_data, user_data):
-        lbl = self.middle.printDirPath(user_data["dirId"], spacer="/")
-        if dpg.does_item_exist(lbl):
-            dpg.focus_item(lbl)
+        win = wnd.window(dirId=user_data["dirId"], pos=user_data["pos"], lbl=self.middle.printDirPath(user_data["dirId"], spacer="/"))
+        win.getLbl()
+        if dpg.does_item_exist(win.getLbl()):
+            dpg.focus_item(win.getLbl())
             return
-        user_data["tag"]=lbl
-        user_data["selected"]=dict()
-        with dpg.window(label=lbl, tag=lbl, width=1000, autosize=True, on_close=self.onClose, user_data=user_data, no_resize=False):
-            user_data["pos"] = user_data["pos"]+120
-            dpg.set_item_pos(lbl ,[user_data["pos"],0])
-            data=self.middle.getDirTableData(user_data["dirId"], spacer="/", begin=True)
-            recs=self.middle.getDirDirsIDs(user_data["dirId"])
-            if not all(value == False for value in data.values()):
-                with dpg.group(horizontal=True):
-                    help = self.middle.getSyntax(user_data["dirId"])
-                    with dpg.tab_bar():
-                        with dpg.tab(label=self.middle.getDirName(user_data["dirId"]), tag=str(user_data["dirId"])+lbl):
-                            with dpg.group(horizontal=False, parent=str(user_data["dirId"])+lbl):
-                                with dpg.group(horizontal=True):
-                                    cmds = self.middle.getDirCmds(user_data["dirId"])
-                                    if cmds:
-                                        for key, val in cmds.items():
-                                            usr_data=user_data.copy()
-                                            usr_data["cmd"]=key
-                                            if val:
-                                                dpg.add_button(label=key, callback=self.openCmds, user_data=usr_data)
-                                with dpg.group(tag=str(usr_data["dirId"])+"group"+usr_data["tag"], horizontal=False, parent=str(usr_data["dirId"])+lbl):
-                                    self.addDirTable(user_data=usr_data)
-                        if recs:
-                            for rec in recs:
-                                lbl=self.middle.printDirPath(rec, spacer="/")
-                                dirName=self.middle.getDirName(rec)
-                                usr_data=user_data.copy()
-                                usr_data["tag"]=lbl
-                                usr_data["dirId"]=rec
-                                with dpg.tab(label=dirName, tag=str(usr_data["dirId"])+lbl, no_tooltip=True):
-                                    with dpg.group(horizontal=False, parent=str(usr_data["dirId"])+lbl):
-                                        with dpg.group(horizontal=True):
-                                            cmds = self.middle.getDirCmds(usr_data["dirId"])
-                                            if cmds:
-                                                for key, val in cmds.items():
-                                                    usr_data["cmd"]=key
-                                                    if val:
-                                                        dpg.add_button(label=key, callback=self.openCmds, user_data=usr_data)
-                                        with dpg.group(tag=str(usr_data["dirId"])+"group"+usr_data["tag"], horizontal=False, parent=str(usr_data["dirId"])+lbl):
-                                            self.addDirTable(user_data=usr_data)
+        with dpg.window(label=win.getLbl(), tag=win.getLbl(), width=1000, autosize=True, on_close=self.onClose, user_data=user_data, no_resize=False):
+            win.setPos(win.getPos()+120)
+            dpg.set_item_pos(win.getLbl(), [win.getPos(), win.getPos()/2])
+            tableData = self.middle.getDirTableData(win.getDirId(), spacer="/", begin=True)
+            dirs=self.middle.getDirDirsIDs(win.getDirId())
+            if not all(value == False for value in tableData.values()):
+                help = self.middle.getSyntax(win.getDirId())
+                with dpg.tab_bar():
+                    with dpg.tab(label=self.middle.getDirName(win.getDirId()), tag=str(win.getDirId())+str(win.getLbl())):
+                        with dpg.group(horizontal=True):
+                            cmds = self.middle.getDirCmds(win.getDirId())
+                            if cmds:
+                                for key, val in cmds.items():
+                                    if val:
+                                        dpg.add_button(label=key, callback=self.openCmds, user_data={"dirId":win.getDirId(), "cmd":key, "selected":win.getSelected()})
+                            with dpg.group(tag=str(str(win.getDirId())+"group"+win.getLbl()), horizontal=False, parent=str(win.getDirId())+str(win.getLbl())):
+                                self.addDirTable(user_data=win)
+                    if dirs:
+                        for dir in dirs:
+                            lbl=self.middle.printDirPath(dir, spacer="/")
+                            dirName=self.middle.getDirName(dir)
+                            with dpg.tab(label=dirName, tag=str(dir)+lbl, no_tooltip=True):
+                                with dpg.group(horizontal=False, parent=str(dir)+lbl):
+                                    with dpg.group(horizontal=True):
+                                        cmds = self.middle.getDirCmds(dir)
+                                        if cmds:
+                                            for key, val in cmds.items():
+                                                if val:
+                                                    dpg.add_button(label=key, callback=self.openCmds, user_data={"dirId":win.getDirId(), "cmd":key, "selected":win.getSelected()})
+                                    with dpg.group(tag=str(dir)+"group"+lbl, horizontal=False, parent=str(dir)+lbl):
+                                        wn = copy.deepcopy(win)
+                                        wn.setDirId(dir)
+                                        self.addDirTable(user_data=wn)
 
-                                with dpg.tooltip(parent=str(usr_data["dirId"])+lbl):
-                                    if len(help[dirName])>1:
-                                        dpg.add_text(help[dirName])
-                        
-            else:
-                recs = self.middle.getDirDirsIDs(user_data["dirId"])
-                if recs:
-                    with dpg.group(horizontal=False):
-                        help = self.middle.getSyntax(user_data["dirId"])
-                        for rec in recs:
-                            lbl=self.middle.getDirName(rec)
-                            usr_data=user_data.copy()
-                            usr_data["dirId"]=rec
-                            dpg.add_button(label=lbl, user_data=usr_data, callback=self.openDirWindow, tag=str(user_data["dirId"])+lbl)
-                            with dpg.tooltip(parent=str(user_data["dirId"])+lbl):
-                                if len(help[lbl])>1:
-                                    dpg.add_text(help[lbl])
-                                else:
-                                    dpg.add_text("You are on your own bro")
-
-                with dpg.group(horizontal=True, parent=lbl):
-                    cmds = self.middle.getDirCmds(user_data["dirId"])
-                    if cmds:
-                        for key, val in cmds.items():
-                            usr_data=user_data.copy()
-                            usr_data["cmd"]=key
-                            if val:
-                                match key:
-                                    case "add":
-                                        dpg.add_button(label=key, callback=self.addWindow, user_data=usr_data)
-                                    case _:
-                                        dpg.add_button(label=key, callback=self.openCmds, user_data=usr_data)
-                        with dpg.group(tag=str(user_data["dirId"])+"group"+user_data["tag"], horizontal=False, parent=lbl):
-                            self.addDirTable(user_data=user_data)
-                dpg.add_text("")
+                            with dpg.tooltip(parent=str(dir)+lbl):
+                                if len(help[dirName])>1:
+                                    dpg.add_text(help[dirName])
         return
 
     def openCmds(self, sender, app_data, user_data):
@@ -183,25 +146,26 @@ class conf_gui():
         return
 
     def addDirTable(self, user_data):
-        dirName=self.middle.printDirPath(user_data["dirId"], spacer="/")
-        itemName=str(user_data["dirId"])+"table"+dirName
+        win=user_data
+        dirName=win.getLbl()
+        itemName=str(win.getDirId())+"table"+dirName
         if dpg.does_item_exist(itemName):
             dpg.delete_item(itemName)
-        devKeyVal=self.middle.getDirTableData(user_data["dirId"], spacer="/", begin=True)
-        user_data["selected"]=dict()
+        devKeyVal=self.middle.getDirTableData(win.getDirId(), spacer="/", begin=True)
+        win.clearSelected()
         if not all(value == False for value in devKeyVal.values()):
             stateList={"invalid":"I", "dynamic":"D", "slave":"S", "disabled":"X", "dhcp":"d", "active":"A", "inactive":"I", "connect":"C","static":"S", "rip":"r", "bgp":"b", "o":"ospf", "v":"vpn"}
-            with dpg.table(tag=itemName, header_row=False, parent=str(user_data["dirId"])+"group"+dirName):
+            with dpg.table(tag=itemName, header_row=False, parent=str(win.getDirId())+"group"+dirName):
                 dpg.add_table_column(label=" ")
                 commons = self.middle.getCommon(devKeyVal)
                 with dpg.table_row():
-                    with dpg.collapsing_header(label="common", tag="common,"+str(user_data["dirId"]), default_open=True):
+                    with dpg.collapsing_header(label="common", tag="common,"+str(win.getDirId()), default_open=True):
                         with dpg.table(header_row=True, policy=dpg.mvTable_SizingFixedFit):
                             dpg.add_table_column(label=" ", no_hide=True)
                             for ip, devs in commons.items():
                                 with dpg.table_row():
-                                    dpg.add_selectable(label=ip, tag=ip+","+str(user_data["dirId"]), user_data=[user_data, commons[ip]], span_columns=True, callback=self.tableCallback)
-                                    with dpg.tooltip(parent=ip+","+str(user_data["dirId"])):
+                                    dpg.add_selectable(label=ip, tag=ip+","+str(win.getDirId()), span_columns=True,  callback=win.setSelected, user_data=self.middle.commonFiltered(commons[ip]), default_value=False)
+                                    with dpg.tooltip(parent=ip+","+str(win.getDirId())):
                                         for devIp, dev in devs.items():
                                             with dpg.collapsing_header(label=devIp, default_open=True, bullet=True):
                                                 with dpg.table(policy=dpg.mvTable_SizingFixedFit):
@@ -215,23 +179,23 @@ class conf_gui():
                                                         with dpg.table_row():
                                                             state=str()
                                                             if inRowKeys:
-                                                                dpg.add_selectable(label="", tag="common"+","+devIp+","+str(user_data["dirId"])+",states,"+row[".id"])
+                                                                dpg.add_selectable(label="", tag="common"+","+devIp+","+str(win.getDirId())+",states,"+row[".id"])
                                                             for key, value in row.items():
                                                                 if key==".id":
-                                                                    dpg.add_selectable(label=value, span_columns=True, callback=self.tableCallback, user_data=[user_data, {ip:[{".id":value}]}])
+                                                                    dpg.add_selectable(label=value, span_columns=True, callback=win.setSelected, user_data={ip:value})
                                                                     continue
                                                                 if key in stateList and value=="true":
                                                                     state+=stateList[key]
                                                                     continue
                                                                 dpg.add_selectable(label=value)
                                                         if inRowKeys:
-                                                            dpg.configure_item("common"+","+devIp+","+str(user_data["dirId"])+",states,"+row[".id"], label=state)
+                                                            dpg.configure_item("common"+","+devIp+","+str(win.getDirId())+",states,"+row[".id"], label=state)
                 for ip in devKeyVal.keys():
                     device=devKeyVal[ip]
                     if not device:
                         return
                     with dpg.table_row():
-                        with dpg.collapsing_header(label=ip, tag=ip+","+str(user_data["dirId"])):
+                        with dpg.collapsing_header(label=ip, tag=ip+","+str(win.getDirId())):
                             with dpg.table(header_row=True, policy=dpg.mvTable_SizingFixedFit, hideable=True):
                                 dpg.add_table_column(label="", no_hide=True)
                                 for k in device[0].keys():
@@ -243,19 +207,19 @@ class conf_gui():
                                     with dpg.table_row():
                                         state=str()
                                         if inRowKeys:
-                                            dpg.add_selectable(label="", tag=ip+","+str(user_data["dirId"])+",states,"+row[".id"])
+                                            dpg.add_selectable(label="", tag=ip+","+str(win.getDirId())+",states,"+row[".id"])
                                         else:
                                             dpg.add_selectable(label="")
                                         for key, value in row.items():
                                             if key==".id":
-                                                dpg.add_selectable(label=value, span_columns=True, callback=self.tableCallback, user_data=[user_data, {ip:[{".id":value}]}])
+                                                dpg.add_selectable(label=value, span_columns=True, callback=win.setSelected, user_data={ip:value})
                                                 continue
                                             if key in stateList and value=="true":
                                                 state+=stateList[key]
                                                 continue
                                             dpg.add_selectable(label=value)
                                     if inRowKeys:
-                                        dpg.configure_item(ip+","+str(user_data["dirId"])+",states,"+row[".id"], label=state)
+                                        dpg.configure_item(ip+","+str(win.getDirId())+",states,"+row[".id"], label=state)
         return
 
     def apply(self, sender, app_data, user_data):
