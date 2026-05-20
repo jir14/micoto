@@ -33,15 +33,19 @@ class window():
     
     def setSelected(self, sender, app_data, ipId):
         for ip, ids in ipId.items():
+            self.selected.keys()
             if ip not in self.selected.keys():
-                self.selected[ip]=ids
+                self.selected[ip]=[]
+                for id in ids:
+                    self.selected[ip].append(id)
             else:
                 for id in ids:
                     if id in self.selected[ip]:
                         self.selected[ip].remove(id)
+                        if len(self.selected[ip])==0:
+                            del self.selected[ip]
                     else:
                         self.selected[ip].append(id)
-        print(self.selected)
     
     def clearSelected(self):
         self.selected=dict()

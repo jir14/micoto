@@ -182,7 +182,7 @@ class conf_gui():
                                                                 dpg.add_selectable(label="", tag="common"+","+devIp+","+str(win.getDirId())+",states,"+row[".id"])
                                                             for key, value in row.items():
                                                                 if key==".id":
-                                                                    dpg.add_selectable(label=value, span_columns=True, callback=win.setSelected, user_data={ip:value})
+                                                                    dpg.add_selectable(label=value, span_columns=True)
                                                                     continue
                                                                 if key in stateList and value=="true":
                                                                     state+=stateList[key]
