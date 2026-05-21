@@ -118,9 +118,8 @@ class middleware():
                         dev=r
                         break
                 argVals=argVals.copy()
-                print(ids)
-                """if ids is not None:
-                    argVals["numbers"]=",".join(ids)"""
+                if "interface" not in argVals.keys():
+                    argVals["numbers"]=",".join(ids)
                 msg = dev.api.checkValues(argVals=argVals, pathDef=pathDef)
                 if msg and "message" in msg:
                     msgs[devIp]=msg["message"]

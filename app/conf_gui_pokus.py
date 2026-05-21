@@ -299,12 +299,12 @@ class conf_gui():
         win.setSelected(ipId={ip:[number]})
         return
     
-    def checkboxChecker(self, sender, app_data, win):
+    """def checkboxChecker(self, sender, app_data, win):
         if dpg.does_item_exist(str(win.getLbl()+"/"+win.getCmd()+win.getCmd()+"numbers"+"device")):
             dpg.delete_item(str(win.getLbl()+"/"+win.getCmd()+win.getCmd()+"numbers"+"device"))
         dpg.add_text(show=False, default_value=dpg.get_item_label(sender), tag=str(win.getLbl()+"/"+win.getCmd()+win.getCmd()+"numbers"+"device"), parent=sender)
         self.applyChange(sender=sender, app_data=app_data, win=win)
-        return
+        return"""
 
 if __name__ == "__main__":
     conf_gui(sys.argv[1], sys.argv[2])
