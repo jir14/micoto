@@ -87,15 +87,14 @@ class conf_gui():
 
                 with dpg.group(horizontal=True, parent=lbl):
                     cmds = self.middle.getDirCmds(win.getDirId())
-                    print(cmds)
                     if cmds:
                         for key, val in cmds.items():
                             wn = copy.deepcopy(win)
                             wn.setCmd(key)
                             if val:
                                 match key:
-                                    case "add":
-                                        dpg.add_button(label=key, callback=lambda: print("pes"), user_data=wn)
+                                    #case "add":
+                                    #    dpg.add_button(label=key, callback=lambda: print("pes"), user_data=wn)
                                     case _:
                                         dpg.add_button(label=key, callback=self.openCmds, user_data=wn)
                         with dpg.group(tag=str(win.getDirId())+"group"+win.getLbl(), horizontal=False, parent=lbl):
@@ -143,7 +142,6 @@ class conf_gui():
                                     dpg.add_combo(tag=lbl+cmd+arg+"text", items=val, callback=self.addToArgVals, user_data=(win, arg))
                                 else:
                                     dpg.add_input_text(tag=lbl+cmd+arg+"text", width=200, callback=self.addToArgVals, user_data=(win, arg))
-                                #print(lbl+cmd+arg+"text")
 
                         match str(dpg.get_item_label(sender)):
                             case "add":
@@ -151,16 +149,17 @@ class conf_gui():
                                     dpg.add_text("apply to:")
                                     with dpg.group(horizontal=False):
                                         for devIp in self.middle.getIpDevices():
-                                            win.getSelected[devIp]=None
-                                            #dpg.add_checkbox(label=devIp, default_value=True, callback=win.selected, user_data={devIp:[]})
+                                            #win.getSelected[devIp]=None
+                                            dpg.add_checkbox(label=devIp, default_value=False, callback=self.applyChange, user_data=win)
+                                            #dpg.add_checkbox(label=devIp, default_value=False, callback=self.checkboxChecker, user_data=win)
                                             #dpg.add_checkbox(label=devIp, default_value=True, callback=lambda btn: win.setSelected.pop(dpg.get_item_label(btn)) if (dpg.get_item_label(btn) in win.setSelected) else win.setSelected.update({dpg.get_item_label(btn):None}))
                             case _:
                                 if len(win.getSelected())==0:
                                     with dpg.table_row():
                                         dpg.add_text("apply to:")
                                         devs=self.middle.getIpDevices()
-                                        print(lbl+cmd+arg+"device")
-                                        dpg.add_combo(items=devs, default_value=devs[0], tag=lbl+cmd+arg+"device", callback=lambda ip: win.setSelected(dpg.get_value(lbl+cmd+arg+"text")))
+                                        dpg.add_combo(items=devs, default_value=devs[0], tag=lbl+cmd+arg+"device", callback=self.applyChange, user_data=win)
+                                        #dpg.add_combo(items=devs, default_value=devs[0], tag=lbl+cmd+arg+"device", callback=lambda ip: win.setSelected(dpg.get_value(lbl+cmd+arg+"text")))
 
                         with dpg.table_row():
                             dpg.add_text("test:")
@@ -274,7 +273,6 @@ class conf_gui():
             user_data.setPos(user_data.getPos()-120)
             dpg.set_value(item=str(user_data.getLbl()+"/"+user_data.getCmd())+cmdName+"message", value="ok")
             self.onClose(sender=self,app_data=app_data,user_data=user_data)
-            print(str(user_data.getLbl())+" apply post close"+" argVals : "+str(argVals))
 
     def onClose(self, sender, app_data, user_data):
         self.addCommands(win=user_data)
@@ -289,9 +287,23 @@ class conf_gui():
         return
     
     def applyChange(self, sender, app_data, win):
-        ip = dpg.get_value(str(win.getLbl()+"/"+win.getCmd()+win.getCmd()+"numbers"+"device"))
-        number = dpg.get_value(str(win.getLbl()+"/"+win.getCmd()+win.getCmd()+"numbers"+"numbers"))
+        if not isinstance(app_data, bool):
+            win.clearSelected()
+            ip = dpg.get_value(str(win.getLbl()+"/"+win.getCmd()+win.getCmd()+"numbers"+"device"))
+        else:
+            ip = dpg.get_item_label(sender)
+        if dpg.does_item_exist(str(win.getLbl()+"/"+win.getCmd()+win.getCmd()+"interface"+"text")):
+            number = dpg.get_value(str(win.getLbl()+"/"+win.getCmd()+win.getCmd()+"interface"+"text"))
+        else:
+            number = dpg.get_value(str(win.getLbl()+"/"+win.getCmd()+win.getCmd()+"numbers"+"numbers"))
         win.setSelected(ipId={ip:[number]})
+        return
+    
+    def checkboxChecker(self, sender, app_data, win):
+        if dpg.does_item_exist(str(win.getLbl()+"/"+win.getCmd()+win.getCmd()+"numbers"+"device")):
+            dpg.delete_item(str(win.getLbl()+"/"+win.getCmd()+win.getCmd()+"numbers"+"device"))
+        dpg.add_text(show=False, default_value=dpg.get_item_label(sender), tag=str(win.getLbl()+"/"+win.getCmd()+win.getCmd()+"numbers"+"device"), parent=sender)
+        self.applyChange(sender=sender, app_data=app_data, win=win)
         return
 
 if __name__ == "__main__":

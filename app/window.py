@@ -53,6 +53,7 @@ class window():
         return self.selected
     
     def setSelected(self, sender="", app_data="", ipId=dict()):
+        #print(ipId)
         for ip, ids in ipId.items():
             self.selected.keys()
             if ip not in self.selected.keys():
