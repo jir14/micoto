@@ -9,6 +9,9 @@ import window as wnd
 class conf_gui():
     def __init__(self, cmdDbPath="" , devs=""):
         dpg.create_context()
+
+        dpg.show_item_registry()
+
         """with dpg.font_registry():
             default_font=dpg.add_font("./themes/Roboto.ttf", 15*2)
             dpg.set_global_font_scale(0.5)
@@ -51,32 +54,19 @@ class conf_gui():
                 help = self.middle.getSyntax(win.getDirId())
                 with dpg.tab_bar():
                     with dpg.tab(label=self.middle.getDirName(win.getDirId()), tag=str(win.getDirId())+str(win.getLbl())):
-                        with dpg.group(horizontal=True):
-                            cmds = self.middle.getDirCmds(win.getDirId())
-                            if cmds:
-                                for key, val in cmds.items():
-                                    if val:
-                                        dpg.add_button(label=key, callback=self.openCmds, user_data=win)
-                            with dpg.group(tag=str(str(win.getDirId())+"group"+win.getLbl()), horizontal=False, parent=str(win.getDirId())+str(win.getLbl())):
-                                self.addDirTable(user_data=win)
+                        self.addCommands(win=win)
+                        self.addDirTable(user_data=win)
                     if dirs:
                         for dir in dirs:
-                            lbl=self.middle.printDirPath(dir, spacer="/")
+                            wn = copy.deepcopy(win)
+                            wn.setDirId(dir)
+                            wn.setLbl(self.middle.printDirPath(dir, spacer="/"))
                             dirName=self.middle.getDirName(dir)
-                            with dpg.tab(label=dirName, tag=str(dir)+lbl, no_tooltip=True):
-                                with dpg.group(horizontal=False, parent=str(dir)+lbl):
-                                    with dpg.group(horizontal=True):
-                                        cmds = self.middle.getDirCmds(dir)
-                                        if cmds:
-                                            for key, val in cmds.items():
-                                                if val:
-                                                    dpg.add_button(label=key, callback=self.openCmds, user_data=win)
-                                    with dpg.group(tag=str(dir)+"group"+lbl, horizontal=False, parent=str(dir)+lbl):
-                                        wn = copy.deepcopy(win)
-                                        wn.setDirId(dir)
-                                        self.addDirTable(user_data=wn)
+                            with dpg.tab(label=dirName, tag=str(wn.getDirId())+str(wn.getLbl()), no_tooltip=True):
+                                self.addCommands(win=wn)
+                                self.addDirTable(user_data=wn)
 
-                            with dpg.tooltip(parent=str(dir)+lbl):
+                            with dpg.tooltip(parent=str(wn.getDirId())+str(wn.getLbl())):
                                 if len(help[dirName])>1:
                                     dpg.add_text(help[dirName])
         return
@@ -107,19 +97,15 @@ class conf_gui():
                                         dpg.add_text(help[arg])
                                     else:
                                         dpg.add_text("You are on your own bro")
-                                if arg=="numbers" and len(win.getSelected())>0:
-                                        dpg.add_input_text(tag=lbl+cmd+arg+"text", width=200, callback=lambda: win.setArgVals({arg:dpg.get_value(sender)}))
-                                        
-                                        #dpg.add_input_text(tag=lbl+cmd+arg+"text", width=200, callback=self.addToArgVals, user_data=(win, arg))
-                                        #win.setArgVals({arg:dpg.get_value(sender)})
+                                if arg=="numbers" and len(win.getSelected())>0:                                    
+                                        dpg.add_input_text(tag=lbl+cmd+arg+"text", width=200, callback=self.addToArgVals, user_data=(win, arg))
                                         dpg.set_value(lbl+cmd+arg+"text", win.getSelected())
                                         dpg.configure_item(lbl+cmd+arg+"text", readonly=True)
                                         continue
                                 if len(val)>0:
                                     dpg.add_combo(tag=lbl+cmd+arg+"text", items=val, callback=self.addToArgVals, user_data=(win, arg))
                                 else:
-                                    dpg.add_input_text(tag=lbl+cmd+arg+"text", width=200, callback=lambda: win.setArgVals({arg:dpg.get_value(sender)}))
-                                    #dpg.add_input_text(tag=lbl+cmd+arg+"text", width=200, callback=self.addToArgVals, user_data=(win, arg))
+                                    dpg.add_input_text(tag=lbl+cmd+arg+"text", width=200, callback=self.addToArgVals, user_data=(win, arg))
 
                         match str(dpg.get_item_label(sender)):
                             case "add":
@@ -151,75 +137,89 @@ class conf_gui():
         itemName=str(win.getDirId())+"table"+dirName
         if dpg.does_item_exist(itemName):
             dpg.delete_item(itemName)
+        if dpg.does_alias_exist(str(str(win.getDirId())+"group"+win.getLbl())):
+            dpg.delete_item(str(str(win.getDirId())+"group"+win.getLbl()))
         devKeyVal=self.middle.getDirTableData(win.getDirId(), spacer="/", begin=True)
         win.clearSelected()
         if not all(value == False for value in devKeyVal.values()):
             stateList={"invalid":"I", "dynamic":"D", "slave":"S", "disabled":"X", "dhcp":"d", "active":"A", "inactive":"I", "connect":"C","static":"S", "rip":"r", "bgp":"b", "o":"ospf", "v":"vpn"}
-            with dpg.table(tag=itemName, header_row=False, parent=str(win.getDirId())+"group"+dirName):
-                dpg.add_table_column(label=" ")
-                commons = self.middle.getCommon(devKeyVal)
-                with dpg.table_row():
-                    with dpg.collapsing_header(label="common", tag="common,"+str(win.getDirId()), default_open=True):
-                        with dpg.table(header_row=True, policy=dpg.mvTable_SizingFixedFit):
-                            dpg.add_table_column(label=" ", no_hide=True)
-                            for ip, devs in commons.items():
-                                with dpg.table_row():
-                                    dpg.add_selectable(label=ip, tag=ip+","+str(win.getDirId()), span_columns=True,  callback=win.setSelected, user_data=self.middle.commonFiltered(commons[ip]), default_value=False)
-                                    with dpg.tooltip(parent=ip+","+str(win.getDirId())):
-                                        for devIp, dev in devs.items():
-                                            with dpg.collapsing_header(label=devIp, default_open=True, bullet=True):
-                                                with dpg.table(policy=dpg.mvTable_SizingFixedFit):
-                                                    dpg.add_table_column(label="")
-                                                    for k in dev[0].keys():
-                                                            if k in stateList:
-                                                                continue
-                                                            dpg.add_table_column(label=k)
-                                                    for row in dev:
-                                                        inRowKeys=".id" in row.keys()
-                                                        with dpg.table_row():
-                                                            state=str()
-                                                            if inRowKeys:
-                                                                dpg.add_selectable(label="", tag="common"+","+devIp+","+str(win.getDirId())+",states,"+row[".id"])
-                                                            for key, value in row.items():
-                                                                if key==".id":
-                                                                    dpg.add_selectable(label=value, span_columns=True)
-                                                                    continue
-                                                                if key in stateList and value=="true":
-                                                                    state+=stateList[key]
-                                                                    continue
-                                                                dpg.add_selectable(label=value)
-                                                        if inRowKeys:
-                                                            dpg.configure_item("common"+","+devIp+","+str(win.getDirId())+",states,"+row[".id"], label=state)
-                for ip in devKeyVal.keys():
-                    device=devKeyVal[ip]
-                    if not device:
-                        return
+            with dpg.group(tag=str(str(win.getDirId())+"group"+win.getLbl()), horizontal=False, parent=str(win.getDirId())+str(win.getLbl())):
+                with dpg.table(tag=itemName, header_row=False, parent=str(win.getDirId())+"group"+dirName):
+                    dpg.add_table_column(label=" ")
+                    commons = self.middle.getCommon(devKeyVal)
                     with dpg.table_row():
-                        with dpg.collapsing_header(label=ip, tag=ip+","+str(win.getDirId())):
-                            with dpg.table(header_row=True, policy=dpg.mvTable_SizingFixedFit, hideable=True):
-                                dpg.add_table_column(label="", no_hide=True)
-                                for k in device[0].keys():
-                                    if k in stateList:
-                                        continue
-                                    dpg.add_table_column(label=k, width_stretch=True)
-                                for row in device:
-                                    inRowKeys=".id" in row.keys()
+                        with dpg.collapsing_header(label="common", tag="common,"+str(win.getDirId()), default_open=True):
+                            with dpg.table(header_row=True, policy=dpg.mvTable_SizingFixedFit):
+                                dpg.add_table_column(label=" ", no_hide=True)
+                                for ip, devs in commons.items():
                                     with dpg.table_row():
-                                        state=str()
+                                        dpg.add_selectable(label=ip, tag=ip+","+str(win.getDirId()), span_columns=True,  callback=win.setSelected, user_data=self.middle.commonFiltered(commons[ip]), default_value=False)
+                                        with dpg.tooltip(parent=ip+","+str(win.getDirId())):
+                                            for devIp, dev in devs.items():
+                                                with dpg.collapsing_header(label=devIp, default_open=True, bullet=True):
+                                                    with dpg.table(policy=dpg.mvTable_SizingFixedFit):
+                                                        dpg.add_table_column(label="")
+                                                        for k in dev[0].keys():
+                                                                if k in stateList:
+                                                                    continue
+                                                                dpg.add_table_column(label=k)
+                                                        for row in dev:
+                                                            inRowKeys=".id" in row.keys()
+                                                            with dpg.table_row():
+                                                                state=str()
+                                                                if inRowKeys:
+                                                                    dpg.add_selectable(label="", tag="common"+","+devIp+","+str(win.getDirId())+",states,"+row[".id"])
+                                                                for key, value in row.items():
+                                                                    if key==".id":
+                                                                        dpg.add_selectable(label=value, span_columns=True)
+                                                                        continue
+                                                                    if key in stateList and value=="true":
+                                                                        state+=stateList[key]
+                                                                        continue
+                                                                    dpg.add_selectable(label=value)
+                                                            if inRowKeys:
+                                                                dpg.configure_item("common"+","+devIp+","+str(win.getDirId())+",states,"+row[".id"], label=state)
+                    for ip in devKeyVal.keys():
+                        device=devKeyVal[ip]
+                        if not device:
+                            return
+                        with dpg.table_row():
+                            with dpg.collapsing_header(label=ip, tag=ip+","+str(win.getDirId())):
+                                with dpg.table(header_row=True, policy=dpg.mvTable_SizingFixedFit, hideable=True):
+                                    dpg.add_table_column(label="", no_hide=True)
+                                    for k in device[0].keys():
+                                        if k in stateList:
+                                            continue
+                                        dpg.add_table_column(label=k, width_stretch=True)
+                                    for row in device:
+                                        inRowKeys=".id" in row.keys()
+                                        with dpg.table_row():
+                                            state=str()
+                                            if inRowKeys:
+                                                dpg.add_selectable(label="", tag=ip+","+str(win.getDirId())+",states,"+row[".id"])
+                                            else:
+                                                dpg.add_selectable(label="")
+                                            for key, value in row.items():
+                                                if key==".id":
+                                                    dpg.add_selectable(label=value, span_columns=True, callback=win.setSelected, user_data={ip:[value]})
+                                                    continue
+                                                if key in stateList and value=="true":
+                                                    state+=stateList[key]
+                                                    continue
+                                                dpg.add_selectable(label=value)
                                         if inRowKeys:
-                                            dpg.add_selectable(label="", tag=ip+","+str(win.getDirId())+",states,"+row[".id"])
-                                        else:
-                                            dpg.add_selectable(label="")
-                                        for key, value in row.items():
-                                            if key==".id":
-                                                dpg.add_selectable(label=value, span_columns=True, callback=win.setSelected, user_data={ip:[value]})
-                                                continue
-                                            if key in stateList and value=="true":
-                                                state+=stateList[key]
-                                                continue
-                                            dpg.add_selectable(label=value)
-                                    if inRowKeys:
-                                        dpg.configure_item(ip+","+str(win.getDirId())+",states,"+row[".id"], label=state)
+                                            dpg.configure_item(ip+","+str(win.getDirId())+",states,"+row[".id"], label=state)
+        return
+
+    def addCommands(self, win):
+        if dpg.does_item_exist(str(win.getDirId())+str(win.getLbl())+"group"):
+            dpg.delete_item(str(win.getDirId())+str(win.getLbl())+"group")
+        with dpg.group(horizontal=True, tag=str(win.getDirId())+str(win.getLbl())+"group", parent=str(win.getDirId())+str(win.getLbl())):
+            cmds = self.middle.getDirCmds(win.getDirId())
+            if cmds:
+                for key, val in cmds.items():
+                    if val:
+                        dpg.add_button(label=key, callback=self.openCmds, user_data=win)
         return
 
     def apply(self, sender, app_data, user_data):
@@ -236,10 +236,12 @@ class conf_gui():
             txt+=str(ip)+": "+str(mess)+"\n"
         dpg.set_value(item=str(user_data.getLbl()+"/"+user_data.getCmd())+cmdName+"message", value=txt)
         if all(value =="ok" for value in check.values()):
+            user_data.setPos(user_data.getPos()-120)
             dpg.set_value(item=str(user_data.getLbl()+"/"+user_data.getCmd())+cmdName+"message", value="ok")
             self.onClose(sender=self,app_data=app_data,user_data=user_data)
 
     def onClose(self, sender, app_data, user_data):
+        self.addCommands(win=user_data)
         self.addDirTable(user_data=user_data)
         dpg.delete_item(user_data.getLbl()+"/"+user_data.getCmd())
         return
