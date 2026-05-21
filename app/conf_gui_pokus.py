@@ -54,7 +54,8 @@ class conf_gui():
                 help = self.middle.getSyntax(win.getDirId())
                 with dpg.tab_bar():
                     with dpg.tab(label=self.middle.getDirName(win.getDirId()), tag=str(win.getDirId())+str(win.getLbl())):
-                        self.addCommands(win=win)
+                        with dpg.group(horizontal=True, tag=str(win.getDirId())+str(win.getLbl())+"group", parent=str(win.getDirId())+str(win.getLbl())):
+                            self.addCommands(win=win)
                         self.addDirTable(user_data=win)
                     if dirs:
                         for dir in dirs:
@@ -63,12 +64,43 @@ class conf_gui():
                             wn.setLbl(self.middle.printDirPath(dir, spacer="/"))
                             dirName=self.middle.getDirName(dir)
                             with dpg.tab(label=dirName, tag=str(wn.getDirId())+str(wn.getLbl()), no_tooltip=True):
-                                self.addCommands(win=wn)
+                                with dpg.group(horizontal=True, tag=str(wn.getDirId())+str(wn.getLbl())+"group", parent=str(wn.getDirId())+str(wn.getLbl())):
+                                    self.addCommands(win=wn)
                                 self.addDirTable(user_data=wn)
 
                             with dpg.tooltip(parent=str(wn.getDirId())+str(wn.getLbl())):
                                 if len(help[dirName])>1:
                                     dpg.add_text(help[dirName])
+            else:
+                recs = self.middle.getDirDirsIDs(win.getDirId())
+                if recs:
+                    with dpg.group(horizontal=False):
+                        help = self.middle.getSyntax(win.getDirId())
+                        for rec in recs:
+                            lbl=self.middle.getDirName(rec)
+                            dpg.add_button(label=lbl, tag=str(rec)+lbl, callback=self.openDirWindow, user_data={"pos":win.getPos(), "dirId":rec})
+                            with dpg.tooltip(parent=str(rec)+lbl):
+                                if len(help[lbl])>1:
+                                    dpg.add_text(help[lbl])
+                                else:
+                                    dpg.add_text("You are on your own bro")
+
+                with dpg.group(horizontal=True, parent=lbl):
+                    cmds = self.middle.getDirCmds(win.getDirId())
+                    print(cmds)
+                    if cmds:
+                        for key, val in cmds.items():
+                            wn = copy.deepcopy(win)
+                            wn.setCmd(key)
+                            if val:
+                                match key:
+                                    case "add":
+                                        dpg.add_button(label=key, callback=lambda: print("pes"), user_data=wn)
+                                    case _:
+                                        dpg.add_button(label=key, callback=self.openCmds, user_data=wn)
+                        with dpg.group(tag=str(win.getDirId())+"group"+win.getLbl(), horizontal=False, parent=lbl):
+                            self.addDirTable(user_data=win)
+                dpg.add_text("")
         return
     
     def openCmds(self, sender, app_data, user_data):
@@ -80,6 +112,7 @@ class conf_gui():
             dpg.focus_item(lbl)
             return
         win = wnd.window(dirId=oldWin.getDirId(), selected=oldWin.getSelected(), lbl=path, pos=oldWin.getPos(), cmd=cmd)
+        win.clearArgVals()
         with dpg.window(label=lbl, tag=lbl, autosize=True, on_close=self.onClose, user_data=win):
             win.setPos(win.getPos()+120)
             dpg.set_item_pos(lbl,[win.getPos(),win.getPos()/2])
@@ -97,15 +130,20 @@ class conf_gui():
                                         dpg.add_text(help[arg])
                                     else:
                                         dpg.add_text("You are on your own bro")
-                                if arg=="numbers" and len(win.getSelected())>0:                                    
+                                if arg=="numbers":
+                                    if len(win.getSelected())!=0:                   
                                         dpg.add_input_text(tag=lbl+cmd+arg+"text", width=200, callback=self.addToArgVals, user_data=(win, arg))
                                         dpg.set_value(lbl+cmd+arg+"text", win.getSelected())
                                         dpg.configure_item(lbl+cmd+arg+"text", readonly=True)
                                         continue
+                                    dpg.add_combo(tag=lbl+cmd+arg+"numbers", items=val, callback=self.applyChange, user_data=win)
+                                    continue
+
                                 if len(val)>0:
                                     dpg.add_combo(tag=lbl+cmd+arg+"text", items=val, callback=self.addToArgVals, user_data=(win, arg))
                                 else:
                                     dpg.add_input_text(tag=lbl+cmd+arg+"text", width=200, callback=self.addToArgVals, user_data=(win, arg))
+                                #print(lbl+cmd+arg+"text")
 
                         match str(dpg.get_item_label(sender)):
                             case "add":
@@ -114,13 +152,15 @@ class conf_gui():
                                     with dpg.group(horizontal=False):
                                         for devIp in self.middle.getIpDevices():
                                             win.getSelected[devIp]=None
+                                            #dpg.add_checkbox(label=devIp, default_value=True, callback=win.selected, user_data={devIp:[]})
                                             #dpg.add_checkbox(label=devIp, default_value=True, callback=lambda btn: win.setSelected.pop(dpg.get_item_label(btn)) if (dpg.get_item_label(btn) in win.setSelected) else win.setSelected.update({dpg.get_item_label(btn):None}))
                             case _:
                                 if len(win.getSelected())==0:
                                     with dpg.table_row():
                                         dpg.add_text("apply to:")
                                         devs=self.middle.getIpDevices()
-                                        dpg.add_combo(items=devs, default_value=devs[0], tag=lbl+cmd+arg+"device")
+                                        print(lbl+cmd+arg+"device")
+                                        dpg.add_combo(items=devs, default_value=devs[0], tag=lbl+cmd+arg+"device", callback=lambda ip: win.setSelected(dpg.get_value(lbl+cmd+arg+"text")))
 
                         with dpg.table_row():
                             dpg.add_text("test:")
@@ -214,23 +254,18 @@ class conf_gui():
     def addCommands(self, win):
         if dpg.does_item_exist(str(win.getDirId())+str(win.getLbl())+"group"):
             dpg.delete_item(str(win.getDirId())+str(win.getLbl())+"group")
-        with dpg.group(horizontal=True, tag=str(win.getDirId())+str(win.getLbl())+"group", parent=str(win.getDirId())+str(win.getLbl())):
-            cmds = self.middle.getDirCmds(win.getDirId())
-            if cmds:
-                for key, val in cmds.items():
-                    if val:
-                        dpg.add_button(label=key, callback=self.openCmds, user_data=win)
+            with dpg.group(horizontal=True, tag=str(win.getDirId())+str(win.getLbl())+"group", parent=str(win.getDirId())+str(win.getLbl())):
+                cmds = self.middle.getDirCmds(win.getDirId())
+                if cmds:
+                    for key, val in cmds.items():
+                        if val:
+                            dpg.add_button(label=key, callback=self.openCmds, user_data=win)
         return
 
     def apply(self, sender, app_data, user_data):
         cmdName=user_data.getCmd()
         argVals=user_data.getArgVals()
-        """if list(user_data["selected"].values())[0] is None:
-            selected=user_data["selected"].copy()
-        else:
-            selected=ast.literal_eval(dpg.get_value(user_data["tag"]+str(user_data["cmd"])+"numbers"+"text"))"""
         check=self.middle.applyToDevices(dirId=user_data.getDirId(), cmdName=cmdName, argVals=argVals, selected=user_data.getSelected())
-        print(check)
         txt=str()
         for ip, mess in check.items():
             txt+=str(ip)+": "+str(mess)+"\n"
@@ -239,17 +274,24 @@ class conf_gui():
             user_data.setPos(user_data.getPos()-120)
             dpg.set_value(item=str(user_data.getLbl()+"/"+user_data.getCmd())+cmdName+"message", value="ok")
             self.onClose(sender=self,app_data=app_data,user_data=user_data)
+            print(str(user_data.getLbl())+" apply post close"+" argVals : "+str(argVals))
 
     def onClose(self, sender, app_data, user_data):
         self.addCommands(win=user_data)
         self.addDirTable(user_data=user_data)
-        dpg.delete_item(user_data.getLbl()+"/"+user_data.getCmd())
+        dpg.delete_item(user_data.getLbl()+"/"+user_data.getCmd() if user_data.getCmd() else user_data.getLbl())
         return
 
     def addToArgVals(self, sender, app_data, user_data):
         arg=user_data[1]
         win=user_data[0]
         win.setArgVals({arg:dpg.get_value(sender)})
+        return
+    
+    def applyChange(self, sender, app_data, win):
+        ip = dpg.get_value(str(win.getLbl()+"/"+win.getCmd()+win.getCmd()+"numbers"+"device"))
+        number = dpg.get_value(str(win.getLbl()+"/"+win.getCmd()+win.getCmd()+"numbers"+"numbers"))
+        win.setSelected(ipId={ip:[number]})
         return
 
 if __name__ == "__main__":

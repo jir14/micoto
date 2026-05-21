@@ -44,11 +44,15 @@ class window():
         for arg, val in argVal.items():
             self.argVals[arg]=val
         return True
+
+    def clearArgVals(self):
+        self.argVals = dict()
+        return True
     
     def getSelected(self):
         return self.selected
     
-    def setSelected(self, sender, app_data, ipId):
+    def setSelected(self, sender="", app_data="", ipId=dict()):
         for ip, ids in ipId.items():
             self.selected.keys()
             if ip not in self.selected.keys():
