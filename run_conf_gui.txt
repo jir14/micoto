@@ -1,0 +1,1 @@
+py .\conf_gui_pokus.py "C:\Users\Jirka\Desktop\micoto\app\default-commands.db" "{'10.255.255.255': {'admin': b'testpass'}, '10.255.255.254': {'admin': b'testpass'}}"

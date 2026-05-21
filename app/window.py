@@ -1,11 +1,13 @@
 import dearpygui.dearpygui as dpg
 
 class window():
-    def __init__(self, dirId="", selected="", pos=0, lbl=""):
+    def __init__(self, dirId="", selected="", pos=0, lbl="", cmd="", argVals=dict()):
         self.dirId = dirId
         self.selected = selected
         self.pos = pos
         self.lbl = lbl
+        self.cmd = cmd
+        self.argVals = argVals
     
     def getDirId(self):
         return self.dirId
@@ -28,6 +30,21 @@ class window():
         self.lbl=lbl
         return True
     
+    def getCmd(self):
+        return self.cmd
+    
+    def setCmd(self, cmd=""):
+        self.cmd=cmd
+        return True
+    
+    def getArgVals(self):
+        return self.argVals
+    
+    def setArgVals(self, argVal):
+        for arg, val in argVal.items():
+            self.argVals[arg]=val
+        return True
+    
     def getSelected(self):
         return self.selected
     
@@ -46,6 +63,7 @@ class window():
                             del self.selected[ip]
                     else:
                         self.selected[ip].append(id)
+        print(self.selected)
     
     def clearSelected(self):
         self.selected=dict()
