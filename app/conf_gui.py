@@ -10,10 +10,10 @@ class conf_gui():
     def __init__(self, cmdDbPath="" , devs=""):
         dpg.create_context()
 
-        with dpg.font_registry():
+        """with dpg.font_registry():
             default_font=dpg.add_font("./themes/Roboto.ttf", 15*2)
             dpg.set_global_font_scale(0.5)
-        dpg.bind_font(default_font)
+        dpg.bind_font(default_font)"""
 
         devices=ast.literal_eval(devs)
         
@@ -286,8 +286,13 @@ class conf_gui():
 
     def onClose(self, sender, app_data, user_data):
         self.addCommands(win=user_data)
-        self.addDirTable(user_data=user_data)
-        dpg.delete_item(user_data.getLbl()+"/"+user_data.getCmd() if user_data.getCmd() else user_data.getLbl())
+        try:
+            user_data.setTableData(self.middle.getDirTableData(user_data.getDirId(), spacer="/", begin=True))
+            self.addDirTable(user_data=user_data)
+        except:
+            self.annonceWindow(consequence="can not get table data")
+        finally:
+            dpg.delete_item(user_data.getLbl()+"/"+user_data.getCmd() if user_data.getCmd() else user_data.getLbl())
         return
 
     def addToArgVals(self, sender, app_data, user_data):
@@ -311,12 +316,20 @@ class conf_gui():
 
     def annonceWindow(self, msg="connection failed", type="Error", consequence=False):
         dpg.split_frame()
-        with dpg.window(label="Annonce", tag="AnnonceWindow", modal=True) as annwnd:
+        with dpg.window(label="Annonce", tag="AnnonceWindow", modal=True, autosize=True) as annwnd:
             dpg.add_text(type+": "+str(msg))
             if consequence:
                 dpg.add_text(consequence)
             dpg.add_button(label="close", callback=lambda: dpg.delete_item(annwnd))
         self.centerItem(annwnd)
+
+    def centerItem(self, tag):
+        dpg.split_frame()
+        Main_width=dpg.get_item_width("devList")
+        Main_heigh=dpg.get_item_height("devList")
+        Window_width=dpg.get_item_width(tag)
+        Window_height=dpg.get_item_height(tag)
+        dpg.set_item_pos(tag, [int(Main_width/2-Window_width/2), int(Main_heigh/2-Window_height/2)])
 
 if __name__ == "__main__":
     conf_gui(sys.argv[1], sys.argv[2])

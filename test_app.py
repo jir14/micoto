@@ -15,6 +15,8 @@ class GUI():
         self.cmdDbPath = None
         self.selectedList = []
 
+        dpg.show_item_registry()
+
         with dpg.font_registry():
             default_font=dpg.add_font("./themes/Roboto.ttf", 15*2)
             dpg.set_global_font_scale(0.5)
@@ -69,6 +71,7 @@ class GUI():
         self.setCmdDb(path["file_path_name"])
 
     def centerItem(self, tag):
+        dpg.split_frame()
         Main_width=dpg.get_item_width("devList")
         Main_heigh=dpg.get_item_height("devList")
         Window_width=dpg.get_item_width(tag)
@@ -115,7 +118,6 @@ class GUI():
 
     def selected(self, app_data):
         devIpAddr = dpg.get_item_label(app_data)
-
         if devIpAddr in self.selectedList:
             self.selectedList.remove(devIpAddr)
         else:
@@ -137,8 +139,7 @@ class GUI():
         return
 
     def annonceWindow(self, msg="", type="Error"):
-        dpg.split_frame()
-        with dpg.window(label="Annonce", tag="AnnonceWindow", modal=True) as annwnd:
+        with dpg.window(label="Annonce", tag="AnnonceWindow", modal=True, autosize=True) as annwnd:
             dpg.add_text(type+": "+str(msg))
             dpg.add_button(label="close", callback=lambda: dpg.delete_item(annwnd))
         self.centerItem(annwnd)
