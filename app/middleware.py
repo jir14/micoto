@@ -110,7 +110,25 @@ class middleware():
     
     def applyToDevices(self, argVals="", dirId="", cmdName="", spacer="/", selected=False):
         pathDef=spacer+self.printDirPath(dirId=dirId, spacer=spacer)+spacer+cmdName
-        if selected:
+        msgs=dict()
+        for devIp, ids in selected.items():
+            for r in self.devList:
+                if r.getDevIp()==devIp:
+                    dev=r
+                    break
+            argVals=argVals.copy()
+            if "interface" not in argVals.keys():
+                argVals["numbers"]=",".join(ids)
+            """print("apply to devices")
+            print("argVals : "+str(argVals))
+            print("pathDef : "+str(pathDef))"""
+            msg = dev.api.checkValues(argVals=argVals, pathDef=pathDef)
+            if msg and "message" in msg:
+                msgs[devIp]=msg["message"]
+            else:
+                msgs[devIp]="ok"
+        
+        """if selected:
             msgs=dict()
             for devIp, ids in selected.items():
                 for r in self.devList:
@@ -120,9 +138,12 @@ class middleware():
                 argVals=argVals.copy()
                 if "interface" not in argVals.keys():
                     argVals["numbers"]=",".join(ids)
+                print("apply to devices")
+                print("argVals : "+str(argVals))
+                print("pathDef : "+str(argVals))
                 msg = dev.api.checkValues(argVals=argVals, pathDef=pathDef)
                 if msg and "message" in msg:
                     msgs[devIp]=msg["message"]
                 else:
-                    msgs[devIp]="ok"
+                    msgs[devIp]="ok" """
         return msgs

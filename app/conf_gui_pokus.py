@@ -19,7 +19,7 @@ class conf_gui():
 
         devices=ast.literal_eval(devs)        
         self.middle=middle.middleware(cmdDbFile=cmdDbPath, devices=devices)
-        with dpg.window(label="Main") as MainWindow:
+        with dpg.window(label="Main", on_close=lambda: dpg.delete_item(MainWindow)) as MainWindow:
             with dpg.menu_bar():
                 with dpg.menu(label="Theme"):
                     EditThemePlugin()
@@ -129,14 +129,15 @@ class conf_gui():
                                         dpg.add_text(help[arg])
                                     else:
                                         dpg.add_text("You are on your own bro")
+                                print("val : "+str(val))
                                 if arg=="numbers":
                                     if len(win.getSelected())!=0:                   
                                         dpg.add_input_text(tag=lbl+cmd+arg+"text", width=200, callback=self.addToArgVals, user_data=(win, arg))
                                         dpg.set_value(lbl+cmd+arg+"text", win.getSelected())
                                         dpg.configure_item(lbl+cmd+arg+"text", readonly=True)
                                         continue
-                                    dpg.add_combo(tag=lbl+cmd+arg+"numbers", items=val, callback=self.applyChange, user_data=win)
-                                    continue
+                                    #dpg.add_combo(tag=lbl+cmd+arg+"numbers", items=val, callback=self.applyChange, user_data=win)
+                                    #continue
 
                                 if len(val)>0:
                                     dpg.add_combo(tag=lbl+cmd+arg+"text", items=val, callback=self.addToArgVals, user_data=(win, arg))
