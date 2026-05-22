@@ -6,7 +6,6 @@ import ast as ast
 class ApiCommands():
     def __init__(self, ip, username, password, database):
         self.sk = API.open_socket(ip, 8729, True)
-        #self.sk = API.open_socket(ip, 8728, False)
         self.api = API.ApiRos(self.sk)
         self.api.login(username, password)
         self.db = database
@@ -42,10 +41,7 @@ class ApiCommands():
         dirs=self.requestSome(path=path, type="dir")+self.requestSome(path=path, type="path")
         for dir in dirs:
             id=self.db.insertDir(dir, higherID)
-            # remove "detect-internet" interface
-            """if dir=="detect-internet":
-                continue"""
-            print(path+","+dir)
+            #print(path+","+dir)
             self.dirLoop(id)
         return
     

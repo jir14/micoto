@@ -22,11 +22,11 @@ class middleware():
     def printDirPath(self, dirId="", spacer=""):
         return self.db.printDirPath(dirID=dirId, spacer=spacer)
     
-    def getSyntax(self, dirID=""):
-        return self.devList[0].api.getSyntax(path=self.printDirPath(dirId=dirID, spacer=","),)
-    
     def getDirCmds(self, dirId=""):
         return self.db.getDirCmds(dirID=dirId)
+    
+    def getSyntax(self, dirID=""):
+        return self.devList[0].api.getSyntax(path=self.printDirPath(dirId=dirID, spacer=","),)
     
     def getDirTableData(self, dirId="", id="", spacer="", begin=False):
         resDict=dict()
@@ -78,17 +78,6 @@ class middleware():
                 if ".id" in val:
                     out[ip].append(val[".id"])
         return out
-
-
-    def getDir(self, dirId="", id="", spacer="", begin=False):
-        resDict=dict()
-        pathDef=self.printDirPath(dirId=dirId, spacer=spacer)
-        for dev in self.devList:
-            resDict[dev.getDevIp()]=dev.api.getDirTableData(id=id, spacer=spacer, begin=begin, pathDef=pathDef)
-            if bool(resDict[dev.getDevIp()]):
-                continue
-            resDict[dev.getDevIp()]=False
-        return resDict
     
     def getArgs(self, dirId="", cmd="", spacer=","):
         return self.devList[0].api.getArgs(cmd, pathDef=self.printDirPath(dirId=dirId, spacer=spacer))
@@ -119,31 +108,9 @@ class middleware():
             argVals=argVals.copy()
             if "interface" not in argVals.keys():
                 argVals["numbers"]=",".join(ids)
-            """print("apply to devices")
-            print("argVals : "+str(argVals))
-            print("pathDef : "+str(pathDef))"""
             msg = dev.api.checkValues(argVals=argVals, pathDef=pathDef)
             if msg and "message" in msg:
                 msgs[devIp]=msg["message"]
             else:
                 msgs[devIp]="ok"
-        
-        """if selected:
-            msgs=dict()
-            for devIp, ids in selected.items():
-                for r in self.devList:
-                    if r.getDevIp()==devIp:
-                        dev=r
-                        break
-                argVals=argVals.copy()
-                if "interface" not in argVals.keys():
-                    argVals["numbers"]=",".join(ids)
-                print("apply to devices")
-                print("argVals : "+str(argVals))
-                print("pathDef : "+str(argVals))
-                msg = dev.api.checkValues(argVals=argVals, pathDef=pathDef)
-                if msg and "message" in msg:
-                    msgs[devIp]=msg["message"]
-                else:
-                    msgs[devIp]="ok" """
         return msgs

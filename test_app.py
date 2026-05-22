@@ -1,8 +1,6 @@
 import dearpygui.dearpygui as dpg
 from app.db.db_crypto import DBConn
-import re
 import os
-#from app.gui.file_dialog.fdialog import FileDialog
 import subprocess
 from app.EditThemePlugin import EditThemePlugin
 
@@ -18,13 +16,11 @@ class GUI():
         self.selectedList = []
 
         with dpg.font_registry():
-            #default_font=dpg.add_font("../themes/OpenSans.ttf", 15*2)
             default_font=dpg.add_font("./themes/Roboto.ttf", 15*2)
             dpg.set_global_font_scale(0.5)
         dpg.bind_font(default_font)
 
         with dpg.window(tag="devList", label="List of available devices", on_close=lambda: print("close")) as devList:
-            #EditThemePlugin()
             with dpg.menu_bar():
                 with dpg.menu(label="DB files"):
                     with dpg.file_dialog(modal=True, show=False, tag="dfd", callback=self.PROXYsetDevDbPath, width=700, height=400):
@@ -133,12 +129,11 @@ class GUI():
             conList[devIp]=self.db.selectDevUserAndPass(devIp)
         try:
             p = subprocess.Popen(["py", os.path.dirname(os.path.realpath(__file__))+"/app/conf_gui.py", str(self.cmdDbPath), str(conList)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            #p = subprocess.Popen(["py", os.path.dirname(os.path.realpath(__file__))+"/app/conf_gui_old.py", str(self.cmdDbPath), str(conList)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             stdout, stderr = p.communicate()
             if p.returncode != 0:
                 self.annonceWindow("can not open configuration window")
         except:
-            print()
+            self.annonceWindow("connection failed")
         return
 
     def annonceWindow(self, msg="", type="Error"):

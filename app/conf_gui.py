@@ -10,20 +10,22 @@ class conf_gui():
     def __init__(self, cmdDbPath="" , devs=""):
         dpg.create_context()
 
-        dpg.show_item_registry()
-
-        """with dpg.font_registry():
+        with dpg.font_registry():
             default_font=dpg.add_font("./themes/Roboto.ttf", 15*2)
             dpg.set_global_font_scale(0.5)
-        dpg.bind_font(default_font)"""
+        dpg.bind_font(default_font)
 
-        devices=ast.literal_eval(devs)        
-        self.middle=middle.middleware(cmdDbFile=cmdDbPath, devices=devices)
+        devices=ast.literal_eval(devs)
+        
         with dpg.window(label="Main", on_close=lambda: dpg.delete_item(MainWindow)) as MainWindow:
             with dpg.menu_bar():
                 with dpg.menu(label="Theme"):
                     EditThemePlugin()
                     dpg.add_menu_item(label="Fonts", callback=lambda: dpg.show_font_manager())
+            try:
+                self.middle=middle.middleware(cmdDbFile=cmdDbPath, devices=devices)
+            except:
+                self.annonceWindow("connection to devices failed")
             with dpg.group(horizontal=False, parent=MainWindow, tag="Menu", width=100, height=dpg.get_item_height(MainWindow)):
                 with dpg.table(header_row=False):
                     dpg.add_table_column()
@@ -48,10 +50,17 @@ class conf_gui():
         with dpg.window(label=win.getLbl(), tag=win.getLbl(), width=1000, autosize=True, on_close=self.onClose, user_data=win, no_resize=False):
             win.setPos(win.getPos()+120)
             dpg.set_item_pos(win.getLbl(), [win.getPos(), win.getPos()/2])
-            tableData = self.middle.getDirTableData(win.getDirId(), spacer="/", begin=True)
+            try:
+                win.setTableData(self.middle.getDirTableData(win.getDirId(), spacer="/", begin=True))
+            except:
+                self.annonceWindow(consequence="can not get table data")
             dirs=self.middle.getDirDirsIDs(win.getDirId())
-            if not all(value == False for value in tableData.values()):
+            try:
                 help = self.middle.getSyntax(win.getDirId())
+            except:
+                self.annonceWindow(consequence="help might not be available")
+                pass
+            if not all(value == False for value in win.getTableData().values()):
                 with dpg.tab_bar():
                     with dpg.tab(label=self.middle.getDirName(win.getDirId()), tag=str(win.getDirId())+str(win.getLbl())):
                         with dpg.group(horizontal=True, tag=str(win.getDirId())+str(win.getLbl())+"group", parent=str(win.getDirId())+str(win.getLbl())):
@@ -75,7 +84,6 @@ class conf_gui():
                 recs = self.middle.getDirDirsIDs(win.getDirId())
                 if recs:
                     with dpg.group(horizontal=False):
-                        help = self.middle.getSyntax(win.getDirId())
                         for rec in recs:
                             lbl=self.middle.getDirName(rec)
                             dpg.add_button(label=lbl, tag=str(rec)+lbl, callback=self.openDirWindow, user_data={"pos":win.getPos(), "dirId":rec})
@@ -115,7 +123,10 @@ class conf_gui():
         with dpg.window(label=lbl, tag=lbl, autosize=True, on_close=self.onClose, user_data=win):
             win.setPos(win.getPos()+120)
             dpg.set_item_pos(lbl,[win.getPos(),win.getPos()/2])
-            all, help = self.middle.getArgs(dirId=win.getDirId(), cmd=cmd)
+            try:
+                all, help = self.middle.getArgs(dirId=win.getDirId(), cmd=cmd)
+            except:
+                self.annonceWindow("can not load command data")
             with dpg.group(horizontal=True, parent=lbl):
                 with dpg.group(horizontal=False):
                     with dpg.table(header_row=False, policy=dpg.mvTable_SizingFixedFit, width=500):
@@ -129,15 +140,12 @@ class conf_gui():
                                         dpg.add_text(help[arg])
                                     else:
                                         dpg.add_text("You are on your own bro")
-                                #print("val : "+str(val))
                                 if arg=="numbers":
                                     if len(win.getSelected())!=0:                   
                                         dpg.add_input_text(tag=lbl+cmd+arg+"text", width=200, callback=self.addToArgVals, user_data=(win, arg))
                                         dpg.set_value(lbl+cmd+arg+"text", win.getSelected())
                                         dpg.configure_item(lbl+cmd+arg+"text", readonly=True)
                                         continue
-                                    #dpg.add_combo(tag=lbl+cmd+arg+"numbers", items=val, callback=self.applyChange, user_data=win)
-                                    #continue
 
                                 if len(val)>0:
                                     dpg.add_combo(tag=lbl+cmd+arg+"text", items=val, callback=self.addToArgVals, user_data=(win, arg))
@@ -150,10 +158,8 @@ class conf_gui():
                                     dpg.add_text("apply to:")
                                     with dpg.group(horizontal=False):
                                         for devIp in self.middle.getIpDevices():
-                                            #win.getSelected[devIp]=None
                                             dpg.add_checkbox(label=devIp, default_value=False, callback=self.applyChange, user_data=win)
-                                            #dpg.add_checkbox(label=devIp, default_value=False, callback=self.checkboxChecker, user_data=win)
-                                            #dpg.add_checkbox(label=devIp, default_value=True, callback=lambda btn: win.setSelected.pop(dpg.get_item_label(btn)) if (dpg.get_item_label(btn) in win.setSelected) else win.setSelected.update({dpg.get_item_label(btn):None}))
+
                             case _:
                                 if len(win.getSelected())==0:
                                     with dpg.table_row():
@@ -179,7 +185,7 @@ class conf_gui():
             dpg.delete_item(itemName)
         if dpg.does_alias_exist(str(str(win.getDirId())+"group"+win.getLbl())):
             dpg.delete_item(str(str(win.getDirId())+"group"+win.getLbl()))
-        devKeyVal=self.middle.getDirTableData(win.getDirId(), spacer="/", begin=True)
+        devKeyVal=win.getTableData()
         win.clearSelected()
         if not all(value == False for value in devKeyVal.values()):
             stateList={"invalid":"I", "dynamic":"D", "slave":"S", "disabled":"X", "dhcp":"d", "active":"A", "inactive":"I", "connect":"C","static":"S", "rip":"r", "bgp":"b", "o":"ospf", "v":"vpn"}
@@ -265,7 +271,10 @@ class conf_gui():
     def apply(self, sender, app_data, user_data):
         cmdName=user_data.getCmd()
         argVals=user_data.getArgVals()
-        check=self.middle.applyToDevices(dirId=user_data.getDirId(), cmdName=cmdName, argVals=argVals, selected=user_data.getSelected())
+        try:
+            check=self.middle.applyToDevices(dirId=user_data.getDirId(), cmdName=cmdName, argVals=argVals, selected=user_data.getSelected())
+        except:
+            self.annonceWindow()
         txt=str()
         for ip, mess in check.items():
             txt+=str(ip)+": "+str(mess)+"\n"
@@ -299,13 +308,15 @@ class conf_gui():
             number = dpg.get_value(str(win.getLbl()+"/"+win.getCmd()+win.getCmd()+"numbers"+"numbers"))
         win.setSelected(ipId={ip:[number]})
         return
-    
-    """def checkboxChecker(self, sender, app_data, win):
-        if dpg.does_item_exist(str(win.getLbl()+"/"+win.getCmd()+win.getCmd()+"numbers"+"device")):
-            dpg.delete_item(str(win.getLbl()+"/"+win.getCmd()+win.getCmd()+"numbers"+"device"))
-        dpg.add_text(show=False, default_value=dpg.get_item_label(sender), tag=str(win.getLbl()+"/"+win.getCmd()+win.getCmd()+"numbers"+"device"), parent=sender)
-        self.applyChange(sender=sender, app_data=app_data, win=win)
-        return"""
+
+    def annonceWindow(self, msg="connection failed", type="Error", consequence=False):
+        dpg.split_frame()
+        with dpg.window(label="Annonce", tag="AnnonceWindow", modal=True) as annwnd:
+            dpg.add_text(type+": "+str(msg))
+            if consequence:
+                dpg.add_text(consequence)
+            dpg.add_button(label="close", callback=lambda: dpg.delete_item(annwnd))
+        self.centerItem(annwnd)
 
 if __name__ == "__main__":
     conf_gui(sys.argv[1], sys.argv[2])
