@@ -22,18 +22,24 @@ class middleware():
     def printDirPath(self, dirId="", spacer=""):
         return self.db.printDirPath(dirID=dirId, spacer=spacer)
     
-    def getSyntax(self, dirID=""):
-        return self.devList[0].api.getSyntax(path=self.printDirPath(dirId=dirID, spacer=","),)
-    
     def getDirCmds(self, dirId=""):
         return self.db.getDirCmds(dirID=dirId)
     
+    def getSyntax(self, dirID=""):
+        try:
+            return self.devList[0].api.getSyntax(path=self.printDirPath(dirId=dirID, spacer=","),)
+        except:
+            raise
+        
     def getDirTableData(self, dirId="", id="", spacer="", begin=False):
         resDict=dict()
         pathDef=self.printDirPath(dirId=dirId, spacer=spacer)
         for dev in self.devList:
             ip=dev.getDevIp()
-            resDict[ip]= dev.api.getDirTableData(id=id, spacer=spacer, begin=begin, pathDef=pathDef)
+            try:
+                resDict[ip]= dev.api.getDirTableData(id=id, spacer=spacer, begin=begin, pathDef=pathDef)
+            except:
+                raise
             if "error" in resDict[ip]:
                 resDict[ip]=False
             continue
@@ -70,25 +76,28 @@ class middleware():
                     comKeyVal[row[key]][devIp].append(row)
         return comKeyVal
 
-
-
-    def getDir(self, dirId="", id="", spacer="", begin=False):
-        resDict=dict()
-        pathDef=self.printDirPath(dirId=dirId, spacer=spacer)
-        for dev in self.devList:
-            resDict[dev.getDevIp()]=dev.api.getDirTableData(id=id, spacer=spacer, begin=begin, pathDef=pathDef)
-            if bool(resDict[dev.getDevIp()]):
-                continue
-            resDict[dev.getDevIp()]=False
-        return resDict
+    def commonFiltered(self, keyVal=""):
+        out = dict()
+        for ip, vals in keyVal.items():
+            out[ip]=[]
+            for val in vals:
+                if ".id" in val:
+                    out[ip].append(val[".id"])
+        return out
     
     def getArgs(self, dirId="", cmd="", spacer=","):
-        return self.devList[0].api.getArgs(cmd, pathDef=self.printDirPath(dirId=dirId, spacer=spacer))
-    
+        try:
+            return self.devList[0].api.getArgs(cmd, pathDef=self.printDirPath(dirId=dirId, spacer=spacer))
+        except:
+            raise
+
     def checkValues(self, argVals="", dirId="", cmdName="", spacer="/"):
         pathDef=spacer+self.printDirPath(dirId=dirId, spacer=spacer)+spacer+cmdName
         for dev in self.devList:
-            msg = dev.api.checkValues(argVals=argVals, pathDef=pathDef)
+            try:
+                msg = dev.api.checkValues(argVals=argVals, pathDef=pathDef)
+            except:
+                raise
             if msg and "message" in msg:
                 msg["ip"]=dev.getDevIp()
                 return msg
@@ -102,19 +111,21 @@ class middleware():
     
     def applyToDevices(self, argVals="", dirId="", cmdName="", spacer="/", selected=False):
         pathDef=spacer+self.printDirPath(dirId=dirId, spacer=spacer)+spacer+cmdName
-        if selected:
-            msgs=dict()
-            for devIp, ids in selected.items():
-                for r in self.devList:
-                    if r.getDevIp()==devIp:
-                        dev=r
-                        break
-                argVals=argVals.copy()
-                if ids is not None:
-                    argVals["numbers"]=",".join(ids)
+        msgs=dict()
+        for devIp, ids in selected.items():
+            for r in self.devList:
+                if r.getDevIp()==devIp:
+                    dev=r
+                    break
+            argVals=argVals.copy()
+            if "interface" not in argVals.keys():
+                argVals["numbers"]=",".join(ids)
+            try:
                 msg = dev.api.checkValues(argVals=argVals, pathDef=pathDef)
-                if msg and "message" in msg:
-                    msgs[devIp]=msg["message"]
-                else:
-                    msgs[devIp]="ok"
+            except:
+                raise
+            if msg and "message" in msg:
+                msgs[devIp]=msg["message"]
+            else:
+                msgs[devIp]="ok"
         return msgs

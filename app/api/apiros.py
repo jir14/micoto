@@ -11,14 +11,12 @@ class ApiRos:
 			if repl == '!trap':
 				return False
 			elif '=ret' in attrs.keys():
-				#for repl, attrs in self.talk(["/login"]):
 				chal = binascii.unhexlify((attrs['=ret']).encode(sys.stdout.encoding))
 				md = hashlib.md5()
 				md.update(b'\x00')
 				md.update(pwd.encode(sys.stdout.encoding))
 				md.update(chal)
-				for repl2, attrs2 in self.talk(["/login", "=name=" + username, "=response=00" 
-					+ binascii.hexlify(md.digest()).decode(sys.stdout.encoding) ]):
+				for repl2, attrs2 in self.talk(["/login", "=name=" + username, "=response=00" + binascii.hexlify(md.digest()).decode(sys.stdout.encoding) ]):
 					if repl2 == '!trap':
 						return False
 		return True
@@ -91,7 +89,6 @@ class ApiRos:
 
 	def readLen(self):
 		c = ord(self.readStr(1))
-		# print (">rl> %i" % c)
 		if (c & 0x80) == 0x00:
 			pass
 		elif (c & 0xC0) == 0x80:
@@ -138,19 +135,14 @@ class ApiRos:
 
 	def readStr(self, length):
 		ret = ''
-		# print ("length: %i" % length)
 		while len(ret) < length:
 			s = self.sk.recv(length - len(ret))
 			if s == b'': raise RuntimeError("connection closed by remote end")
-			# print (b">>>" + s)
-			# atgriezt kaa byte ja nav ascii chars
 			if s >= (128).to_bytes(1, "big") :
 				return s
-			# print((">>> " + s.decode(sys.stdout.encoding, 'ignore')))
 			ret += s.decode(sys.stdout.encoding, "replace")
 		return ret
 	
-
 	def getResponse(devIp, devUser, devPass, sentence):
 		try:
 			apiros = ApiRos(open_socket(devIp, 8729, True))
@@ -169,20 +161,16 @@ class ApiRos:
 			thisdict[text[1]] = text[2]
 		return thisdict
 	
-	
-			
-
 def open_socket(dst, port, secure=False):
 	s = None
 	res = socket.getaddrinfo(dst, port, socket.AF_UNSPEC, socket.SOCK_STREAM)
 	af, socktype, proto, canonname, sockaddr = res[0]
 	skt = socket.socket(af, socktype, proto)
-	if secure:
-		context = ssl.create_default_context()
-		context.check_hostname = False
-		context.verify_mode = ssl.CERT_NONE
-		s = context.wrap_socket(skt, server_hostname=dst)
-	else:
-		s = skt
+	skt.settimeout(2)
+	context = ssl.create_default_context()
+	context.check_hostname = False
+	context.verify_mode = ssl.CERT_NONE
+	s = context.wrap_socket(skt, server_hostname=dst)
+	s.settimeout(2)
 	s.connect(sockaddr)
 	return s

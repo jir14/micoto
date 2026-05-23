@@ -4,18 +4,6 @@ import os
 import sys
 from EditThemePlugin import EditThemePlugin
 
-"""
-db = DBConn(app_data["file_path_name"], self.devDbPass)
-        e = db.checkDevFile()
-        if e==True:
-            subprocess.Popen(["py", os.path.dirname(os.path.realpath(__file__))+"/app/treeview.py", app_data["file_path_name"]])
-        else:
-            self.annonceWindow(e)
-        return
-"""
-
-
-
 class Treeview:
     def __init__(self, dbName):
         self.db = Database(dbName)
@@ -73,7 +61,7 @@ class Treeview:
                     dpg.add_text(e, wrap=450)
                     dpg.delete_item("file_dialog_id")
                 return
-        Database(filePath)
+        Database(filePath, create=True)
         self.createDBlists(sender, app_data, user_data)
         self.db.dbCopy(cmdIDs=self.cmdsToDB, dirIDs=self.dirsToDB, path=filePath)
         dpg.delete_item(item="file_dialog_id")

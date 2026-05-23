@@ -216,7 +216,7 @@ class GUI():
             if p.returncode != 0:
                 self.annonceWindow("can not open configuration window")
         except:
-            print()
+            self.annonceWindow("connection failed")
         return
     
     def treeview(self, sender, app_data):
@@ -246,7 +246,6 @@ class GUI():
             self.annonceWindow("scan failed")
 
     def annonceWindow(self, msg="", type="Error"):
-        dpg.split_frame()
         with dpg.window(label=type, tag="AnnonceWindow", modal=True) as annwnd:
             dpg.add_text(type+": "+str(msg))
             dpg.add_button(label="close", callback=lambda: dpg.delete_item(annwnd))

@@ -136,12 +136,6 @@ class Database:
             return res
         return False
     
-    def getCmdName(self, cmdID):
-        """if self.cur.execute("SELECT cmd FROM cmds WHERE id=?", (cmdID,)):
-            res = self.cur.fetchone()
-            return res[0]"""
-        return False
-    
     def getDirsWithoutParent(self):
         if self.cur.execute("SELECT id FROM dirs WHERE higherID IS NULL"):
             res = []
