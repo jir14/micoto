@@ -171,5 +171,6 @@ def open_socket(dst, port, secure=False):
 	context.check_hostname = False
 	context.verify_mode = ssl.CERT_NONE
 	s = context.wrap_socket(skt, server_hostname=dst)
+	s.settimeout(2)
 	s.connect(sockaddr)
 	return s

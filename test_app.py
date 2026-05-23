@@ -15,8 +15,6 @@ class GUI():
         self.cmdDbPath = None
         self.selectedList = []
 
-        dpg.show_item_registry()
-
         with dpg.font_registry():
             default_font=dpg.add_font("./themes/Roboto.ttf", 15*2)
             dpg.set_global_font_scale(0.5)
@@ -139,7 +137,7 @@ class GUI():
         return
 
     def annonceWindow(self, msg="", type="Error"):
-        with dpg.window(label="Annonce", tag="AnnonceWindow", modal=True, autosize=True) as annwnd:
+        with dpg.window(label=type, tag="AnnonceWindow", modal=True, autosize=True) as annwnd:
             dpg.add_text(type+": "+str(msg))
             dpg.add_button(label="close", callback=lambda: dpg.delete_item(annwnd))
         self.centerItem(annwnd)
