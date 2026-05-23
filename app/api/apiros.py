@@ -166,12 +166,10 @@ def open_socket(dst, port, secure=False):
 	res = socket.getaddrinfo(dst, port, socket.AF_UNSPEC, socket.SOCK_STREAM)
 	af, socktype, proto, canonname, sockaddr = res[0]
 	skt = socket.socket(af, socktype, proto)
-	if secure:
-		context = ssl.create_default_context()
-		context.check_hostname = False
-		context.verify_mode = ssl.CERT_NONE
-		s = context.wrap_socket(skt, server_hostname=dst)
-	else:
-		s = skt
+	skt.settimeout(2)
+	context = ssl.create_default_context()
+	context.check_hostname = False
+	context.verify_mode = ssl.CERT_NONE
+	s = context.wrap_socket(skt, server_hostname=dst)
 	s.connect(sockaddr)
 	return s

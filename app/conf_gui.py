@@ -10,20 +10,31 @@ class conf_gui():
     def __init__(self, cmdDbPath="" , devs=""):
         dpg.create_context()
 
-        """with dpg.font_registry():
+        with dpg.font_registry():
             default_font=dpg.add_font("./themes/Roboto.ttf", 15*2)
             dpg.set_global_font_scale(0.5)
-        dpg.bind_font(default_font)"""
+        dpg.bind_font(default_font)
 
-        devices=ast.literal_eval(devs)
+        self.devices=ast.literal_eval(devs)
+        self.cmdDbPath=cmdDbPath
         
-        with dpg.window(label="Main", on_close=lambda: dpg.delete_item(MainWindow)) as MainWindow:
+        MainWindow, name = self.openMainWindow()
+
+        dpg.create_viewport(title='Micoto - configure '+name, width=1500, height=1000)
+        dpg.setup_dearpygui()
+        dpg.show_viewport()
+        dpg.set_primary_window(MainWindow, True)
+        dpg.start_dearpygui()
+        dpg.destroy_context()
+
+    def openMainWindow(self):
+        with dpg.window(label="Main", tag="Main", on_close=lambda: dpg.delete_item(MainWindow)) as MainWindow:
             with dpg.menu_bar():
                 with dpg.menu(label="Theme"):
                     EditThemePlugin()
                     dpg.add_menu_item(label="Fonts", callback=lambda: dpg.show_font_manager())
             try:
-                self.middle=middle.middleware(cmdDbFile=cmdDbPath, devices=devices)
+                self.middle=middle.middleware(cmdDbFile=self.cmdDbPath, devices=self.devices)
             except:
                 self.annonceWindow("connection to devices failed")
             with dpg.group(horizontal=False, parent=MainWindow, tag="Menu", width=100, height=dpg.get_item_height(MainWindow)):
@@ -33,14 +44,8 @@ class conf_gui():
                         with dpg.table_row():
                             user_data={"pos":0, "dirId":dirId}       
                             dpg.add_button(label=self.middle.getDirName(dirId), user_data=user_data, callback=self.openDirWindow)
-        name=", ".join(list(devices.keys()))
-
-        dpg.create_viewport(title='Micoto - configure '+name, width=1500, height=1000)
-        dpg.setup_dearpygui()
-        dpg.show_viewport()
-        dpg.set_primary_window(MainWindow, True)
-        dpg.start_dearpygui()
-        dpg.destroy_context()
+        name=", ".join(list(self.devices.keys()))
+        return MainWindow, name
 
     def openDirWindow(self, sender, app_data, user_data):
         win = wnd.window(dirId=user_data["dirId"], pos=user_data["pos"], lbl=self.middle.printDirPath(user_data["dirId"], spacer="/"))
@@ -166,7 +171,6 @@ class conf_gui():
                                         dpg.add_text("apply to:")
                                         devs=self.middle.getIpDevices()
                                         dpg.add_combo(items=devs, default_value=devs[0], tag=lbl+cmd+arg+"device", callback=self.applyChange, user_data=win)
-                                        #dpg.add_combo(items=devs, default_value=devs[0], tag=lbl+cmd+arg+"device", callback=lambda ip: win.setSelected(dpg.get_value(lbl+cmd+arg+"text")))
 
                         with dpg.table_row():
                             dpg.add_text("test:")
@@ -273,16 +277,18 @@ class conf_gui():
         argVals=user_data.getArgVals()
         try:
             check=self.middle.applyToDevices(dirId=user_data.getDirId(), cmdName=cmdName, argVals=argVals, selected=user_data.getSelected())
-        except:
-            self.annonceWindow()
-        txt=str()
-        for ip, mess in check.items():
-            txt+=str(ip)+": "+str(mess)+"\n"
-        dpg.set_value(item=str(user_data.getLbl()+"/"+user_data.getCmd())+cmdName+"message", value=txt)
-        if all(value =="ok" for value in check.values()):
-            user_data.setPos(user_data.getPos()-120)
-            dpg.set_value(item=str(user_data.getLbl()+"/"+user_data.getCmd())+cmdName+"message", value="ok")
-            self.onClose(sender=self,app_data=app_data,user_data=user_data)
+        except Exception as E:
+            self.annonceWindow(consequence=E)
+            return
+        else:
+            txt=str()
+            for ip, mess in check.items():
+                txt+=str(ip)+": "+str(mess)+"\n"
+            dpg.set_value(item=str(user_data.getLbl()+"/"+user_data.getCmd())+cmdName+"message", value=txt)
+            if all(value =="ok" for value in check.values()):
+                user_data.setPos(user_data.getPos()-120)
+                dpg.set_value(item=str(user_data.getLbl()+"/"+user_data.getCmd())+cmdName+"message", value="ok")
+                self.onClose(sender=self,app_data=app_data,user_data=user_data)
 
     def onClose(self, sender, app_data, user_data):
         self.addCommands(win=user_data)
@@ -315,17 +321,19 @@ class conf_gui():
         return
 
     def annonceWindow(self, msg="connection failed", type="Error", consequence=False):
-        with dpg.window(label="Annonce", tag="AnnonceWindow", modal=True, autosize=True) as annwnd:
+        with dpg.window(label="Annonce", tag="AnnonceWindow", modal=True, autosize=True, no_close=True) as annwnd:
             dpg.add_text(type+": "+str(msg))
             if consequence:
                 dpg.add_text(consequence)
-            dpg.add_button(label="close", callback=lambda: dpg.delete_item(annwnd))
-        self.centerItem(annwnd)
+                dpg.add_button(label="close config window", callback=lambda: dpg.stop_dearpygui())
+            else:
+                dpg.add_button(label="close", callback=lambda: dpg.delete_item(annwnd))
+        self.centerItem(annwnd)  
 
     def centerItem(self, tag):
         dpg.split_frame()
-        Main_width=dpg.get_item_width("devList")
-        Main_heigh=dpg.get_item_height("devList")
+        Main_width=dpg.get_item_width("Main")
+        Main_heigh=dpg.get_item_height("Main")
         Window_width=dpg.get_item_width(tag)
         Window_height=dpg.get_item_height(tag)
         dpg.set_item_pos(tag, [int(Main_width/2-Window_width/2), int(Main_heigh/2-Window_height/2)])

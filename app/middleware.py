@@ -26,14 +26,20 @@ class middleware():
         return self.db.getDirCmds(dirID=dirId)
     
     def getSyntax(self, dirID=""):
-        return self.devList[0].api.getSyntax(path=self.printDirPath(dirId=dirID, spacer=","),)
-    
+        try:
+            return self.devList[0].api.getSyntax(path=self.printDirPath(dirId=dirID, spacer=","),)
+        except:
+            raise
+        
     def getDirTableData(self, dirId="", id="", spacer="", begin=False):
         resDict=dict()
         pathDef=self.printDirPath(dirId=dirId, spacer=spacer)
         for dev in self.devList:
             ip=dev.getDevIp()
-            resDict[ip]= dev.api.getDirTableData(id=id, spacer=spacer, begin=begin, pathDef=pathDef)
+            try:
+                resDict[ip]= dev.api.getDirTableData(id=id, spacer=spacer, begin=begin, pathDef=pathDef)
+            except:
+                raise
             if "error" in resDict[ip]:
                 resDict[ip]=False
             continue
@@ -80,12 +86,18 @@ class middleware():
         return out
     
     def getArgs(self, dirId="", cmd="", spacer=","):
-        return self.devList[0].api.getArgs(cmd, pathDef=self.printDirPath(dirId=dirId, spacer=spacer))
-    
+        try:
+            return self.devList[0].api.getArgs(cmd, pathDef=self.printDirPath(dirId=dirId, spacer=spacer))
+        except:
+            raise
+
     def checkValues(self, argVals="", dirId="", cmdName="", spacer="/"):
         pathDef=spacer+self.printDirPath(dirId=dirId, spacer=spacer)+spacer+cmdName
         for dev in self.devList:
-            msg = dev.api.checkValues(argVals=argVals, pathDef=pathDef)
+            try:
+                msg = dev.api.checkValues(argVals=argVals, pathDef=pathDef)
+            except:
+                raise
             if msg and "message" in msg:
                 msg["ip"]=dev.getDevIp()
                 return msg
@@ -108,7 +120,10 @@ class middleware():
             argVals=argVals.copy()
             if "interface" not in argVals.keys():
                 argVals["numbers"]=",".join(ids)
-            msg = dev.api.checkValues(argVals=argVals, pathDef=pathDef)
+            try:
+                msg = dev.api.checkValues(argVals=argVals, pathDef=pathDef)
+            except:
+                raise
             if msg and "message" in msg:
                 msgs[devIp]=msg["message"]
             else:

@@ -1,5 +1,6 @@
 import api.apiros as apiros
 import api.api as api
+import time
 
 class Device():
     def __init__(self, devIp, devUsername, devPass):
