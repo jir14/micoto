@@ -61,7 +61,7 @@ class Treeview:
                     dpg.add_text(e, wrap=450)
                     dpg.delete_item("file_dialog_id")
                 return
-        Database(filePath)
+        Database(filePath, create=True)
         self.createDBlists(sender, app_data, user_data)
         self.db.dbCopy(cmdIDs=self.cmdsToDB, dirIDs=self.dirsToDB, path=filePath)
         dpg.delete_item(item="file_dialog_id")
