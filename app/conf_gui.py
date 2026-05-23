@@ -315,7 +315,6 @@ class conf_gui():
         return
 
     def annonceWindow(self, msg="connection failed", type="Error", consequence=False):
-        dpg.split_frame()
         with dpg.window(label="Annonce", tag="AnnonceWindow", modal=True, autosize=True) as annwnd:
             dpg.add_text(type+": "+str(msg))
             if consequence:
