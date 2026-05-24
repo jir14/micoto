@@ -41,7 +41,6 @@ class ApiCommands():
         dirs=self.requestSome(path=path, type="dir")+self.requestSome(path=path, type="path")
         for dir in dirs:
             id=self.db.insertDir(dir, higherID)
-            #print(path+","+dir)
             self.dirLoop(id)
         return
     
@@ -76,7 +75,6 @@ def main(dbFile="default-commands.db", devIp="", device=""):
     db = DB.Database(dbFile, create=True)
     dev = ast.literal_eval(device)
     api = ApiCommands(devIp, list(dev.keys())[0], list(dev.values())[0].decode(), db)
-    #api = ApiCommands("10.255.255.255", "admin", "testpass", db)
 
     api.scan()
 

@@ -44,7 +44,7 @@ class GUI():
                     dpg.add_menu_item(label="Command map", callback=lambda: dpg.show_item("twdd"))
                     with dpg.file_dialog(modal=True, show=False, tag="csdd", callback=self.commandScan, width=700, height=400):
                         dpg.add_file_extension(".db")
-                    dpg.add_menu_item(label="command scan", callback=lambda: dpg.show_item("csdd"))
+                    dpg.add_menu_item(label="Command scan", callback=lambda: dpg.show_item("csdd"))
 
             with dpg.group(horizontal=True):
                 dpg.add_button(label="connect", tag="ConnectButton", callback=self.connect)
