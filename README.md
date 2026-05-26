@@ -6,10 +6,10 @@ This programme is part of my bachelor's degree. Current state of this project is
 The programme can be run by `py test_app.py`.
 
 ## Running app
-![Running app](docs/running_app.gif)
+![Running app](docs/img/running_app.gif)
 
 ## Theme customization
-![customizations](docs/theme_editor.png)
+![customizations](docs/img/theme_editor.png)
 
 ## App is using these libraries/addons
 ## sqlite3

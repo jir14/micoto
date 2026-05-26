@@ -8,17 +8,22 @@ import window as wnd
 
 class conf_gui():
     def __init__(self, cmdDbPath="" , devs=""):
+        """Initialises confgui object"""
         dpg.create_context()
 
         with dpg.font_registry():
+            """Sets fonts"""
             default_font=dpg.add_font("./themes/Roboto.ttf", 15*2)
             dpg.set_global_font_scale(0.5)
         dpg.bind_font(default_font)
 
         self.devices=ast.literal_eval(devs)
+        """Sets device list"""
         self.cmdDbPath=cmdDbPath
+        """Sets command database path"""
         
         MainWindow, name = self.openMainWindow()
+        """Opens main configuration window"""
 
         dpg.create_viewport(title='Micoto - configure '+name, width=1500, height=1000)
         dpg.setup_dearpygui()
@@ -28,6 +33,7 @@ class conf_gui():
         dpg.destroy_context()
 
     def openMainWindow(self):
+        """Opens main configuration window"""
         with dpg.window(label="Main", tag="Main", on_close=lambda: dpg.delete_item(MainWindow)) as MainWindow:
             with dpg.menu_bar():
                 with dpg.menu(label="Theme"):
@@ -48,6 +54,7 @@ class conf_gui():
         return MainWindow, name
 
     def openDirWindow(self, sender, app_data, user_data):
+        """Opens directory window"""
         win = wnd.window(dirId=user_data["dirId"], pos=user_data["pos"], lbl=self.middle.printDirPath(user_data["dirId"], spacer="/"))
         if dpg.does_item_exist(win.getLbl()):
             dpg.focus_item(win.getLbl())
@@ -116,6 +123,7 @@ class conf_gui():
         return
     
     def openCmds(self, sender, app_data, user_data):
+        """Opens command window"""
         oldWin = user_data
         path = self.middle.printDirPath(oldWin.getDirId(), spacer="/")
         cmd = str(dpg.get_item_label(sender))
@@ -182,6 +190,7 @@ class conf_gui():
         return
 
     def addDirTable(self, user_data):
+        """Refreshes table data"""
         win=user_data
         dirName=win.getLbl()
         itemName=str(win.getDirId())+"table"+dirName
@@ -262,6 +271,7 @@ class conf_gui():
         return
 
     def addCommands(self, win):
+        """Adds available command buttons"""
         if dpg.does_item_exist(str(win.getDirId())+str(win.getLbl())+"group"):
             dpg.delete_item(str(win.getDirId())+str(win.getLbl())+"group")
             with dpg.group(horizontal=True, tag=str(win.getDirId())+str(win.getLbl())+"group", parent=str(win.getDirId())+str(win.getLbl())):
@@ -273,6 +283,7 @@ class conf_gui():
         return
 
     def apply(self, sender, app_data, user_data):
+        """Applies configuration"""
         cmdName=user_data.getCmd()
         argVals=user_data.getArgVals()
         try:
@@ -291,6 +302,7 @@ class conf_gui():
                 self.onClose(sender=self,app_data=app_data,user_data=user_data)
 
     def onClose(self, sender, app_data, user_data):
+        """Closes window, refreshes table data"""
         self.addCommands(win=user_data)
         try:
             user_data.setTableData(self.middle.getDirTableData(user_data.getDirId(), spacer="/", begin=True))
@@ -302,12 +314,14 @@ class conf_gui():
         return
 
     def addToArgVals(self, sender, app_data, user_data):
+        """Adds values to dictionary"""
         arg=user_data[1]
         win=user_data[0]
         win.setArgVals({arg:dpg.get_value(sender)})
         return
     
     def applyChange(self, sender, app_data, win):
+        """Helper - alters selected item based on previous selection (selected/not selected item(s))"""
         if not isinstance(app_data, bool):
             win.clearSelected()
             ip = dpg.get_value(str(win.getLbl()+"/"+win.getCmd()+win.getCmd()+"numbers"+"device"))
@@ -321,6 +335,7 @@ class conf_gui():
         return
 
     def annonceWindow(self, msg="connection failed", type="Error", consequence=False):
+        """Announcement window"""
         with dpg.window(label=type, tag="AnnonceWindow", modal=True, autosize=True, no_close=True) as annwnd:
             dpg.add_text(type+": "+str(msg))
             if consequence:
@@ -331,6 +346,7 @@ class conf_gui():
         self.centerItem(annwnd)  
 
     def centerItem(self, tag):
+        """Centers item"""
         dpg.split_frame()
         Main_width=dpg.get_item_width("Main")
         Main_heigh=dpg.get_item_height("Main")

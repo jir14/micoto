@@ -6,11 +6,16 @@ from EditThemePlugin import EditThemePlugin
 
 class Treeview:
     def __init__(self, dbName):
+        """Initialises tree view window object"""
         self.db = Database(dbName)
+        """Sets command database object"""
         self.dirsToDB=dict()
+        """Sets list of dirs to be added to new database file"""
         self.cmdsToDB=dict()
+        """Sets list of commands to be added to new database file"""
 
         self.dbTest()
+        """Calls `dbTest` function"""
 
         dpg.create_context()
         with dpg.window(tag="Menu", label="Menu", width=500):
@@ -30,11 +35,13 @@ class Treeview:
                         self.loop(dirID) 
     
     def dbTest(self):
+        """Calls `db.checkCmdFile` function"""
         e = self.db.checkCmdFile()
         if e!=True:
             return
 
     def createDBlists(self, sender, appdata, userdata):
+        """Copies selected items to new database"""
         dirsCopy=self.dirsToDB.copy()
         for key, val in dirsCopy.items():
             if val:
@@ -45,12 +52,14 @@ class Treeview:
         return
 
     def createDBWindow(self, sender, appdata, userdata):
+        """Opens new database file dialog"""
         with dpg.file_dialog(directory_selector=False, modal=True, callback=self.fileSelect, show=True, id="file_dialog_id", width=700 , height=400, cancel_callback=lambda: dpg.delete_item("file_dialog_id")):
             dpg.add_file_extension("", color=(150, 255, 150, 255))
             dpg.add_file_extension(".db", color=(255, 0, 255, 255), custom_text="[DB file]")
         return
 
     def fileSelect(self, sender, app_data, user_data):
+        """Processes db file (checks and file creation)"""
         filePath=app_data["file_path_name"]
         if os.path.exists(filePath):
             try:
@@ -68,6 +77,7 @@ class Treeview:
         return
 
     def cmdCallback(self, sender, appdata, userdata):
+        """Helper - tracking selected commands"""
         value=dpg.get_value(sender)
         self.dirRootLoop(dirId=userdata, value=value)
         if userdata not in self.cmdsToDB.keys():
@@ -77,6 +87,7 @@ class Treeview:
         return
 
     def dirCallback(self, sender, appdata, userdata):
+        """Helper - tracking selected dirs"""
         value=dpg.get_value(sender)
         cmds = dpg.get_item_children("cmd"+str(userdata))[1]
         if len(cmds)>0:
@@ -95,6 +106,7 @@ class Treeview:
         return
 
     def dirRootLoop(self, dirId="", value=""):
+        """Helper - loops through selected subdirs (root)"""
         par=int(dirId)
         while par:
             self.dirsToDB[par]=value
@@ -102,6 +114,7 @@ class Treeview:
         return
     
     def loop(self, dirID):
+        """Helper - loops through selected subdirs"""
         dirid=str(dirID)
         with dpg.group(horizontal=False, parent="dir"+dirid, tag="group"+dirid):
             cmds = self.db.getDirCmds(dirID)

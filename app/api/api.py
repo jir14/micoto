@@ -1,9 +1,12 @@
 
 class Api():
     def __init__(self, device=""):
+        """Initialises Api object"""
         self.apiros=device.getApiros()
+        """Creates ROS API connection for device object"""
 
     def printDir(self, dirID, id=None, bID=None):
+        """Calls `print` command in defined directory"""
         sentence = []
         first = True
         keys = []
@@ -37,6 +40,7 @@ class Api():
         return keys, values, ids
     
     def getDirTableData(self, id="", spacer=",", pathDef="", begin=False):
+        """Gets table data from device if available"""
         answer=[]
         path=""
         if begin:
@@ -55,6 +59,7 @@ class Api():
 
 
     def getDir(self, id="", spacer=",", pathDef="", begin=False):
+        """Calls `print` command in defined directory + help"""
         sentence = []
         keys = []
         values = []
@@ -88,6 +93,7 @@ class Api():
 
 
     def getArgs(self, cmd="", pathDef=""):
+        """Returns available arguments of the command"""
         sentence=[]
         argVals=dict()
         path=pathDef+","+cmd
@@ -99,12 +105,13 @@ class Api():
                 if re[1]["=type"]!="child":
                     continue
                 arg=re[1]["=name"]
-                argVals[arg]=self.getCompletetions(path=path, arg=arg)
+                argVals[arg]=self.getCompletions(path=path, arg=arg)
         help=self.getSyntax(path=path)
         return argVals, help
 
 
-    def getCompletetions(self, path="", arg=""):
+    def getCompletions(self, path="", arg=""):
+        """Returns available completetions of the command"""
         sentence=[]
         answer=[]
         if arg!="":
@@ -122,6 +129,7 @@ class Api():
         return answer
     
     def getSyntax(self, path="", arg=""):
+        """Returns syntax of the command"""
         sentence=[]
         answer=dict()
         if arg!="":
@@ -140,6 +148,7 @@ class Api():
         return answer
 
     def checkValues(self, argVals="", pathDef=""):
+        """Tries to apply changes, returns error messages"""
         sentence=[]
         answer=dict()
         sentence.append(pathDef)
@@ -153,6 +162,7 @@ class Api():
         return answer
     
     def getDevName(self):
+        """Returns device identity"""
         for re in self.apiros.talk(["/system/identity/print"]):
             if re[0]=="!re":
                 return re[1]["=name"]

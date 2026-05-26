@@ -1,12 +1,14 @@
 import sys, binascii, socket, ssl, hashlib
 
 class ApiRos:
-	"Routeros api"
+	"""RouterOS api"""
 	def __init__(self, sk):
+		"""Initialises RouterOS object"""
 		self.sk = sk
-		self.currenttag = 0
+		"""Sets object socket"""
 
 	def login(self, username, pwd):
+		"""Performs device login"""
 		for repl, attrs in self.talk(["/login", "=name=" + username, "=password=" + pwd]):
 			if repl == '!trap':
 				return False
@@ -22,6 +24,7 @@ class ApiRos:
 		return True
 
 	def talk(self, words):
+		"""Performs commands entering"""
 		if self.writeSentence(words) == 0: return
 		r = []
 		while 1:
@@ -39,6 +42,7 @@ class ApiRos:
 			if reply == '!done': return r
 
 	def writeSentence(self, words):
+		"""Combines words to `sentence`"""
 		ret = 0
 		for w in words:
 			self.writeWord(w)
@@ -47,6 +51,7 @@ class ApiRos:
 		return ret
 
 	def readSentence(self):
+		"""Reads device `sentence` (response)"""
 		r = []
 		while 1:
 			w = self.readWord()
@@ -54,14 +59,17 @@ class ApiRos:
 			r.append(w)
 
 	def writeWord(self, w):
+		"""Writes `words`"""
 		self.writeLen(len(w))
 		self.writeStr(w)
 
 	def readWord(self):
+		"""Reads `words`"""
 		ret = self.readStr(self.readLen())
 		return ret
 
 	def writeLen(self, l):
+		"""Writing byte operations"""
 		if l < 0x80:
 			self.writeByte((l).to_bytes(1, sys.byteorder))
 		elif l < 0x4000:
@@ -88,6 +96,7 @@ class ApiRos:
 			self.writeByte((l & 0xFF).to_bytes(1, sys.byteorder))
 
 	def readLen(self):
+		"""Reading byte operations"""
 		c = ord(self.readStr(1))
 		if (c & 0x80) == 0x00:
 			pass
@@ -120,6 +129,7 @@ class ApiRos:
 		return c
 
 	def writeStr(self, str):
+		"""Sends string"""
 		n = 0
 		while n < len(str):
 			r = self.sk.send(bytes(str[n:], 'UTF-8'))
@@ -127,6 +137,7 @@ class ApiRos:
 			n += r
 
 	def writeByte(self, str):
+		"""Writes RAW bytes"""
 		n = 0
 		while n < len(str):
 			r = self.sk.send(str[n:])
@@ -134,6 +145,7 @@ class ApiRos:
 			n += r
 
 	def readStr(self, length):
+		"""Reads recived string"""
 		ret = ''
 		while len(ret) < length:
 			s = self.sk.recv(length - len(ret))
@@ -144,6 +156,7 @@ class ApiRos:
 		return ret
 	
 	def getResponse(devIp, devUser, devPass, sentence):
+		"""Opens connection, sends word and calls `parser`"""
 		try:
 			apiros = ApiRos(open_socket(devIp, 8729, True))
 			if not apiros.login(devUser, devPass):	
@@ -155,6 +168,7 @@ class ApiRos:
 			return
 
 	def parser(self, sentence):
+		"""Parses received data"""
 		thisdict = dict()
 		for i in range(1, len(sentence), 2):
 			text = sentence[i].split("=")
@@ -162,6 +176,7 @@ class ApiRos:
 		return thisdict
 	
 def open_socket(dst, port, secure=False):
+	"""Opens socket to device"""
 	s = None
 	res = socket.getaddrinfo(dst, port, socket.AF_UNSPEC, socket.SOCK_STREAM)
 	af, socktype, proto, canonname, sockaddr = res[0]
