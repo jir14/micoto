@@ -1,29 +1,30 @@
 import sys, binascii, socket, ssl, hashlib
 
 class ApiRos:
-	"Routeros api"
+	"""RouterOS api"""
 	def __init__(self, sk):
+		"""Initialises RouterOS object"""
 		self.sk = sk
-		self.currenttag = 0
+		"""Sets object socket"""
 
 	def login(self, username, pwd):
+		"""Performs device login"""
 		for repl, attrs in self.talk(["/login", "=name=" + username, "=password=" + pwd]):
 			if repl == '!trap':
 				return False
 			elif '=ret' in attrs.keys():
-				#for repl, attrs in self.talk(["/login"]):
 				chal = binascii.unhexlify((attrs['=ret']).encode(sys.stdout.encoding))
 				md = hashlib.md5()
 				md.update(b'\x00')
 				md.update(pwd.encode(sys.stdout.encoding))
 				md.update(chal)
-				for repl2, attrs2 in self.talk(["/login", "=name=" + username, "=response=00" 
-					+ binascii.hexlify(md.digest()).decode(sys.stdout.encoding) ]):
+				for repl2, attrs2 in self.talk(["/login", "=name=" + username, "=response=00" + binascii.hexlify(md.digest()).decode(sys.stdout.encoding) ]):
 					if repl2 == '!trap':
 						return False
 		return True
 
 	def talk(self, words):
+		"""Performs commands entering"""
 		if self.writeSentence(words) == 0: return
 		r = []
 		while 1:
@@ -41,6 +42,7 @@ class ApiRos:
 			if reply == '!done': return r
 
 	def writeSentence(self, words):
+		"""Combines words to `sentence`"""
 		ret = 0
 		for w in words:
 			self.writeWord(w)
@@ -49,6 +51,7 @@ class ApiRos:
 		return ret
 
 	def readSentence(self):
+		"""Reads device `sentence` (response)"""
 		r = []
 		while 1:
 			w = self.readWord()
@@ -56,14 +59,17 @@ class ApiRos:
 			r.append(w)
 
 	def writeWord(self, w):
+		"""Writes `words`"""
 		self.writeLen(len(w))
 		self.writeStr(w)
 
 	def readWord(self):
+		"""Reads `words`"""
 		ret = self.readStr(self.readLen())
 		return ret
 
 	def writeLen(self, l):
+		"""Writing byte operations"""
 		if l < 0x80:
 			self.writeByte((l).to_bytes(1, sys.byteorder))
 		elif l < 0x4000:
@@ -90,8 +96,8 @@ class ApiRos:
 			self.writeByte((l & 0xFF).to_bytes(1, sys.byteorder))
 
 	def readLen(self):
+		"""Reading byte operations"""
 		c = ord(self.readStr(1))
-		# print (">rl> %i" % c)
 		if (c & 0x80) == 0x00:
 			pass
 		elif (c & 0xC0) == 0x80:
@@ -123,6 +129,7 @@ class ApiRos:
 		return c
 
 	def writeStr(self, str):
+		"""Sends string"""
 		n = 0
 		while n < len(str):
 			r = self.sk.send(bytes(str[n:], 'UTF-8'))
@@ -130,6 +137,7 @@ class ApiRos:
 			n += r
 
 	def writeByte(self, str):
+		"""Writes RAW bytes"""
 		n = 0
 		while n < len(str):
 			r = self.sk.send(str[n:])
@@ -137,21 +145,18 @@ class ApiRos:
 			n += r
 
 	def readStr(self, length):
+		"""Reads recived string"""
 		ret = ''
-		# print ("length: %i" % length)
 		while len(ret) < length:
 			s = self.sk.recv(length - len(ret))
 			if s == b'': raise RuntimeError("connection closed by remote end")
-			# print (b">>>" + s)
-			# atgriezt kaa byte ja nav ascii chars
 			if s >= (128).to_bytes(1, "big") :
 				return s
-			# print((">>> " + s.decode(sys.stdout.encoding, 'ignore')))
 			ret += s.decode(sys.stdout.encoding, "replace")
 		return ret
 	
-
 	def getResponse(devIp, devUser, devPass, sentence):
+		"""Opens connection, sends word and calls `parser`"""
 		try:
 			apiros = ApiRos(open_socket(devIp, 8729, True))
 			if not apiros.login(devUser, devPass):	
@@ -163,26 +168,24 @@ class ApiRos:
 			return
 
 	def parser(self, sentence):
+		"""Parses received data"""
 		thisdict = dict()
 		for i in range(1, len(sentence), 2):
 			text = sentence[i].split("=")
 			thisdict[text[1]] = text[2]
 		return thisdict
 	
-	
-			
-
 def open_socket(dst, port, secure=False):
+	"""Opens socket to device"""
 	s = None
 	res = socket.getaddrinfo(dst, port, socket.AF_UNSPEC, socket.SOCK_STREAM)
 	af, socktype, proto, canonname, sockaddr = res[0]
 	skt = socket.socket(af, socktype, proto)
-	if secure:
-		context = ssl.create_default_context()
-		context.check_hostname = False
-		context.verify_mode = ssl.CERT_NONE
-		s = context.wrap_socket(skt, server_hostname=dst)
-	else:
-		s = skt
+	skt.settimeout(2)
+	context = ssl.create_default_context()
+	context.check_hostname = False
+	context.verify_mode = ssl.CERT_NONE
+	s = context.wrap_socket(skt, server_hostname=dst)
+	s.settimeout(2)
 	s.connect(sockaddr)
 	return s
