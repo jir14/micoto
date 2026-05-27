@@ -1,5 +1,5 @@
-from ..app.api.apiros import *
-from ..app.api.api import Api
+from api.apiros import *
+from api.api import Api
 
 class Device():
     def __init__(self, devIp, devUsername, devPass):

@@ -1,4 +1,3 @@
-
 class window():
     def __init__(self, dirId="", selected="", pos=0, lbl="", cmd="", argVals=dict(), tableData=False):
         """Initialises window object"""

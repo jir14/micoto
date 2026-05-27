@@ -1,5 +1,5 @@
-from ..app.api.apiros import *
-from ..app.db.db import Database
+from api.apiros import *
+from db.db import Database
 import sys, ast
 
 class ApiCommands():

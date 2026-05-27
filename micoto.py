@@ -1,9 +1,7 @@
 import dearpygui.dearpygui as dpg
 from app.db.db_crypto import DBConn
 #from .app.db.db_crypto import DBConn
-import re
-import os
-import subprocess
+import re, os, subprocess
 from app.EditThemePlugin import EditThemePlugin
 #from .app.EditThemePlugin import EditThemePlugin
 

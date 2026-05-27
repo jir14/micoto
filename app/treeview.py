@@ -1,7 +1,7 @@
 import dearpygui.dearpygui as dpg
 import os, sys
-from ..app.db.db import Database
-from ..app.EditThemePlugin import EditThemePlugin
+from db.db import Database
+from EditThemePlugin import EditThemePlugin
 
 class Treeview:
     def __init__(self, dbName):

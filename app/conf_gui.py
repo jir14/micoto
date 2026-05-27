@@ -1,8 +1,8 @@
 import copy, ast, sys
 import dearpygui.dearpygui as dpg
-from ..app.middleware import middleware
-from ..app.window import window
-from ..app.EditThemePlugin import EditThemePlugin
+from middleware import middleware
+from window import window
+from EditThemePlugin import EditThemePlugin
 
 class conf_gui():
     def __init__(self, cmdDbPath="" , devs=""):
