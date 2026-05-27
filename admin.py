@@ -1,5 +1,4 @@
 from micoto import GUI
-#from .micoto import GUI
 
 def main():
     """Main function"""
@@ -9,8 +8,6 @@ def main():
     except:
         print("Can not open micoto app")
         """Writes console text"""
-
-
 
 if __name__ == '__main__':
     """Opens micoto app in administrator mode"""

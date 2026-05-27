@@ -1,0 +1,131 @@
+\doxysection{db\+\_\+crypto.\+DBConn Class Reference}
+\hypertarget{classdb__crypto_1_1_d_b_conn}{}\label{classdb__crypto_1_1_d_b_conn}\index{db\_crypto.DBConn@{db\_crypto.DBConn}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{classdb__crypto_1_1_d_b_conn_ab3518cdda2af609bfa7dab97ee08997e}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, db\+File, master\+Pass, create\+File=False)
+\item 
+\doxymbox{\hyperlink{classdb__crypto_1_1_d_b_conn_abd0918656c4d1f2e10b11054d5114758}{check\+Dev\+File}} (self)
+\item 
+\doxymbox{\hyperlink{classdb__crypto_1_1_d_b_conn_a6e0597b81b0ccd4657d541f62c2d7b86}{encrypt}} (self, text)
+\item 
+\doxymbox{\hyperlink{classdb__crypto_1_1_d_b_conn_af88dc14541a394d87ca083a925b1a425}{decrypt}} (self, ciphertext, iv)
+\item 
+\doxymbox{\hyperlink{classdb__crypto_1_1_d_b_conn_acb8e0068a878c784a739e355c0afac33}{insert}} (self, dev\+Ip, dev\+User, dev\+Pass)
+\item 
+\doxymbox{\hyperlink{classdb__crypto_1_1_d_b_conn_a76238ef6003e73bf7b3294f48c5695c3}{select\+All}} (self, decrypt=True)
+\item 
+\doxymbox{\hyperlink{classdb__crypto_1_1_d_b_conn_a7b7ecff1fdaf8e28f65785d8ea8d1299}{select\+Dev\+User\+And\+Pass}} (self, dev\+Ip)
+\item 
+\doxymbox{\hyperlink{classdb__crypto_1_1_d_b_conn_a6aee9ff73ba8927cc032097129cb9756}{select}} (self, query, decrypt=True)
+\item 
+\doxymbox{\hyperlink{classdb__crypto_1_1_d_b_conn_a34a3f8cdbd690fdcdffb71640807579d}{query}} (self, query)
+\item 
+\doxymbox{\hyperlink{classdb__crypto_1_1_d_b_conn_a1de5e7bef1d0d191ef242fa44e6b257e}{remove}} (self, dev\+Ip)
+\item 
+\doxymbox{\hyperlink{classdb__crypto_1_1_d_b_conn_acc00e756ebb2ab9fe2908812c38e967d}{check\+Existance}} (self, dev\+Ip)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classdb__crypto_1_1_d_b_conn_a829eee2d92deabf93a6ea72fd3b4c662}\label{classdb__crypto_1_1_d_b_conn_a829eee2d92deabf93a6ea72fd3b4c662} 
+{\bfseries master\+Pass} = master\+Pass.\+encode().ljust(32)\+[:\+32]\+
+\item 
+\Hypertarget{classdb__crypto_1_1_d_b_conn_a9af0de8fd0aa96135f0010db78c85c9b}\label{classdb__crypto_1_1_d_b_conn_a9af0de8fd0aa96135f0010db78c85c9b} 
+{\bfseries con} = con
+\item 
+\Hypertarget{classdb__crypto_1_1_d_b_conn_a4df9be4020c8a746b0b225970bb4fa5a}\label{classdb__crypto_1_1_d_b_conn_a4df9be4020c8a746b0b225970bb4fa5a} 
+{\bfseries cur} = cur
+\end{DoxyCompactItemize}
+
+
+\label{classdb__crypto_1_1_d_b_conn_doc-constructors}
+\Hypertarget{classdb__crypto_1_1_d_b_conn_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classdb__crypto_1_1_d_b_conn_ab3518cdda2af609bfa7dab97ee08997e}\index{db\_crypto.DBConn@{db\_crypto.DBConn}!\_\_init\_\_@{\_\_init\_\_}}
+\index{\_\_init\_\_@{\_\_init\_\_}!db\_crypto.DBConn@{db\_crypto.DBConn}}
+\doxysubsubsection{\texorpdfstring{\_\_init\_\_()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily \label{classdb__crypto_1_1_d_b_conn_ab3518cdda2af609bfa7dab97ee08997e} 
+db\+\_\+crypto.\+DBConn.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{db\+File}{, }\item[{}]{master\+Pass}{, }\item[{}]{create\+File}{ = {\ttfamily False}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Initialises device database object\end{DoxyVerb}
+ 
+
+\label{classdb__crypto_1_1_d_b_conn_doc-func-members}
+\Hypertarget{classdb__crypto_1_1_d_b_conn_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classdb__crypto_1_1_d_b_conn_abd0918656c4d1f2e10b11054d5114758}\index{db\_crypto.DBConn@{db\_crypto.DBConn}!checkDevFile@{checkDevFile}}
+\index{checkDevFile@{checkDevFile}!db\_crypto.DBConn@{db\_crypto.DBConn}}
+\doxysubsubsection{\texorpdfstring{checkDevFile()}{checkDevFile()}}
+{\footnotesize\ttfamily \label{classdb__crypto_1_1_d_b_conn_abd0918656c4d1f2e10b11054d5114758} 
+db\+\_\+crypto.\+DBConn.\+check\+Dev\+File (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Check if right database file chosen (existance of `devices` table)\end{DoxyVerb}
+ \Hypertarget{classdb__crypto_1_1_d_b_conn_acc00e756ebb2ab9fe2908812c38e967d}\index{db\_crypto.DBConn@{db\_crypto.DBConn}!checkExistance@{checkExistance}}
+\index{checkExistance@{checkExistance}!db\_crypto.DBConn@{db\_crypto.DBConn}}
+\doxysubsubsection{\texorpdfstring{checkExistance()}{checkExistance()}}
+{\footnotesize\ttfamily \label{classdb__crypto_1_1_d_b_conn_acc00e756ebb2ab9fe2908812c38e967d} 
+db\+\_\+crypto.\+DBConn.\+check\+Existance (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{dev\+Ip}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Checks if defined device/IP exists in device database\end{DoxyVerb}
+ \Hypertarget{classdb__crypto_1_1_d_b_conn_af88dc14541a394d87ca083a925b1a425}\index{db\_crypto.DBConn@{db\_crypto.DBConn}!decrypt@{decrypt}}
+\index{decrypt@{decrypt}!db\_crypto.DBConn@{db\_crypto.DBConn}}
+\doxysubsubsection{\texorpdfstring{decrypt()}{decrypt()}}
+{\footnotesize\ttfamily \label{classdb__crypto_1_1_d_b_conn_af88dc14541a394d87ca083a925b1a425} 
+db\+\_\+crypto.\+DBConn.\+decrypt (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{ciphertext}{, }\item[{}]{iv}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Decrypts password\end{DoxyVerb}
+ \Hypertarget{classdb__crypto_1_1_d_b_conn_a6e0597b81b0ccd4657d541f62c2d7b86}\index{db\_crypto.DBConn@{db\_crypto.DBConn}!encrypt@{encrypt}}
+\index{encrypt@{encrypt}!db\_crypto.DBConn@{db\_crypto.DBConn}}
+\doxysubsubsection{\texorpdfstring{encrypt()}{encrypt()}}
+{\footnotesize\ttfamily \label{classdb__crypto_1_1_d_b_conn_a6e0597b81b0ccd4657d541f62c2d7b86} 
+db\+\_\+crypto.\+DBConn.\+encrypt (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{text}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Encrypts password, returns ciphertext + initiation vector\end{DoxyVerb}
+ \Hypertarget{classdb__crypto_1_1_d_b_conn_acb8e0068a878c784a739e355c0afac33}\index{db\_crypto.DBConn@{db\_crypto.DBConn}!insert@{insert}}
+\index{insert@{insert}!db\_crypto.DBConn@{db\_crypto.DBConn}}
+\doxysubsubsection{\texorpdfstring{insert()}{insert()}}
+{\footnotesize\ttfamily \label{classdb__crypto_1_1_d_b_conn_acb8e0068a878c784a739e355c0afac33} 
+db\+\_\+crypto.\+DBConn.\+insert (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{dev\+Ip}{, }\item[{}]{dev\+User}{, }\item[{}]{dev\+Pass}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Inserts new device to device database, catches and saves system name\end{DoxyVerb}
+ \Hypertarget{classdb__crypto_1_1_d_b_conn_a34a3f8cdbd690fdcdffb71640807579d}\index{db\_crypto.DBConn@{db\_crypto.DBConn}!query@{query}}
+\index{query@{query}!db\_crypto.DBConn@{db\_crypto.DBConn}}
+\doxysubsubsection{\texorpdfstring{query()}{query()}}
+{\footnotesize\ttfamily \label{classdb__crypto_1_1_d_b_conn_a34a3f8cdbd690fdcdffb71640807579d} 
+db\+\_\+crypto.\+DBConn.\+query (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{query}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Helper function\end{DoxyVerb}
+ \Hypertarget{classdb__crypto_1_1_d_b_conn_a1de5e7bef1d0d191ef242fa44e6b257e}\index{db\_crypto.DBConn@{db\_crypto.DBConn}!remove@{remove}}
+\index{remove@{remove}!db\_crypto.DBConn@{db\_crypto.DBConn}}
+\doxysubsubsection{\texorpdfstring{remove()}{remove()}}
+{\footnotesize\ttfamily \label{classdb__crypto_1_1_d_b_conn_a1de5e7bef1d0d191ef242fa44e6b257e} 
+db\+\_\+crypto.\+DBConn.\+remove (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{dev\+Ip}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Removes device with defined IP from device database\end{DoxyVerb}
+ \Hypertarget{classdb__crypto_1_1_d_b_conn_a6aee9ff73ba8927cc032097129cb9756}\index{db\_crypto.DBConn@{db\_crypto.DBConn}!select@{select}}
+\index{select@{select}!db\_crypto.DBConn@{db\_crypto.DBConn}}
+\doxysubsubsection{\texorpdfstring{select()}{select()}}
+{\footnotesize\ttfamily \label{classdb__crypto_1_1_d_b_conn_a6aee9ff73ba8927cc032097129cb9756} 
+db\+\_\+crypto.\+DBConn.\+select (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{query}{, }\item[{}]{decrypt}{ = {\ttfamily True}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Helper function\end{DoxyVerb}
+ \Hypertarget{classdb__crypto_1_1_d_b_conn_a76238ef6003e73bf7b3294f48c5695c3}\index{db\_crypto.DBConn@{db\_crypto.DBConn}!selectAll@{selectAll}}
+\index{selectAll@{selectAll}!db\_crypto.DBConn@{db\_crypto.DBConn}}
+\doxysubsubsection{\texorpdfstring{selectAll()}{selectAll()}}
+{\footnotesize\ttfamily \label{classdb__crypto_1_1_d_b_conn_a76238ef6003e73bf7b3294f48c5695c3} 
+db\+\_\+crypto.\+DBConn.\+select\+All (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{decrypt}{ = {\ttfamily True}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Selects all devices from database\end{DoxyVerb}
+ \Hypertarget{classdb__crypto_1_1_d_b_conn_a7b7ecff1fdaf8e28f65785d8ea8d1299}\index{db\_crypto.DBConn@{db\_crypto.DBConn}!selectDevUserAndPass@{selectDevUserAndPass}}
+\index{selectDevUserAndPass@{selectDevUserAndPass}!db\_crypto.DBConn@{db\_crypto.DBConn}}
+\doxysubsubsection{\texorpdfstring{selectDevUserAndPass()}{selectDevUserAndPass()}}
+{\footnotesize\ttfamily \label{classdb__crypto_1_1_d_b_conn_a7b7ecff1fdaf8e28f65785d8ea8d1299} 
+db\+\_\+crypto.\+DBConn.\+select\+Dev\+User\+And\+Pass (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{dev\+Ip}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Selects username, password and initiation vector from device with defined IP\end{DoxyVerb}
+ 
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+app/\+db/\+db\+\_\+crypto.\+py\end{DoxyCompactItemize}

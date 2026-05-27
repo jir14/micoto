@@ -1,0 +1,95 @@
+\doxysection{command\+\_\+scan.\+Api\+Commands Class Reference}
+\hypertarget{classcommand__scan_1_1_api_commands}{}\label{classcommand__scan_1_1_api_commands}\index{command\_scan.ApiCommands@{command\_scan.ApiCommands}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{classcommand__scan_1_1_api_commands_ab3debb326c3575fad45f8ef3424ad259}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, ip, username, password, database)
+\item 
+\doxymbox{\hyperlink{classcommand__scan_1_1_api_commands_a66afcc582858d94019588ff374400574}{filter}} (self, output)
+\item 
+\doxymbox{\hyperlink{classcommand__scan_1_1_api_commands_a8b7af554a887c6267bf0302964e7c078}{request\+One}} (self, re, type)
+\item 
+\doxymbox{\hyperlink{classcommand__scan_1_1_api_commands_ab3c12e72d8c982b11b774e1ec192d9b3}{request\+Some}} (self, path="{}"{}, type="{}"{})
+\item 
+\doxymbox{\hyperlink{classcommand__scan_1_1_api_commands_a06da2d883ce8c89ddfc96cd0c345407a}{dir\+Loop}} (self, higher\+ID="{}"{})
+\item 
+\doxymbox{\hyperlink{classcommand__scan_1_1_api_commands_ab49889335d798c0bc7a092044801ddb6}{add\+Cmds}} (self, path="{}"{}, dir\+ID="{}"{})
+\item 
+\doxymbox{\hyperlink{classcommand__scan_1_1_api_commands_a3a70d915e95c3c7b390805f0b6572835}{scan}} (self)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classcommand__scan_1_1_api_commands_a9df932adec875452da7f19804cfa9671}\label{classcommand__scan_1_1_api_commands_a9df932adec875452da7f19804cfa9671} 
+{\bfseries sk} = open\+\_\+socket(ip, 8729, True)
+\item 
+\Hypertarget{classcommand__scan_1_1_api_commands_af1342726ca2cfe3ddb21358a399fdee9}\label{classcommand__scan_1_1_api_commands_af1342726ca2cfe3ddb21358a399fdee9} 
+{\bfseries api} = Api\+Ros(self.\+sk)
+\item 
+\Hypertarget{classcommand__scan_1_1_api_commands_a479bff5f6a929d1e68eecdc3c2321023}\label{classcommand__scan_1_1_api_commands_a479bff5f6a929d1e68eecdc3c2321023} 
+{\bfseries db} = database
+\end{DoxyCompactItemize}
+
+
+\label{classcommand__scan_1_1_api_commands_doc-constructors}
+\Hypertarget{classcommand__scan_1_1_api_commands_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classcommand__scan_1_1_api_commands_ab3debb326c3575fad45f8ef3424ad259}\index{command\_scan.ApiCommands@{command\_scan.ApiCommands}!\_\_init\_\_@{\_\_init\_\_}}
+\index{\_\_init\_\_@{\_\_init\_\_}!command\_scan.ApiCommands@{command\_scan.ApiCommands}}
+\doxysubsubsection{\texorpdfstring{\_\_init\_\_()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily \label{classcommand__scan_1_1_api_commands_ab3debb326c3575fad45f8ef3424ad259} 
+command\+\_\+scan.\+Api\+Commands.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{ip}{, }\item[{}]{username}{, }\item[{}]{password}{, }\item[{}]{database}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Initialises ApiCommands object\end{DoxyVerb}
+ 
+
+\label{classcommand__scan_1_1_api_commands_doc-func-members}
+\Hypertarget{classcommand__scan_1_1_api_commands_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classcommand__scan_1_1_api_commands_ab49889335d798c0bc7a092044801ddb6}\index{command\_scan.ApiCommands@{command\_scan.ApiCommands}!addCmds@{addCmds}}
+\index{addCmds@{addCmds}!command\_scan.ApiCommands@{command\_scan.ApiCommands}}
+\doxysubsubsection{\texorpdfstring{addCmds()}{addCmds()}}
+{\footnotesize\ttfamily \label{classcommand__scan_1_1_api_commands_ab49889335d798c0bc7a092044801ddb6} 
+command\+\_\+scan.\+Api\+Commands.\+add\+Cmds (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{path}{ = {\ttfamily "{}"{}}, }\item[{}]{dir\+ID}{ = {\ttfamily "{}"{}}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Adds available commands to database (add, set, remove, etc...)\end{DoxyVerb}
+ \Hypertarget{classcommand__scan_1_1_api_commands_a06da2d883ce8c89ddfc96cd0c345407a}\index{command\_scan.ApiCommands@{command\_scan.ApiCommands}!dirLoop@{dirLoop}}
+\index{dirLoop@{dirLoop}!command\_scan.ApiCommands@{command\_scan.ApiCommands}}
+\doxysubsubsection{\texorpdfstring{dirLoop()}{dirLoop()}}
+{\footnotesize\ttfamily \label{classcommand__scan_1_1_api_commands_a06da2d883ce8c89ddfc96cd0c345407a} 
+command\+\_\+scan.\+Api\+Commands.\+dir\+Loop (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{higher\+ID}{ = {\ttfamily "{}"{}}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Helper - loops through directories\end{DoxyVerb}
+ \Hypertarget{classcommand__scan_1_1_api_commands_a66afcc582858d94019588ff374400574}\index{command\_scan.ApiCommands@{command\_scan.ApiCommands}!filter@{filter}}
+\index{filter@{filter}!command\_scan.ApiCommands@{command\_scan.ApiCommands}}
+\doxysubsubsection{\texorpdfstring{filter()}{filter()}}
+{\footnotesize\ttfamily \label{classcommand__scan_1_1_api_commands_a66afcc582858d94019588ff374400574} 
+command\+\_\+scan.\+Api\+Commands.\+filter (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{output}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Filters output\end{DoxyVerb}
+ \Hypertarget{classcommand__scan_1_1_api_commands_a8b7af554a887c6267bf0302964e7c078}\index{command\_scan.ApiCommands@{command\_scan.ApiCommands}!requestOne@{requestOne}}
+\index{requestOne@{requestOne}!command\_scan.ApiCommands@{command\_scan.ApiCommands}}
+\doxysubsubsection{\texorpdfstring{requestOne()}{requestOne()}}
+{\footnotesize\ttfamily \label{classcommand__scan_1_1_api_commands_a8b7af554a887c6267bf0302964e7c078} 
+command\+\_\+scan.\+Api\+Commands.\+request\+One (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{re}{, }\item[{}]{type}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Helper - filters defined record type\end{DoxyVerb}
+ \Hypertarget{classcommand__scan_1_1_api_commands_ab3c12e72d8c982b11b774e1ec192d9b3}\index{command\_scan.ApiCommands@{command\_scan.ApiCommands}!requestSome@{requestSome}}
+\index{requestSome@{requestSome}!command\_scan.ApiCommands@{command\_scan.ApiCommands}}
+\doxysubsubsection{\texorpdfstring{requestSome()}{requestSome()}}
+{\footnotesize\ttfamily \label{classcommand__scan_1_1_api_commands_ab3c12e72d8c982b11b774e1ec192d9b3} 
+command\+\_\+scan.\+Api\+Commands.\+request\+Some (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{path}{ = {\ttfamily "{}"{}}, }\item[{}]{type}{ = {\ttfamily "{}"{}}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns `child` items\end{DoxyVerb}
+ \Hypertarget{classcommand__scan_1_1_api_commands_a3a70d915e95c3c7b390805f0b6572835}\index{command\_scan.ApiCommands@{command\_scan.ApiCommands}!scan@{scan}}
+\index{scan@{scan}!command\_scan.ApiCommands@{command\_scan.ApiCommands}}
+\doxysubsubsection{\texorpdfstring{scan()}{scan()}}
+{\footnotesize\ttfamily \label{classcommand__scan_1_1_api_commands_a3a70d915e95c3c7b390805f0b6572835} 
+command\+\_\+scan.\+Api\+Commands.\+scan (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Starts scan\end{DoxyVerb}
+ 
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+app/\+command\+\_\+scan.\+py\end{DoxyCompactItemize}

@@ -1,0 +1,74 @@
+\doxysection{device.\+Device Class Reference}
+\hypertarget{classdevice_1_1_device}{}\label{classdevice_1_1_device}\index{device.Device@{device.Device}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{classdevice_1_1_device_a8d3130c56cdbb7782378d0fe1e5770ed}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, dev\+Ip, dev\+Username, dev\+Pass)
+\item 
+\doxymbox{\hyperlink{classdevice_1_1_device_a6938d0e1c629ed05594613785d690394}{get\+Apiros}} (self)
+\item 
+\doxymbox{\hyperlink{classdevice_1_1_device_a8d8ddaa8c03156f72e06796370b3331b}{get\+Dev\+Ip}} (self)
+\item 
+\doxymbox{\hyperlink{classdevice_1_1_device_aa331a1f5d56bd9af878a398dc827af45}{get\+Dev\+Name}} (self)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classdevice_1_1_device_abc35653ca2c3db7d3013eef9839d7a60}\label{classdevice_1_1_device_abc35653ca2c3db7d3013eef9839d7a60} 
+{\bfseries sk} = open\+\_\+socket(dev\+Ip, 8729, True)
+\item 
+\Hypertarget{classdevice_1_1_device_a59bde5c5cd4493a3fbabb6c59075bb83}\label{classdevice_1_1_device_a59bde5c5cd4493a3fbabb6c59075bb83} 
+{\bfseries apiros} = Api\+Ros(self.\+sk)
+\item 
+\Hypertarget{classdevice_1_1_device_a0f022fbb486d14917bb963ac0dfb74e0}\label{classdevice_1_1_device_a0f022fbb486d14917bb963ac0dfb74e0} 
+{\bfseries ip} = dev\+Ip
+\item 
+\Hypertarget{classdevice_1_1_device_a02d8b9cef2a2c4c8b6574bf0e877ebc5}\label{classdevice_1_1_device_a02d8b9cef2a2c4c8b6574bf0e877ebc5} 
+{\bfseries api} = Api(self)
+\item 
+\Hypertarget{classdevice_1_1_device_a80a1d49107ae32f26e1c634c0a927526}\label{classdevice_1_1_device_a80a1d49107ae32f26e1c634c0a927526} 
+{\bfseries name} = self.\+api.\+get\+Dev\+Name()
+\end{DoxyCompactItemize}
+
+
+\label{classdevice_1_1_device_doc-constructors}
+\Hypertarget{classdevice_1_1_device_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classdevice_1_1_device_a8d3130c56cdbb7782378d0fe1e5770ed}\index{device.Device@{device.Device}!\_\_init\_\_@{\_\_init\_\_}}
+\index{\_\_init\_\_@{\_\_init\_\_}!device.Device@{device.Device}}
+\doxysubsubsection{\texorpdfstring{\_\_init\_\_()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily \label{classdevice_1_1_device_a8d3130c56cdbb7782378d0fe1e5770ed} 
+device.\+Device.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{dev\+Ip}{, }\item[{}]{dev\+Username}{, }\item[{}]{dev\+Pass}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Initialises device object\end{DoxyVerb}
+ 
+
+\label{classdevice_1_1_device_doc-func-members}
+\Hypertarget{classdevice_1_1_device_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classdevice_1_1_device_a6938d0e1c629ed05594613785d690394}\index{device.Device@{device.Device}!getApiros@{getApiros}}
+\index{getApiros@{getApiros}!device.Device@{device.Device}}
+\doxysubsubsection{\texorpdfstring{getApiros()}{getApiros()}}
+{\footnotesize\ttfamily \label{classdevice_1_1_device_a6938d0e1c629ed05594613785d690394} 
+device.\+Device.\+get\+Apiros (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns ApiRos\end{DoxyVerb}
+ \Hypertarget{classdevice_1_1_device_a8d8ddaa8c03156f72e06796370b3331b}\index{device.Device@{device.Device}!getDevIp@{getDevIp}}
+\index{getDevIp@{getDevIp}!device.Device@{device.Device}}
+\doxysubsubsection{\texorpdfstring{getDevIp()}{getDevIp()}}
+{\footnotesize\ttfamily \label{classdevice_1_1_device_a8d8ddaa8c03156f72e06796370b3331b} 
+device.\+Device.\+get\+Dev\+Ip (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns device IP\end{DoxyVerb}
+ \Hypertarget{classdevice_1_1_device_aa331a1f5d56bd9af878a398dc827af45}\index{device.Device@{device.Device}!getDevName@{getDevName}}
+\index{getDevName@{getDevName}!device.Device@{device.Device}}
+\doxysubsubsection{\texorpdfstring{getDevName()}{getDevName()}}
+{\footnotesize\ttfamily \label{classdevice_1_1_device_aa331a1f5d56bd9af878a398dc827af45} 
+device.\+Device.\+get\+Dev\+Name (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns device name\end{DoxyVerb}
+ 
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+app/\+device.\+py\end{DoxyCompactItemize}

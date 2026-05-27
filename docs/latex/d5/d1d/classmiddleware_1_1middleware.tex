@@ -1,0 +1,146 @@
+\doxysection{middleware.\+middleware Class Reference}
+\hypertarget{classmiddleware_1_1middleware}{}\label{classmiddleware_1_1middleware}\index{middleware.middleware@{middleware.middleware}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{classmiddleware_1_1middleware_a86206d0ea7ff1cf6194afa090db16093}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, cmd\+Db\+File="{}"{}, devices=dict())
+\item 
+\doxymbox{\hyperlink{classmiddleware_1_1middleware_a3c0f9df01dcec7024fa4cade80d4e71d}{get\+Dirs\+Without\+Parent}} (self)
+\item 
+\doxymbox{\hyperlink{classmiddleware_1_1middleware_a1ebbff85ff5704dbbd0e07f100c497cc}{get\+Dir\+Name}} (self, dir\+Id="{}"{})
+\item 
+\doxymbox{\hyperlink{classmiddleware_1_1middleware_aa96c3d8b9a6482d63262722e795735bb}{get\+Dir\+Dirs\+IDs}} (self, dir\+Id="{}"{})
+\item 
+\doxymbox{\hyperlink{classmiddleware_1_1middleware_a60f69584b3867a9eb948bcd6522c68b3}{print\+Dir\+Path}} (self, dir\+Id="{}"{}, spacer="{}"{})
+\item 
+\doxymbox{\hyperlink{classmiddleware_1_1middleware_a4b7d83976a610a70d0b378f5a502b7f6}{get\+Dir\+Cmds}} (self, dir\+Id="{}"{})
+\item 
+\doxymbox{\hyperlink{classmiddleware_1_1middleware_acd33c2fa79655df720ef87f941fa457f}{get\+Syntax}} (self, dir\+ID="{}"{})
+\item 
+\doxymbox{\hyperlink{classmiddleware_1_1middleware_a2b3f715169833eee758f939490a7b69e}{get\+Dir\+Table\+Data}} (self, dir\+Id="{}"{}, id="{}"{}, spacer="{}"{}, begin=False)
+\item 
+\doxymbox{\hyperlink{classmiddleware_1_1middleware_ae635794235f5da3c4592f1d3aa3399d2}{get\+Common}} (self, key\+Val="{}"{})
+\item 
+\doxymbox{\hyperlink{classmiddleware_1_1middleware_ad834a538bd455c8f19a09dedf60b0690}{common\+Filtered}} (self, key\+Val="{}"{})
+\item 
+\doxymbox{\hyperlink{classmiddleware_1_1middleware_acadbca12f02c7c0ec6c927e7fdab3da4}{get\+Args}} (self, dir\+Id="{}"{}, cmd="{}"{}, spacer="{},"{})
+\item 
+\doxymbox{\hyperlink{classmiddleware_1_1middleware_a4d1d8e5b5d70f92b1077e04c30d4ae66}{get\+Ip\+Devices}} (self)
+\item 
+\doxymbox{\hyperlink{classmiddleware_1_1middleware_a9db17e8c66064c23c9569f3919d2c416}{apply\+To\+Devices}} (self, arg\+Vals="{}"{}, dir\+Id="{}"{}, cmd\+Name="{}"{}, spacer="{}/\+"{}, selected=False)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmiddleware_1_1middleware_ae45d1e6b5266013ffd2a27672ed1e728}\label{classmiddleware_1_1middleware_ae45d1e6b5266013ffd2a27672ed1e728} 
+{\bfseries db} = Database(db\+File=cmd\+Db\+File)
+\item 
+\Hypertarget{classmiddleware_1_1middleware_a0b553b3a5cfb31bb960a40d20ee805fb}\label{classmiddleware_1_1middleware_a0b553b3a5cfb31bb960a40d20ee805fb} 
+list {\bfseries dev\+List} = \+[$\,$]\+
+\end{DoxyCompactItemize}
+
+
+\label{classmiddleware_1_1middleware_doc-constructors}
+\Hypertarget{classmiddleware_1_1middleware_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classmiddleware_1_1middleware_a86206d0ea7ff1cf6194afa090db16093}\index{middleware.middleware@{middleware.middleware}!\_\_init\_\_@{\_\_init\_\_}}
+\index{\_\_init\_\_@{\_\_init\_\_}!middleware.middleware@{middleware.middleware}}
+\doxysubsubsection{\texorpdfstring{\_\_init\_\_()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily \label{classmiddleware_1_1middleware_a86206d0ea7ff1cf6194afa090db16093} 
+middleware.\+middleware.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{cmd\+Db\+File}{ = {\ttfamily "{}"{}}, }\item[{}]{devices}{ = {\ttfamily dict()}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Initialises middleware object\end{DoxyVerb}
+ 
+
+\label{classmiddleware_1_1middleware_doc-func-members}
+\Hypertarget{classmiddleware_1_1middleware_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classmiddleware_1_1middleware_a9db17e8c66064c23c9569f3919d2c416}\index{middleware.middleware@{middleware.middleware}!applyToDevices@{applyToDevices}}
+\index{applyToDevices@{applyToDevices}!middleware.middleware@{middleware.middleware}}
+\doxysubsubsection{\texorpdfstring{applyToDevices()}{applyToDevices()}}
+{\footnotesize\ttfamily \label{classmiddleware_1_1middleware_a9db17e8c66064c23c9569f3919d2c416} 
+middleware.\+middleware.\+apply\+To\+Devices (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{arg\+Vals}{ = {\ttfamily "{}"{}}, }\item[{}]{dir\+Id}{ = {\ttfamily "{}"{}}, }\item[{}]{cmd\+Name}{ = {\ttfamily "{}"{}}, }\item[{}]{spacer}{ = {\ttfamily "{}/\+"{}}, }\item[{}]{selected}{ = {\ttfamily False}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Checkes values and applies changes\end{DoxyVerb}
+ \Hypertarget{classmiddleware_1_1middleware_ad834a538bd455c8f19a09dedf60b0690}\index{middleware.middleware@{middleware.middleware}!commonFiltered@{commonFiltered}}
+\index{commonFiltered@{commonFiltered}!middleware.middleware@{middleware.middleware}}
+\doxysubsubsection{\texorpdfstring{commonFiltered()}{commonFiltered()}}
+{\footnotesize\ttfamily \label{classmiddleware_1_1middleware_ad834a538bd455c8f19a09dedf60b0690} 
+middleware.\+middleware.\+common\+Filtered (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{key\+Val}{ = {\ttfamily "{}"{}}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns filtered output of common items `{devIP : [common items]}`\end{DoxyVerb}
+ \Hypertarget{classmiddleware_1_1middleware_acadbca12f02c7c0ec6c927e7fdab3da4}\index{middleware.middleware@{middleware.middleware}!getArgs@{getArgs}}
+\index{getArgs@{getArgs}!middleware.middleware@{middleware.middleware}}
+\doxysubsubsection{\texorpdfstring{getArgs()}{getArgs()}}
+{\footnotesize\ttfamily \label{classmiddleware_1_1middleware_acadbca12f02c7c0ec6c927e7fdab3da4} 
+middleware.\+middleware.\+get\+Args (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{dir\+Id}{ = {\ttfamily "{}"{}}, }\item[{}]{cmd}{ = {\ttfamily "{}"{}}, }\item[{}]{spacer}{ = {\ttfamily "{},"{}}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Calls `api.getArgs` on first device\end{DoxyVerb}
+ \Hypertarget{classmiddleware_1_1middleware_ae635794235f5da3c4592f1d3aa3399d2}\index{middleware.middleware@{middleware.middleware}!getCommon@{getCommon}}
+\index{getCommon@{getCommon}!middleware.middleware@{middleware.middleware}}
+\doxysubsubsection{\texorpdfstring{getCommon()}{getCommon()}}
+{\footnotesize\ttfamily \label{classmiddleware_1_1middleware_ae635794235f5da3c4592f1d3aa3399d2} 
+middleware.\+middleware.\+get\+Common (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{key\+Val}{ = {\ttfamily "{}"{}}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns common items of at least 2 devices\end{DoxyVerb}
+ \Hypertarget{classmiddleware_1_1middleware_a4b7d83976a610a70d0b378f5a502b7f6}\index{middleware.middleware@{middleware.middleware}!getDirCmds@{getDirCmds}}
+\index{getDirCmds@{getDirCmds}!middleware.middleware@{middleware.middleware}}
+\doxysubsubsection{\texorpdfstring{getDirCmds()}{getDirCmds()}}
+{\footnotesize\ttfamily \label{classmiddleware_1_1middleware_a4b7d83976a610a70d0b378f5a502b7f6} 
+middleware.\+middleware.\+get\+Dir\+Cmds (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{dir\+Id}{ = {\ttfamily "{}"{}}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Calls `db.getDirCmds`\end{DoxyVerb}
+ \Hypertarget{classmiddleware_1_1middleware_aa96c3d8b9a6482d63262722e795735bb}\index{middleware.middleware@{middleware.middleware}!getDirDirsIDs@{getDirDirsIDs}}
+\index{getDirDirsIDs@{getDirDirsIDs}!middleware.middleware@{middleware.middleware}}
+\doxysubsubsection{\texorpdfstring{getDirDirsIDs()}{getDirDirsIDs()}}
+{\footnotesize\ttfamily \label{classmiddleware_1_1middleware_aa96c3d8b9a6482d63262722e795735bb} 
+middleware.\+middleware.\+get\+Dir\+Dirs\+IDs (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{dir\+Id}{ = {\ttfamily "{}"{}}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Calls `db.getDirDirsIDs`\end{DoxyVerb}
+ \Hypertarget{classmiddleware_1_1middleware_a1ebbff85ff5704dbbd0e07f100c497cc}\index{middleware.middleware@{middleware.middleware}!getDirName@{getDirName}}
+\index{getDirName@{getDirName}!middleware.middleware@{middleware.middleware}}
+\doxysubsubsection{\texorpdfstring{getDirName()}{getDirName()}}
+{\footnotesize\ttfamily \label{classmiddleware_1_1middleware_a1ebbff85ff5704dbbd0e07f100c497cc} 
+middleware.\+middleware.\+get\+Dir\+Name (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{dir\+Id}{ = {\ttfamily "{}"{}}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Calls `db.getDirName`\end{DoxyVerb}
+ \Hypertarget{classmiddleware_1_1middleware_a3c0f9df01dcec7024fa4cade80d4e71d}\index{middleware.middleware@{middleware.middleware}!getDirsWithoutParent@{getDirsWithoutParent}}
+\index{getDirsWithoutParent@{getDirsWithoutParent}!middleware.middleware@{middleware.middleware}}
+\doxysubsubsection{\texorpdfstring{getDirsWithoutParent()}{getDirsWithoutParent()}}
+{\footnotesize\ttfamily \label{classmiddleware_1_1middleware_a3c0f9df01dcec7024fa4cade80d4e71d} 
+middleware.\+middleware.\+get\+Dirs\+Without\+Parent (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Calls `db.getDirsWithoutParent`\end{DoxyVerb}
+ \Hypertarget{classmiddleware_1_1middleware_a2b3f715169833eee758f939490a7b69e}\index{middleware.middleware@{middleware.middleware}!getDirTableData@{getDirTableData}}
+\index{getDirTableData@{getDirTableData}!middleware.middleware@{middleware.middleware}}
+\doxysubsubsection{\texorpdfstring{getDirTableData()}{getDirTableData()}}
+{\footnotesize\ttfamily \label{classmiddleware_1_1middleware_a2b3f715169833eee758f939490a7b69e} 
+middleware.\+middleware.\+get\+Dir\+Table\+Data (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{dir\+Id}{ = {\ttfamily "{}"{}}, }\item[{}]{id}{ = {\ttfamily "{}"{}}, }\item[{}]{spacer}{ = {\ttfamily "{}"{}}, }\item[{}]{begin}{ = {\ttfamily False}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns table data\end{DoxyVerb}
+ \Hypertarget{classmiddleware_1_1middleware_a4d1d8e5b5d70f92b1077e04c30d4ae66}\index{middleware.middleware@{middleware.middleware}!getIpDevices@{getIpDevices}}
+\index{getIpDevices@{getIpDevices}!middleware.middleware@{middleware.middleware}}
+\doxysubsubsection{\texorpdfstring{getIpDevices()}{getIpDevices()}}
+{\footnotesize\ttfamily \label{classmiddleware_1_1middleware_a4d1d8e5b5d70f92b1077e04c30d4ae66} 
+middleware.\+middleware.\+get\+Ip\+Devices (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns list of IPs\end{DoxyVerb}
+ \Hypertarget{classmiddleware_1_1middleware_acd33c2fa79655df720ef87f941fa457f}\index{middleware.middleware@{middleware.middleware}!getSyntax@{getSyntax}}
+\index{getSyntax@{getSyntax}!middleware.middleware@{middleware.middleware}}
+\doxysubsubsection{\texorpdfstring{getSyntax()}{getSyntax()}}
+{\footnotesize\ttfamily \label{classmiddleware_1_1middleware_acd33c2fa79655df720ef87f941fa457f} 
+middleware.\+middleware.\+get\+Syntax (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{dir\+ID}{ = {\ttfamily "{}"{}}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Calls `api.getSyntax` on first device\end{DoxyVerb}
+ \Hypertarget{classmiddleware_1_1middleware_a60f69584b3867a9eb948bcd6522c68b3}\index{middleware.middleware@{middleware.middleware}!printDirPath@{printDirPath}}
+\index{printDirPath@{printDirPath}!middleware.middleware@{middleware.middleware}}
+\doxysubsubsection{\texorpdfstring{printDirPath()}{printDirPath()}}
+{\footnotesize\ttfamily \label{classmiddleware_1_1middleware_a60f69584b3867a9eb948bcd6522c68b3} 
+middleware.\+middleware.\+print\+Dir\+Path (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{dir\+Id}{ = {\ttfamily "{}"{}}, }\item[{}]{spacer}{ = {\ttfamily "{}"{}}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Calls `db.printDirPath`\end{DoxyVerb}
+ 
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+app/\+middleware.\+py\end{DoxyCompactItemize}

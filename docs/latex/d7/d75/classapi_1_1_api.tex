@@ -1,0 +1,107 @@
+\doxysection{api.\+Api Class Reference}
+\hypertarget{classapi_1_1_api}{}\label{classapi_1_1_api}\index{api.Api@{api.Api}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{classapi_1_1_api_a8a6afc89130add696296f597cd0681bb}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, device="{}"{})
+\item 
+\doxymbox{\hyperlink{classapi_1_1_api_a562e8dfdb4159506cb4d1770c24096bc}{print\+Dir}} (self, dir\+ID, id=None, b\+ID=None)
+\item 
+\doxymbox{\hyperlink{classapi_1_1_api_a9838e94d2d4569d9dd5fc0adf802f764}{get\+Dir\+Table\+Data}} (self, id="{}"{}, spacer="{},"{}, path\+Def="{}"{}, begin=False)
+\item 
+\doxymbox{\hyperlink{classapi_1_1_api_ad08b5459e763a5e9cd65d90fcd275776}{get\+Dir}} (self, id="{}"{}, spacer="{},"{}, path\+Def="{}"{}, begin=False)
+\item 
+\doxymbox{\hyperlink{classapi_1_1_api_a30f4ac66093fd73fdcd52c39928b46fc}{get\+Args}} (self, cmd="{}"{}, path\+Def="{}"{})
+\item 
+\doxymbox{\hyperlink{classapi_1_1_api_a768380c0682c5bbc44094ee1f420b470}{get\+Completions}} (self, path="{}"{}, arg="{}"{})
+\item 
+\doxymbox{\hyperlink{classapi_1_1_api_a869b0c56a9c437f9e8781e398ebd3bf2}{get\+Syntax}} (self, path="{}"{}, arg="{}"{})
+\item 
+\doxymbox{\hyperlink{classapi_1_1_api_a4fcc01d1493207d750fab131d9b641e7}{check\+Values}} (self, arg\+Vals="{}"{}, path\+Def="{}"{})
+\item 
+\doxymbox{\hyperlink{classapi_1_1_api_ae2aa1c38b19694d7c59be9fffa3512dc}{get\+Dev\+Name}} (self)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classapi_1_1_api_ad5f5602d8d7b76dade728d8fb63c479f}\label{classapi_1_1_api_ad5f5602d8d7b76dade728d8fb63c479f} 
+{\bfseries apiros} = device.\+get\+Apiros()
+\end{DoxyCompactItemize}
+
+
+\label{classapi_1_1_api_doc-constructors}
+\Hypertarget{classapi_1_1_api_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classapi_1_1_api_a8a6afc89130add696296f597cd0681bb}\index{api.Api@{api.Api}!\_\_init\_\_@{\_\_init\_\_}}
+\index{\_\_init\_\_@{\_\_init\_\_}!api.Api@{api.Api}}
+\doxysubsubsection{\texorpdfstring{\_\_init\_\_()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily \label{classapi_1_1_api_a8a6afc89130add696296f597cd0681bb} 
+api.\+Api.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{device}{ = {\ttfamily "{}"{}}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Initialises Api object\end{DoxyVerb}
+ 
+
+\label{classapi_1_1_api_doc-func-members}
+\Hypertarget{classapi_1_1_api_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classapi_1_1_api_a4fcc01d1493207d750fab131d9b641e7}\index{api.Api@{api.Api}!checkValues@{checkValues}}
+\index{checkValues@{checkValues}!api.Api@{api.Api}}
+\doxysubsubsection{\texorpdfstring{checkValues()}{checkValues()}}
+{\footnotesize\ttfamily \label{classapi_1_1_api_a4fcc01d1493207d750fab131d9b641e7} 
+api.\+Api.\+check\+Values (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{arg\+Vals}{ = {\ttfamily "{}"{}}, }\item[{}]{path\+Def}{ = {\ttfamily "{}"{}}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Tries to apply changes, returns error messages\end{DoxyVerb}
+ \Hypertarget{classapi_1_1_api_a30f4ac66093fd73fdcd52c39928b46fc}\index{api.Api@{api.Api}!getArgs@{getArgs}}
+\index{getArgs@{getArgs}!api.Api@{api.Api}}
+\doxysubsubsection{\texorpdfstring{getArgs()}{getArgs()}}
+{\footnotesize\ttfamily \label{classapi_1_1_api_a30f4ac66093fd73fdcd52c39928b46fc} 
+api.\+Api.\+get\+Args (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{cmd}{ = {\ttfamily "{}"{}}, }\item[{}]{path\+Def}{ = {\ttfamily "{}"{}}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns available arguments of the command\end{DoxyVerb}
+ \Hypertarget{classapi_1_1_api_a768380c0682c5bbc44094ee1f420b470}\index{api.Api@{api.Api}!getCompletions@{getCompletions}}
+\index{getCompletions@{getCompletions}!api.Api@{api.Api}}
+\doxysubsubsection{\texorpdfstring{getCompletions()}{getCompletions()}}
+{\footnotesize\ttfamily \label{classapi_1_1_api_a768380c0682c5bbc44094ee1f420b470} 
+api.\+Api.\+get\+Completions (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{path}{ = {\ttfamily "{}"{}}, }\item[{}]{arg}{ = {\ttfamily "{}"{}}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns available completetions of the command\end{DoxyVerb}
+ \Hypertarget{classapi_1_1_api_ae2aa1c38b19694d7c59be9fffa3512dc}\index{api.Api@{api.Api}!getDevName@{getDevName}}
+\index{getDevName@{getDevName}!api.Api@{api.Api}}
+\doxysubsubsection{\texorpdfstring{getDevName()}{getDevName()}}
+{\footnotesize\ttfamily \label{classapi_1_1_api_ae2aa1c38b19694d7c59be9fffa3512dc} 
+api.\+Api.\+get\+Dev\+Name (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns device identity\end{DoxyVerb}
+ \Hypertarget{classapi_1_1_api_ad08b5459e763a5e9cd65d90fcd275776}\index{api.Api@{api.Api}!getDir@{getDir}}
+\index{getDir@{getDir}!api.Api@{api.Api}}
+\doxysubsubsection{\texorpdfstring{getDir()}{getDir()}}
+{\footnotesize\ttfamily \label{classapi_1_1_api_ad08b5459e763a5e9cd65d90fcd275776} 
+api.\+Api.\+get\+Dir (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{id}{ = {\ttfamily "{}"{}}, }\item[{}]{spacer}{ = {\ttfamily "{},"{}}, }\item[{}]{path\+Def}{ = {\ttfamily "{}"{}}, }\item[{}]{begin}{ = {\ttfamily False}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Calls `print` command in defined directory + help\end{DoxyVerb}
+ \Hypertarget{classapi_1_1_api_a9838e94d2d4569d9dd5fc0adf802f764}\index{api.Api@{api.Api}!getDirTableData@{getDirTableData}}
+\index{getDirTableData@{getDirTableData}!api.Api@{api.Api}}
+\doxysubsubsection{\texorpdfstring{getDirTableData()}{getDirTableData()}}
+{\footnotesize\ttfamily \label{classapi_1_1_api_a9838e94d2d4569d9dd5fc0adf802f764} 
+api.\+Api.\+get\+Dir\+Table\+Data (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{id}{ = {\ttfamily "{}"{}}, }\item[{}]{spacer}{ = {\ttfamily "{},"{}}, }\item[{}]{path\+Def}{ = {\ttfamily "{}"{}}, }\item[{}]{begin}{ = {\ttfamily False}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Gets table data from device if available\end{DoxyVerb}
+ \Hypertarget{classapi_1_1_api_a869b0c56a9c437f9e8781e398ebd3bf2}\index{api.Api@{api.Api}!getSyntax@{getSyntax}}
+\index{getSyntax@{getSyntax}!api.Api@{api.Api}}
+\doxysubsubsection{\texorpdfstring{getSyntax()}{getSyntax()}}
+{\footnotesize\ttfamily \label{classapi_1_1_api_a869b0c56a9c437f9e8781e398ebd3bf2} 
+api.\+Api.\+get\+Syntax (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{path}{ = {\ttfamily "{}"{}}, }\item[{}]{arg}{ = {\ttfamily "{}"{}}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns syntax of the command\end{DoxyVerb}
+ \Hypertarget{classapi_1_1_api_a562e8dfdb4159506cb4d1770c24096bc}\index{api.Api@{api.Api}!printDir@{printDir}}
+\index{printDir@{printDir}!api.Api@{api.Api}}
+\doxysubsubsection{\texorpdfstring{printDir()}{printDir()}}
+{\footnotesize\ttfamily \label{classapi_1_1_api_a562e8dfdb4159506cb4d1770c24096bc} 
+api.\+Api.\+print\+Dir (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{dir\+ID}{, }\item[{}]{id}{ = {\ttfamily None}, }\item[{}]{b\+ID}{ = {\ttfamily None}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Calls `print` command in defined directory\end{DoxyVerb}
+ 
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+app/\+api/\+api.\+py\end{DoxyCompactItemize}

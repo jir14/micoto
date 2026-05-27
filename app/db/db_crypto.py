@@ -1,4 +1,6 @@
+# \cond
 import sqlite3, os
+# \endcond
 from ..api.apiros import ApiRos as apiros
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 

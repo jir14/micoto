@@ -1,0 +1,227 @@
+\doxysection{db.\+Database Class Reference}
+\hypertarget{classdb_1_1_database}{}\label{classdb_1_1_database}\index{db.Database@{db.Database}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{classdb_1_1_database_aa21ad82de87f888a66dbce042788678b}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, db\+File, create=False)
+\item 
+\doxymbox{\hyperlink{classdb_1_1_database_a2653b25b899c06a9a2a8fc63be9346e9}{check\+Cmd\+File}} (self)
+\item 
+\doxymbox{\hyperlink{classdb_1_1_database_a94bf28f995ce8eacbd21f3260709f493}{insert\+Dir}} (self, dir, higher\+ID=True)
+\item 
+\doxymbox{\hyperlink{classdb_1_1_database_a6b99dd6c9c09fec919e94eb15ad6c9ce}{insert\+Dirs}} (self, dirs, higher\+ID=True)
+\item 
+\doxymbox{\hyperlink{classdb_1_1_database_aac7db0939dfc32afc94215a83069b262}{insert\+Commands}} (self, dir, cmds)
+\item 
+\doxymbox{\hyperlink{classdb_1_1_database_a27eda5420fd281d589093a9df1d9d2bc}{insert\+Cmd}} (self, dir\+Id, vals)
+\item 
+\doxymbox{\hyperlink{classdb_1_1_database_a221c0400b6f2b547e0889d0746575aa8}{get\+Dir\+Name}} (self, dir\+ID)
+\item 
+\doxymbox{\hyperlink{classdb_1_1_database_ab65b779dea0d4c6b1666b70d93c73106}{get\+Dir\+Parent\+ID}} (self, dir, bid=None)
+\item 
+\doxymbox{\hyperlink{classdb_1_1_database_a9aeb66b8d84ea8971af70453f0c3223d}{get\+Dir\+Parent\+Name}} (self, dir, bid=None)
+\item 
+\doxymbox{\hyperlink{classdb_1_1_database_a73e863921fa96d18f1edfac57186b046}{get\+Dir\+Cmds}} (self, dir\+ID)
+\item 
+\doxymbox{\hyperlink{classdb_1_1_database_ae7812a03f98eee883af8cf41985e1b51}{get\+Cmd\+ID}} (self, dir\+ID)
+\item 
+\doxymbox{\hyperlink{classdb_1_1_database_a781d1be9ec92acca3e8f133ec3bf3e90}{get\+One}} (self, sql, params)
+\item 
+\doxymbox{\hyperlink{classdb_1_1_database_ac6c45fe294a414429114cf7056589812}{print\+Dir\+Path}} (self, dir\+ID, spacer="{}/\+"{})
+\item 
+\doxymbox{\hyperlink{classdb_1_1_database_a0cf1cb627a1c252456db447dc8ad2dab}{get\+Dir\+Dirs\+IDs}} (self, dir\+ID)
+\item 
+\doxymbox{\hyperlink{classdb_1_1_database_a5a8e9dc444c157e22456c908ccb6cdca}{get\+Dir\+Cmds\+IDs}} (self, dir\+ID)
+\item 
+\doxymbox{\hyperlink{classdb_1_1_database_a80ba05c2dc80e88963b6e784b21164ed}{get\+Dirs\+Without\+Parent}} (self)
+\item 
+\doxymbox{\hyperlink{classdb_1_1_database_a243caba0553e33670c65f6feaa9c5f1d}{get\+Cmd\+Parent\+ID}} (self, cmd\+ID)
+\item 
+\doxymbox{\hyperlink{classdb_1_1_database_a73c43ea92a20131bfe75790e860bd9bf}{get\+Dir\+Path}} (self, dir\+ID)
+\item 
+\doxymbox{\hyperlink{classdb_1_1_database_a12d4d1a75efbab4ee973ac40b15526ef}{get\+Cmd\+Path}} (self, cmd\+ID)
+\item 
+\doxymbox{\hyperlink{classdb_1_1_database_a376d8cc0d52364af5b05a9b86973da97}{get\+Dir\+Path\+IDs}} (self, dir\+ID)
+\item 
+\doxymbox{\hyperlink{classdb_1_1_database_ae16869c739c8b628ec76cce795e2c584}{get\+Cmd\+Path\+IDs}} (self, cmd\+ID)
+\item 
+\doxymbox{\hyperlink{classdb_1_1_database_a2105ce3d13ad7f06659a2ec9aea05c24}{db\+Copy}} (self, cmd\+IDs="{}"{}, dir\+IDs="{}"{}, path="{}"{})
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classdb_1_1_database_ae30e86e7559087db532b59508b920c96}\label{classdb_1_1_database_ae30e86e7559087db532b59508b920c96} 
+{\bfseries con} = sqlite3.\+connect(db\+File, check\+\_\+same\+\_\+thread=False)
+\item 
+\Hypertarget{classdb_1_1_database_adee54c7c08c639f9e5c846282d35eed5}\label{classdb_1_1_database_adee54c7c08c639f9e5c846282d35eed5} 
+{\bfseries cur} = self.\+con.\+cursor()
+\end{DoxyCompactItemize}
+
+
+\label{classdb_1_1_database_doc-constructors}
+\Hypertarget{classdb_1_1_database_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classdb_1_1_database_aa21ad82de87f888a66dbce042788678b}\index{db.Database@{db.Database}!\_\_init\_\_@{\_\_init\_\_}}
+\index{\_\_init\_\_@{\_\_init\_\_}!db.Database@{db.Database}}
+\doxysubsubsection{\texorpdfstring{\_\_init\_\_()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily \label{classdb_1_1_database_aa21ad82de87f888a66dbce042788678b} 
+db.\+Database.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{db\+File}{, }\item[{}]{create}{ = {\ttfamily False}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Initialises command database object\end{DoxyVerb}
+ 
+
+\label{classdb_1_1_database_doc-func-members}
+\Hypertarget{classdb_1_1_database_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classdb_1_1_database_a2653b25b899c06a9a2a8fc63be9346e9}\index{db.Database@{db.Database}!checkCmdFile@{checkCmdFile}}
+\index{checkCmdFile@{checkCmdFile}!db.Database@{db.Database}}
+\doxysubsubsection{\texorpdfstring{checkCmdFile()}{checkCmdFile()}}
+{\footnotesize\ttfamily \label{classdb_1_1_database_a2653b25b899c06a9a2a8fc63be9346e9} 
+db.\+Database.\+check\+Cmd\+File (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Check if right database file chosen (existance of `dirs` and `cmds` table)\end{DoxyVerb}
+ \Hypertarget{classdb_1_1_database_a2105ce3d13ad7f06659a2ec9aea05c24}\index{db.Database@{db.Database}!dbCopy@{dbCopy}}
+\index{dbCopy@{dbCopy}!db.Database@{db.Database}}
+\doxysubsubsection{\texorpdfstring{dbCopy()}{dbCopy()}}
+{\footnotesize\ttfamily \label{classdb_1_1_database_a2105ce3d13ad7f06659a2ec9aea05c24} 
+db.\+Database.\+db\+Copy (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{cmd\+IDs}{ = {\ttfamily "{}"{}}, }\item[{}]{dir\+IDs}{ = {\ttfamily "{}"{}}, }\item[{}]{path}{ = {\ttfamily "{}"{}}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Copies database entries\end{DoxyVerb}
+ \Hypertarget{classdb_1_1_database_ae7812a03f98eee883af8cf41985e1b51}\index{db.Database@{db.Database}!getCmdID@{getCmdID}}
+\index{getCmdID@{getCmdID}!db.Database@{db.Database}}
+\doxysubsubsection{\texorpdfstring{getCmdID()}{getCmdID()}}
+{\footnotesize\ttfamily \label{classdb_1_1_database_ae7812a03f98eee883af8cf41985e1b51} 
+db.\+Database.\+get\+Cmd\+ID (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{dir\+ID}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns command id\end{DoxyVerb}
+ \Hypertarget{classdb_1_1_database_a243caba0553e33670c65f6feaa9c5f1d}\index{db.Database@{db.Database}!getCmdParentID@{getCmdParentID}}
+\index{getCmdParentID@{getCmdParentID}!db.Database@{db.Database}}
+\doxysubsubsection{\texorpdfstring{getCmdParentID()}{getCmdParentID()}}
+{\footnotesize\ttfamily \label{classdb_1_1_database_a243caba0553e33670c65f6feaa9c5f1d} 
+db.\+Database.\+get\+Cmd\+Parent\+ID (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{cmd\+ID}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns parent dir id\end{DoxyVerb}
+ \Hypertarget{classdb_1_1_database_a12d4d1a75efbab4ee973ac40b15526ef}\index{db.Database@{db.Database}!getCmdPath@{getCmdPath}}
+\index{getCmdPath@{getCmdPath}!db.Database@{db.Database}}
+\doxysubsubsection{\texorpdfstring{getCmdPath()}{getCmdPath()}}
+{\footnotesize\ttfamily \label{classdb_1_1_database_a12d4d1a75efbab4ee973ac40b15526ef} 
+db.\+Database.\+get\+Cmd\+Path (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{cmd\+ID}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Creates complete command path\end{DoxyVerb}
+ \Hypertarget{classdb_1_1_database_ae16869c739c8b628ec76cce795e2c584}\index{db.Database@{db.Database}!getCmdPathIDs@{getCmdPathIDs}}
+\index{getCmdPathIDs@{getCmdPathIDs}!db.Database@{db.Database}}
+\doxysubsubsection{\texorpdfstring{getCmdPathIDs()}{getCmdPathIDs()}}
+{\footnotesize\ttfamily \label{classdb_1_1_database_ae16869c739c8b628ec76cce795e2c584} 
+db.\+Database.\+get\+Cmd\+Path\+IDs (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{cmd\+ID}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns list of command path ids\end{DoxyVerb}
+ \Hypertarget{classdb_1_1_database_a73e863921fa96d18f1edfac57186b046}\index{db.Database@{db.Database}!getDirCmds@{getDirCmds}}
+\index{getDirCmds@{getDirCmds}!db.Database@{db.Database}}
+\doxysubsubsection{\texorpdfstring{getDirCmds()}{getDirCmds()}}
+{\footnotesize\ttfamily \label{classdb_1_1_database_a73e863921fa96d18f1edfac57186b046} 
+db.\+Database.\+get\+Dir\+Cmds (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{dir\+ID}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns all available commands in certain directory\end{DoxyVerb}
+ \Hypertarget{classdb_1_1_database_a5a8e9dc444c157e22456c908ccb6cdca}\index{db.Database@{db.Database}!getDirCmdsIDs@{getDirCmdsIDs}}
+\index{getDirCmdsIDs@{getDirCmdsIDs}!db.Database@{db.Database}}
+\doxysubsubsection{\texorpdfstring{getDirCmdsIDs()}{getDirCmdsIDs()}}
+{\footnotesize\ttfamily \label{classdb_1_1_database_a5a8e9dc444c157e22456c908ccb6cdca} 
+db.\+Database.\+get\+Dir\+Cmds\+IDs (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{dir\+ID}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns directory command ids\end{DoxyVerb}
+ \Hypertarget{classdb_1_1_database_a0cf1cb627a1c252456db447dc8ad2dab}\index{db.Database@{db.Database}!getDirDirsIDs@{getDirDirsIDs}}
+\index{getDirDirsIDs@{getDirDirsIDs}!db.Database@{db.Database}}
+\doxysubsubsection{\texorpdfstring{getDirDirsIDs()}{getDirDirsIDs()}}
+{\footnotesize\ttfamily \label{classdb_1_1_database_a0cf1cb627a1c252456db447dc8ad2dab} 
+db.\+Database.\+get\+Dir\+Dirs\+IDs (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{dir\+ID}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns ids of subdirectory\end{DoxyVerb}
+ \Hypertarget{classdb_1_1_database_a221c0400b6f2b547e0889d0746575aa8}\index{db.Database@{db.Database}!getDirName@{getDirName}}
+\index{getDirName@{getDirName}!db.Database@{db.Database}}
+\doxysubsubsection{\texorpdfstring{getDirName()}{getDirName()}}
+{\footnotesize\ttfamily \label{classdb_1_1_database_a221c0400b6f2b547e0889d0746575aa8} 
+db.\+Database.\+get\+Dir\+Name (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{dir\+ID}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns directory name from dirId\end{DoxyVerb}
+ \Hypertarget{classdb_1_1_database_ab65b779dea0d4c6b1666b70d93c73106}\index{db.Database@{db.Database}!getDirParentID@{getDirParentID}}
+\index{getDirParentID@{getDirParentID}!db.Database@{db.Database}}
+\doxysubsubsection{\texorpdfstring{getDirParentID()}{getDirParentID()}}
+{\footnotesize\ttfamily \label{classdb_1_1_database_ab65b779dea0d4c6b1666b70d93c73106} 
+db.\+Database.\+get\+Dir\+Parent\+ID (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{dir}{, }\item[{}]{bid}{ = {\ttfamily None}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns parent directory\end{DoxyVerb}
+ \Hypertarget{classdb_1_1_database_a9aeb66b8d84ea8971af70453f0c3223d}\index{db.Database@{db.Database}!getDirParentName@{getDirParentName}}
+\index{getDirParentName@{getDirParentName}!db.Database@{db.Database}}
+\doxysubsubsection{\texorpdfstring{getDirParentName()}{getDirParentName()}}
+{\footnotesize\ttfamily \label{classdb_1_1_database_a9aeb66b8d84ea8971af70453f0c3223d} 
+db.\+Database.\+get\+Dir\+Parent\+Name (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{dir}{, }\item[{}]{bid}{ = {\ttfamily None}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns name of parent directory\end{DoxyVerb}
+ \Hypertarget{classdb_1_1_database_a73c43ea92a20131bfe75790e860bd9bf}\index{db.Database@{db.Database}!getDirPath@{getDirPath}}
+\index{getDirPath@{getDirPath}!db.Database@{db.Database}}
+\doxysubsubsection{\texorpdfstring{getDirPath()}{getDirPath()}}
+{\footnotesize\ttfamily \label{classdb_1_1_database_a73c43ea92a20131bfe75790e860bd9bf} 
+db.\+Database.\+get\+Dir\+Path (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{dir\+ID}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Creates complete dir path, used only in backend\end{DoxyVerb}
+ \Hypertarget{classdb_1_1_database_a376d8cc0d52364af5b05a9b86973da97}\index{db.Database@{db.Database}!getDirPathIDs@{getDirPathIDs}}
+\index{getDirPathIDs@{getDirPathIDs}!db.Database@{db.Database}}
+\doxysubsubsection{\texorpdfstring{getDirPathIDs()}{getDirPathIDs()}}
+{\footnotesize\ttfamily \label{classdb_1_1_database_a376d8cc0d52364af5b05a9b86973da97} 
+db.\+Database.\+get\+Dir\+Path\+IDs (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{dir\+ID}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns list of dir path ids\end{DoxyVerb}
+ \Hypertarget{classdb_1_1_database_a80ba05c2dc80e88963b6e784b21164ed}\index{db.Database@{db.Database}!getDirsWithoutParent@{getDirsWithoutParent}}
+\index{getDirsWithoutParent@{getDirsWithoutParent}!db.Database@{db.Database}}
+\doxysubsubsection{\texorpdfstring{getDirsWithoutParent()}{getDirsWithoutParent()}}
+{\footnotesize\ttfamily \label{classdb_1_1_database_a80ba05c2dc80e88963b6e784b21164ed} 
+db.\+Database.\+get\+Dirs\+Without\+Parent (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns dirs without parents (root dirs)\end{DoxyVerb}
+ \Hypertarget{classdb_1_1_database_a781d1be9ec92acca3e8f133ec3bf3e90}\index{db.Database@{db.Database}!getOne@{getOne}}
+\index{getOne@{getOne}!db.Database@{db.Database}}
+\doxysubsubsection{\texorpdfstring{getOne()}{getOne()}}
+{\footnotesize\ttfamily \label{classdb_1_1_database_a781d1be9ec92acca3e8f133ec3bf3e90} 
+db.\+Database.\+get\+One (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{sql}{, }\item[{}]{params}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Helper function - returns one result\end{DoxyVerb}
+ \Hypertarget{classdb_1_1_database_a27eda5420fd281d589093a9df1d9d2bc}\index{db.Database@{db.Database}!insertCmd@{insertCmd}}
+\index{insertCmd@{insertCmd}!db.Database@{db.Database}}
+\doxysubsubsection{\texorpdfstring{insertCmd()}{insertCmd()}}
+{\footnotesize\ttfamily \label{classdb_1_1_database_a27eda5420fd281d589093a9df1d9d2bc} 
+db.\+Database.\+insert\+Cmd (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{dir\+Id}{, }\item[{}]{vals}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Insert available commands to database (add, set, remove, etc...)\end{DoxyVerb}
+ \Hypertarget{classdb_1_1_database_aac7db0939dfc32afc94215a83069b262}\index{db.Database@{db.Database}!insertCommands@{insertCommands}}
+\index{insertCommands@{insertCommands}!db.Database@{db.Database}}
+\doxysubsubsection{\texorpdfstring{insertCommands()}{insertCommands()}}
+{\footnotesize\ttfamily \label{classdb_1_1_database_aac7db0939dfc32afc94215a83069b262} 
+db.\+Database.\+insert\+Commands (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{dir}{, }\item[{}]{cmds}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Insert commands to database\end{DoxyVerb}
+ \Hypertarget{classdb_1_1_database_a94bf28f995ce8eacbd21f3260709f493}\index{db.Database@{db.Database}!insertDir@{insertDir}}
+\index{insertDir@{insertDir}!db.Database@{db.Database}}
+\doxysubsubsection{\texorpdfstring{insertDir()}{insertDir()}}
+{\footnotesize\ttfamily \label{classdb_1_1_database_a94bf28f995ce8eacbd21f3260709f493} 
+db.\+Database.\+insert\+Dir (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{dir}{, }\item[{}]{higher\+ID}{ = {\ttfamily True}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Inserts dir in database\end{DoxyVerb}
+ \Hypertarget{classdb_1_1_database_a6b99dd6c9c09fec919e94eb15ad6c9ce}\index{db.Database@{db.Database}!insertDirs@{insertDirs}}
+\index{insertDirs@{insertDirs}!db.Database@{db.Database}}
+\doxysubsubsection{\texorpdfstring{insertDirs()}{insertDirs()}}
+{\footnotesize\ttfamily \label{classdb_1_1_database_a6b99dd6c9c09fec919e94eb15ad6c9ce} 
+db.\+Database.\+insert\+Dirs (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{dirs}{, }\item[{}]{higher\+ID}{ = {\ttfamily True}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Loops through dir list, calls `insertDir` function\end{DoxyVerb}
+ \Hypertarget{classdb_1_1_database_ac6c45fe294a414429114cf7056589812}\index{db.Database@{db.Database}!printDirPath@{printDirPath}}
+\index{printDirPath@{printDirPath}!db.Database@{db.Database}}
+\doxysubsubsection{\texorpdfstring{printDirPath()}{printDirPath()}}
+{\footnotesize\ttfamily \label{classdb_1_1_database_ac6c45fe294a414429114cf7056589812} 
+db.\+Database.\+print\+Dir\+Path (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{dir\+ID}{, }\item[{}]{spacer}{ = {\ttfamily "{}/\+"{}}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns whole command path separated by defined spacer\end{DoxyVerb}
+ 
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+app/\+db/\+db.\+py\end{DoxyCompactItemize}

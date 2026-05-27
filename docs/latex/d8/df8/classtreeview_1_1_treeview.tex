@@ -1,0 +1,113 @@
+\doxysection{treeview.\+Treeview Class Reference}
+\hypertarget{classtreeview_1_1_treeview}{}\label{classtreeview_1_1_treeview}\index{treeview.Treeview@{treeview.Treeview}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{classtreeview_1_1_treeview_a3a89b90f65244ef2be71621b3cfcfa30}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, db\+Name)
+\item 
+\doxymbox{\hyperlink{classtreeview_1_1_treeview_a4808106975d94a508a9b0157f1308d0d}{db\+Test}} (self)
+\item 
+\doxymbox{\hyperlink{classtreeview_1_1_treeview_af4e14b9e21a7b0e299dae045763837c3}{create\+DBlists}} (self, sender, appdata, userdata)
+\item 
+\doxymbox{\hyperlink{classtreeview_1_1_treeview_a327c18e2ec9af42e3ce0118ae8822f5e}{create\+DBWindow}} (self, sender, appdata, userdata)
+\item 
+\doxymbox{\hyperlink{classtreeview_1_1_treeview_ad9ad5afa74abebb395f5d1717d66fa15}{file\+Select}} (self, sender, app\+\_\+data, user\+\_\+data)
+\item 
+\doxymbox{\hyperlink{classtreeview_1_1_treeview_a41ef7b0a1372b56e99ad4932dbf06375}{cmd\+Callback}} (self, sender, appdata, userdata)
+\item 
+\doxymbox{\hyperlink{classtreeview_1_1_treeview_ae3a24b786802ab0a21f4ee13e9ee33f9}{dir\+Callback}} (self, sender, appdata, userdata)
+\item 
+\doxymbox{\hyperlink{classtreeview_1_1_treeview_a6a10ac125a92c423ac2e16e7c420bf56}{dir\+Root\+Loop}} (self, dir\+Id="{}"{}, value="{}"{})
+\item 
+\doxymbox{\hyperlink{classtreeview_1_1_treeview_ae39825ab5bb90a30dcd003559edd9462}{loop}} (self, dir\+ID)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classtreeview_1_1_treeview_a7ed4a3425353a8e96c11184d061f855b}\label{classtreeview_1_1_treeview_a7ed4a3425353a8e96c11184d061f855b} 
+{\bfseries db} = Database(db\+Name)
+\item 
+\Hypertarget{classtreeview_1_1_treeview_abb8c305a58c6ead4c9c131c5793c2732}\label{classtreeview_1_1_treeview_abb8c305a58c6ead4c9c131c5793c2732} 
+{\bfseries dirs\+To\+DB} = dict()
+\item 
+\Hypertarget{classtreeview_1_1_treeview_a75551d76814d07c3469f94a9acca3c54}\label{classtreeview_1_1_treeview_a75551d76814d07c3469f94a9acca3c54} 
+{\bfseries cmds\+To\+DB} = dict()
+\end{DoxyCompactItemize}
+
+
+\label{classtreeview_1_1_treeview_doc-constructors}
+\Hypertarget{classtreeview_1_1_treeview_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classtreeview_1_1_treeview_a3a89b90f65244ef2be71621b3cfcfa30}\index{treeview.Treeview@{treeview.Treeview}!\_\_init\_\_@{\_\_init\_\_}}
+\index{\_\_init\_\_@{\_\_init\_\_}!treeview.Treeview@{treeview.Treeview}}
+\doxysubsubsection{\texorpdfstring{\_\_init\_\_()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily \label{classtreeview_1_1_treeview_a3a89b90f65244ef2be71621b3cfcfa30} 
+treeview.\+Treeview.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{db\+Name}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Initialises tree view window object\end{DoxyVerb}
+ 
+
+\label{classtreeview_1_1_treeview_doc-func-members}
+\Hypertarget{classtreeview_1_1_treeview_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classtreeview_1_1_treeview_a41ef7b0a1372b56e99ad4932dbf06375}\index{treeview.Treeview@{treeview.Treeview}!cmdCallback@{cmdCallback}}
+\index{cmdCallback@{cmdCallback}!treeview.Treeview@{treeview.Treeview}}
+\doxysubsubsection{\texorpdfstring{cmdCallback()}{cmdCallback()}}
+{\footnotesize\ttfamily \label{classtreeview_1_1_treeview_a41ef7b0a1372b56e99ad4932dbf06375} 
+treeview.\+Treeview.\+cmd\+Callback (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{sender}{, }\item[{}]{appdata}{, }\item[{}]{userdata}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Helper - tracking selected commands\end{DoxyVerb}
+ \Hypertarget{classtreeview_1_1_treeview_af4e14b9e21a7b0e299dae045763837c3}\index{treeview.Treeview@{treeview.Treeview}!createDBlists@{createDBlists}}
+\index{createDBlists@{createDBlists}!treeview.Treeview@{treeview.Treeview}}
+\doxysubsubsection{\texorpdfstring{createDBlists()}{createDBlists()}}
+{\footnotesize\ttfamily \label{classtreeview_1_1_treeview_af4e14b9e21a7b0e299dae045763837c3} 
+treeview.\+Treeview.\+create\+DBlists (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{sender}{, }\item[{}]{appdata}{, }\item[{}]{userdata}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Copies selected items to new database\end{DoxyVerb}
+ \Hypertarget{classtreeview_1_1_treeview_a327c18e2ec9af42e3ce0118ae8822f5e}\index{treeview.Treeview@{treeview.Treeview}!createDBWindow@{createDBWindow}}
+\index{createDBWindow@{createDBWindow}!treeview.Treeview@{treeview.Treeview}}
+\doxysubsubsection{\texorpdfstring{createDBWindow()}{createDBWindow()}}
+{\footnotesize\ttfamily \label{classtreeview_1_1_treeview_a327c18e2ec9af42e3ce0118ae8822f5e} 
+treeview.\+Treeview.\+create\+DBWindow (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{sender}{, }\item[{}]{appdata}{, }\item[{}]{userdata}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Opens new database file dialog\end{DoxyVerb}
+ \Hypertarget{classtreeview_1_1_treeview_a4808106975d94a508a9b0157f1308d0d}\index{treeview.Treeview@{treeview.Treeview}!dbTest@{dbTest}}
+\index{dbTest@{dbTest}!treeview.Treeview@{treeview.Treeview}}
+\doxysubsubsection{\texorpdfstring{dbTest()}{dbTest()}}
+{\footnotesize\ttfamily \label{classtreeview_1_1_treeview_a4808106975d94a508a9b0157f1308d0d} 
+treeview.\+Treeview.\+db\+Test (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Calls `db.checkCmdFile` function\end{DoxyVerb}
+ \Hypertarget{classtreeview_1_1_treeview_ae3a24b786802ab0a21f4ee13e9ee33f9}\index{treeview.Treeview@{treeview.Treeview}!dirCallback@{dirCallback}}
+\index{dirCallback@{dirCallback}!treeview.Treeview@{treeview.Treeview}}
+\doxysubsubsection{\texorpdfstring{dirCallback()}{dirCallback()}}
+{\footnotesize\ttfamily \label{classtreeview_1_1_treeview_ae3a24b786802ab0a21f4ee13e9ee33f9} 
+treeview.\+Treeview.\+dir\+Callback (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{sender}{, }\item[{}]{appdata}{, }\item[{}]{userdata}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Helper - tracking selected dirs\end{DoxyVerb}
+ \Hypertarget{classtreeview_1_1_treeview_a6a10ac125a92c423ac2e16e7c420bf56}\index{treeview.Treeview@{treeview.Treeview}!dirRootLoop@{dirRootLoop}}
+\index{dirRootLoop@{dirRootLoop}!treeview.Treeview@{treeview.Treeview}}
+\doxysubsubsection{\texorpdfstring{dirRootLoop()}{dirRootLoop()}}
+{\footnotesize\ttfamily \label{classtreeview_1_1_treeview_a6a10ac125a92c423ac2e16e7c420bf56} 
+treeview.\+Treeview.\+dir\+Root\+Loop (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{dir\+Id}{ = {\ttfamily "{}"{}}, }\item[{}]{value}{ = {\ttfamily "{}"{}}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Helper - loops through selected subdirs (root)\end{DoxyVerb}
+ \Hypertarget{classtreeview_1_1_treeview_ad9ad5afa74abebb395f5d1717d66fa15}\index{treeview.Treeview@{treeview.Treeview}!fileSelect@{fileSelect}}
+\index{fileSelect@{fileSelect}!treeview.Treeview@{treeview.Treeview}}
+\doxysubsubsection{\texorpdfstring{fileSelect()}{fileSelect()}}
+{\footnotesize\ttfamily \label{classtreeview_1_1_treeview_ad9ad5afa74abebb395f5d1717d66fa15} 
+treeview.\+Treeview.\+file\+Select (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{sender}{, }\item[{}]{app\+\_\+data}{, }\item[{}]{user\+\_\+data}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Processes db file (checks and file creation)\end{DoxyVerb}
+ \Hypertarget{classtreeview_1_1_treeview_ae39825ab5bb90a30dcd003559edd9462}\index{treeview.Treeview@{treeview.Treeview}!loop@{loop}}
+\index{loop@{loop}!treeview.Treeview@{treeview.Treeview}}
+\doxysubsubsection{\texorpdfstring{loop()}{loop()}}
+{\footnotesize\ttfamily \label{classtreeview_1_1_treeview_ae39825ab5bb90a30dcd003559edd9462} 
+treeview.\+Treeview.\+loop (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{dir\+ID}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Helper - loops through selected subdirs\end{DoxyVerb}
+ 
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+app/\+treeview.\+py\end{DoxyCompactItemize}

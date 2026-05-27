@@ -1,0 +1,156 @@
+\doxysection{apiros.\+Api\+Ros Class Reference}
+\hypertarget{classapiros_1_1_api_ros}{}\label{classapiros_1_1_api_ros}\index{apiros.ApiRos@{apiros.ApiRos}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{classapiros_1_1_api_ros_abcefe7e10b29e233150de34b8dab548c}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, sk)
+\item 
+\doxymbox{\hyperlink{classapiros_1_1_api_ros_a84a8f93c3f62ef2e4dd8a1cbf47f97ad}{login}} (self, username, pwd)
+\item 
+\doxymbox{\hyperlink{classapiros_1_1_api_ros_a8e7c62eeb9ad84e4661f152c1bfb0514}{talk}} (self, words)
+\item 
+\doxymbox{\hyperlink{classapiros_1_1_api_ros_aab5cd9fe1e1fdf986f42159c95213935}{write\+Sentence}} (self, words)
+\item 
+\doxymbox{\hyperlink{classapiros_1_1_api_ros_aa8b3d67fdb251a634c537fff3a727c1a}{read\+Sentence}} (self)
+\item 
+\doxymbox{\hyperlink{classapiros_1_1_api_ros_ad50eb52946136ca26b3ea16b19bf81e1}{write\+Word}} (self, w)
+\item 
+\doxymbox{\hyperlink{classapiros_1_1_api_ros_a2412baeed430a5ee135c536e63120208}{read\+Word}} (self)
+\item 
+\doxymbox{\hyperlink{classapiros_1_1_api_ros_a40155dbead226f3e3037fa2409618a95}{write\+Len}} (self, l)
+\item 
+\doxymbox{\hyperlink{classapiros_1_1_api_ros_a9b2ec2ba93e150ee35b120d96c511692}{read\+Len}} (self)
+\item 
+\doxymbox{\hyperlink{classapiros_1_1_api_ros_ad14cfa58e162685277f20092b98a7fe8}{write\+Str}} (self, str)
+\item 
+\doxymbox{\hyperlink{classapiros_1_1_api_ros_a82bc84a25e88e7f83f7b6da9ea1fc798}{write\+Byte}} (self, str)
+\item 
+\doxymbox{\hyperlink{classapiros_1_1_api_ros_a9ad682284f437f6113ea4a37d60dcbf6}{read\+Str}} (self, length)
+\item 
+\doxymbox{\hyperlink{classapiros_1_1_api_ros_a85c495aa539100b1d93aad44cf664689}{get\+Response}} (dev\+Ip, dev\+User, dev\+Pass, sentence)
+\item 
+\doxymbox{\hyperlink{classapiros_1_1_api_ros_aa7d4f35f481c71a2d2c86bd5e30296f6}{parser}} (self, sentence)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classapiros_1_1_api_ros_ade79f3fd5998bcc8a0e2c9b58938fda3}\label{classapiros_1_1_api_ros_ade79f3fd5998bcc8a0e2c9b58938fda3} 
+{\bfseries sk} = sk
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}RouterOS api\end{DoxyVerb}
+ 
+
+\label{classapiros_1_1_api_ros_doc-constructors}
+\Hypertarget{classapiros_1_1_api_ros_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classapiros_1_1_api_ros_abcefe7e10b29e233150de34b8dab548c}\index{apiros.ApiRos@{apiros.ApiRos}!\_\_init\_\_@{\_\_init\_\_}}
+\index{\_\_init\_\_@{\_\_init\_\_}!apiros.ApiRos@{apiros.ApiRos}}
+\doxysubsubsection{\texorpdfstring{\_\_init\_\_()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily \label{classapiros_1_1_api_ros_abcefe7e10b29e233150de34b8dab548c} 
+apiros.\+Api\+Ros.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{sk}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Initialises RouterOS object\end{DoxyVerb}
+ 
+
+\label{classapiros_1_1_api_ros_doc-func-members}
+\Hypertarget{classapiros_1_1_api_ros_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classapiros_1_1_api_ros_a85c495aa539100b1d93aad44cf664689}\index{apiros.ApiRos@{apiros.ApiRos}!getResponse@{getResponse}}
+\index{getResponse@{getResponse}!apiros.ApiRos@{apiros.ApiRos}}
+\doxysubsubsection{\texorpdfstring{getResponse()}{getResponse()}}
+{\footnotesize\ttfamily \label{classapiros_1_1_api_ros_a85c495aa539100b1d93aad44cf664689} 
+apiros.\+Api\+Ros.\+get\+Response (\begin{DoxyParamCaption}\item[{}]{dev\+Ip}{, }\item[{}]{dev\+User}{, }\item[{}]{dev\+Pass}{, }\item[{}]{sentence}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Opens connection, sends word and calls `parser`\end{DoxyVerb}
+ \Hypertarget{classapiros_1_1_api_ros_a84a8f93c3f62ef2e4dd8a1cbf47f97ad}\index{apiros.ApiRos@{apiros.ApiRos}!login@{login}}
+\index{login@{login}!apiros.ApiRos@{apiros.ApiRos}}
+\doxysubsubsection{\texorpdfstring{login()}{login()}}
+{\footnotesize\ttfamily \label{classapiros_1_1_api_ros_a84a8f93c3f62ef2e4dd8a1cbf47f97ad} 
+apiros.\+Api\+Ros.\+login (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{username}{, }\item[{}]{pwd}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Performs device login\end{DoxyVerb}
+ \Hypertarget{classapiros_1_1_api_ros_aa7d4f35f481c71a2d2c86bd5e30296f6}\index{apiros.ApiRos@{apiros.ApiRos}!parser@{parser}}
+\index{parser@{parser}!apiros.ApiRos@{apiros.ApiRos}}
+\doxysubsubsection{\texorpdfstring{parser()}{parser()}}
+{\footnotesize\ttfamily \label{classapiros_1_1_api_ros_aa7d4f35f481c71a2d2c86bd5e30296f6} 
+apiros.\+Api\+Ros.\+parser (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{sentence}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Parses received data\end{DoxyVerb}
+ \Hypertarget{classapiros_1_1_api_ros_a9b2ec2ba93e150ee35b120d96c511692}\index{apiros.ApiRos@{apiros.ApiRos}!readLen@{readLen}}
+\index{readLen@{readLen}!apiros.ApiRos@{apiros.ApiRos}}
+\doxysubsubsection{\texorpdfstring{readLen()}{readLen()}}
+{\footnotesize\ttfamily \label{classapiros_1_1_api_ros_a9b2ec2ba93e150ee35b120d96c511692} 
+apiros.\+Api\+Ros.\+read\+Len (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Reading byte operations\end{DoxyVerb}
+ \Hypertarget{classapiros_1_1_api_ros_aa8b3d67fdb251a634c537fff3a727c1a}\index{apiros.ApiRos@{apiros.ApiRos}!readSentence@{readSentence}}
+\index{readSentence@{readSentence}!apiros.ApiRos@{apiros.ApiRos}}
+\doxysubsubsection{\texorpdfstring{readSentence()}{readSentence()}}
+{\footnotesize\ttfamily \label{classapiros_1_1_api_ros_aa8b3d67fdb251a634c537fff3a727c1a} 
+apiros.\+Api\+Ros.\+read\+Sentence (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Reads device `sentence` (response)\end{DoxyVerb}
+ \Hypertarget{classapiros_1_1_api_ros_a9ad682284f437f6113ea4a37d60dcbf6}\index{apiros.ApiRos@{apiros.ApiRos}!readStr@{readStr}}
+\index{readStr@{readStr}!apiros.ApiRos@{apiros.ApiRos}}
+\doxysubsubsection{\texorpdfstring{readStr()}{readStr()}}
+{\footnotesize\ttfamily \label{classapiros_1_1_api_ros_a9ad682284f437f6113ea4a37d60dcbf6} 
+apiros.\+Api\+Ros.\+read\+Str (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{length}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Reads recived string\end{DoxyVerb}
+ \Hypertarget{classapiros_1_1_api_ros_a2412baeed430a5ee135c536e63120208}\index{apiros.ApiRos@{apiros.ApiRos}!readWord@{readWord}}
+\index{readWord@{readWord}!apiros.ApiRos@{apiros.ApiRos}}
+\doxysubsubsection{\texorpdfstring{readWord()}{readWord()}}
+{\footnotesize\ttfamily \label{classapiros_1_1_api_ros_a2412baeed430a5ee135c536e63120208} 
+apiros.\+Api\+Ros.\+read\+Word (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Reads `words`\end{DoxyVerb}
+ \Hypertarget{classapiros_1_1_api_ros_a8e7c62eeb9ad84e4661f152c1bfb0514}\index{apiros.ApiRos@{apiros.ApiRos}!talk@{talk}}
+\index{talk@{talk}!apiros.ApiRos@{apiros.ApiRos}}
+\doxysubsubsection{\texorpdfstring{talk()}{talk()}}
+{\footnotesize\ttfamily \label{classapiros_1_1_api_ros_a8e7c62eeb9ad84e4661f152c1bfb0514} 
+apiros.\+Api\+Ros.\+talk (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{words}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Performs commands entering\end{DoxyVerb}
+ \Hypertarget{classapiros_1_1_api_ros_a82bc84a25e88e7f83f7b6da9ea1fc798}\index{apiros.ApiRos@{apiros.ApiRos}!writeByte@{writeByte}}
+\index{writeByte@{writeByte}!apiros.ApiRos@{apiros.ApiRos}}
+\doxysubsubsection{\texorpdfstring{writeByte()}{writeByte()}}
+{\footnotesize\ttfamily \label{classapiros_1_1_api_ros_a82bc84a25e88e7f83f7b6da9ea1fc798} 
+apiros.\+Api\+Ros.\+write\+Byte (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{str}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Writes RAW bytes\end{DoxyVerb}
+ \Hypertarget{classapiros_1_1_api_ros_a40155dbead226f3e3037fa2409618a95}\index{apiros.ApiRos@{apiros.ApiRos}!writeLen@{writeLen}}
+\index{writeLen@{writeLen}!apiros.ApiRos@{apiros.ApiRos}}
+\doxysubsubsection{\texorpdfstring{writeLen()}{writeLen()}}
+{\footnotesize\ttfamily \label{classapiros_1_1_api_ros_a40155dbead226f3e3037fa2409618a95} 
+apiros.\+Api\+Ros.\+write\+Len (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{l}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Writing byte operations\end{DoxyVerb}
+ \Hypertarget{classapiros_1_1_api_ros_aab5cd9fe1e1fdf986f42159c95213935}\index{apiros.ApiRos@{apiros.ApiRos}!writeSentence@{writeSentence}}
+\index{writeSentence@{writeSentence}!apiros.ApiRos@{apiros.ApiRos}}
+\doxysubsubsection{\texorpdfstring{writeSentence()}{writeSentence()}}
+{\footnotesize\ttfamily \label{classapiros_1_1_api_ros_aab5cd9fe1e1fdf986f42159c95213935} 
+apiros.\+Api\+Ros.\+write\+Sentence (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{words}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Combines words to `sentence`\end{DoxyVerb}
+ \Hypertarget{classapiros_1_1_api_ros_ad14cfa58e162685277f20092b98a7fe8}\index{apiros.ApiRos@{apiros.ApiRos}!writeStr@{writeStr}}
+\index{writeStr@{writeStr}!apiros.ApiRos@{apiros.ApiRos}}
+\doxysubsubsection{\texorpdfstring{writeStr()}{writeStr()}}
+{\footnotesize\ttfamily \label{classapiros_1_1_api_ros_ad14cfa58e162685277f20092b98a7fe8} 
+apiros.\+Api\+Ros.\+write\+Str (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{str}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Sends string\end{DoxyVerb}
+ \Hypertarget{classapiros_1_1_api_ros_ad50eb52946136ca26b3ea16b19bf81e1}\index{apiros.ApiRos@{apiros.ApiRos}!writeWord@{writeWord}}
+\index{writeWord@{writeWord}!apiros.ApiRos@{apiros.ApiRos}}
+\doxysubsubsection{\texorpdfstring{writeWord()}{writeWord()}}
+{\footnotesize\ttfamily \label{classapiros_1_1_api_ros_ad50eb52946136ca26b3ea16b19bf81e1} 
+apiros.\+Api\+Ros.\+write\+Word (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{w}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Writes `words`\end{DoxyVerb}
+ 
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+app/\+api/\+apiros.\+py\end{DoxyCompactItemize}

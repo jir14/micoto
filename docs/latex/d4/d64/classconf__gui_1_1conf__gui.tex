@@ -1,0 +1,140 @@
+\doxysection{conf\+\_\+gui.\+conf\+\_\+gui Class Reference}
+\hypertarget{classconf__gui_1_1conf__gui}{}\label{classconf__gui_1_1conf__gui}\index{conf\_gui.conf\_gui@{conf\_gui.conf\_gui}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{classconf__gui_1_1conf__gui_af8abedcb98033e0ee1f016b24040b181}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, cmd\+Db\+Path="{}"{}, devs="{}"{})
+\item 
+\doxymbox{\hyperlink{classconf__gui_1_1conf__gui_a85a9826da965dcb9649701af0ea0c5ed}{open\+Main\+Window}} (self)
+\item 
+\doxymbox{\hyperlink{classconf__gui_1_1conf__gui_a3a67958d6e775ea9b8938395ee9dca04}{open\+Dir\+Window}} (self, sender, app\+\_\+data, user\+\_\+data)
+\item 
+\doxymbox{\hyperlink{classconf__gui_1_1conf__gui_a3a7499d6154a5a14cd45573e11a7afd6}{open\+Cmds}} (self, sender, app\+\_\+data, user\+\_\+data)
+\item 
+\doxymbox{\hyperlink{classconf__gui_1_1conf__gui_af3aa611093591777f85a2dc974955113}{add\+Dir\+Table}} (self, user\+\_\+data)
+\item 
+\doxymbox{\hyperlink{classconf__gui_1_1conf__gui_ac7511bac12f1355afbe0c111a07254cc}{add\+Commands}} (self, win)
+\item 
+\doxymbox{\hyperlink{classconf__gui_1_1conf__gui_a8779c3d90cae4fc922afb76963c91f00}{apply}} (self, sender, app\+\_\+data, user\+\_\+data)
+\item 
+\doxymbox{\hyperlink{classconf__gui_1_1conf__gui_a3de8942e337be2c447b140098e654325}{on\+Close}} (self, sender, app\+\_\+data, user\+\_\+data)
+\item 
+\doxymbox{\hyperlink{classconf__gui_1_1conf__gui_a43021a7443318eef30c2b00acaca0243}{add\+To\+Arg\+Vals}} (self, sender, app\+\_\+data, user\+\_\+data)
+\item 
+\doxymbox{\hyperlink{classconf__gui_1_1conf__gui_a56f99ea8d6762cf72fa1856b0af75d21}{apply\+Change}} (self, sender, app\+\_\+data, win)
+\item 
+\doxymbox{\hyperlink{classconf__gui_1_1conf__gui_a97c3b088950749ce310b32ded64ba6f0}{annonce\+Window}} (self, msg="{}connection failed"{}, type="{}Error"{}, consequence=False)
+\item 
+\doxymbox{\hyperlink{classconf__gui_1_1conf__gui_af2e1b3ee7af54c1d8e557b5e11e3cd93}{center\+Item}} (self, tag)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classconf__gui_1_1conf__gui_a1d67a0e19a7ac23549af870b6fb61545}\label{classconf__gui_1_1conf__gui_a1d67a0e19a7ac23549af870b6fb61545} 
+{\bfseries devices} = ast.\+literal\+\_\+eval(devs)
+\item 
+\Hypertarget{classconf__gui_1_1conf__gui_a19b339e0462fa848f49475c1744a38f4}\label{classconf__gui_1_1conf__gui_a19b339e0462fa848f49475c1744a38f4} 
+{\bfseries cmd\+Db\+Path} = cmd\+Db\+Path
+\item 
+\Hypertarget{classconf__gui_1_1conf__gui_a1a9f81ba6e2ebf08d7a434c0d447c428}\label{classconf__gui_1_1conf__gui_a1a9f81ba6e2ebf08d7a434c0d447c428} 
+{\bfseries middle} = \doxymbox{\hyperlink{classmiddleware_1_1middleware}{middleware}}(cmd\+Db\+File=self.\+cmd\+Db\+Path, devices=self.\+devices)
+\end{DoxyCompactItemize}
+
+
+\label{classconf__gui_1_1conf__gui_doc-constructors}
+\Hypertarget{classconf__gui_1_1conf__gui_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classconf__gui_1_1conf__gui_af8abedcb98033e0ee1f016b24040b181}\index{conf\_gui.conf\_gui@{conf\_gui.conf\_gui}!\_\_init\_\_@{\_\_init\_\_}}
+\index{\_\_init\_\_@{\_\_init\_\_}!conf\_gui.conf\_gui@{conf\_gui.conf\_gui}}
+\doxysubsubsection{\texorpdfstring{\_\_init\_\_()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily \label{classconf__gui_1_1conf__gui_af8abedcb98033e0ee1f016b24040b181} 
+conf\+\_\+gui.\+conf\+\_\+gui.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{cmd\+Db\+Path}{ = {\ttfamily "{}"{}}, }\item[{}]{devs}{ = {\ttfamily "{}"{}}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Initialises confgui object\end{DoxyVerb}
+ 
+
+\label{classconf__gui_1_1conf__gui_doc-func-members}
+\Hypertarget{classconf__gui_1_1conf__gui_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classconf__gui_1_1conf__gui_ac7511bac12f1355afbe0c111a07254cc}\index{conf\_gui.conf\_gui@{conf\_gui.conf\_gui}!addCommands@{addCommands}}
+\index{addCommands@{addCommands}!conf\_gui.conf\_gui@{conf\_gui.conf\_gui}}
+\doxysubsubsection{\texorpdfstring{addCommands()}{addCommands()}}
+{\footnotesize\ttfamily \label{classconf__gui_1_1conf__gui_ac7511bac12f1355afbe0c111a07254cc} 
+conf\+\_\+gui.\+conf\+\_\+gui.\+add\+Commands (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{win}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Adds available command buttons\end{DoxyVerb}
+ \Hypertarget{classconf__gui_1_1conf__gui_af3aa611093591777f85a2dc974955113}\index{conf\_gui.conf\_gui@{conf\_gui.conf\_gui}!addDirTable@{addDirTable}}
+\index{addDirTable@{addDirTable}!conf\_gui.conf\_gui@{conf\_gui.conf\_gui}}
+\doxysubsubsection{\texorpdfstring{addDirTable()}{addDirTable()}}
+{\footnotesize\ttfamily \label{classconf__gui_1_1conf__gui_af3aa611093591777f85a2dc974955113} 
+conf\+\_\+gui.\+conf\+\_\+gui.\+add\+Dir\+Table (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{user\+\_\+data}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Refreshes table data\end{DoxyVerb}
+ \Hypertarget{classconf__gui_1_1conf__gui_a43021a7443318eef30c2b00acaca0243}\index{conf\_gui.conf\_gui@{conf\_gui.conf\_gui}!addToArgVals@{addToArgVals}}
+\index{addToArgVals@{addToArgVals}!conf\_gui.conf\_gui@{conf\_gui.conf\_gui}}
+\doxysubsubsection{\texorpdfstring{addToArgVals()}{addToArgVals()}}
+{\footnotesize\ttfamily \label{classconf__gui_1_1conf__gui_a43021a7443318eef30c2b00acaca0243} 
+conf\+\_\+gui.\+conf\+\_\+gui.\+add\+To\+Arg\+Vals (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{sender}{, }\item[{}]{app\+\_\+data}{, }\item[{}]{user\+\_\+data}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Adds values to dictionary\end{DoxyVerb}
+ \Hypertarget{classconf__gui_1_1conf__gui_a97c3b088950749ce310b32ded64ba6f0}\index{conf\_gui.conf\_gui@{conf\_gui.conf\_gui}!annonceWindow@{annonceWindow}}
+\index{annonceWindow@{annonceWindow}!conf\_gui.conf\_gui@{conf\_gui.conf\_gui}}
+\doxysubsubsection{\texorpdfstring{annonceWindow()}{annonceWindow()}}
+{\footnotesize\ttfamily \label{classconf__gui_1_1conf__gui_a97c3b088950749ce310b32ded64ba6f0} 
+conf\+\_\+gui.\+conf\+\_\+gui.\+annonce\+Window (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{msg}{ = {\ttfamily "{}connection~failed"{}}, }\item[{}]{type}{ = {\ttfamily "{}Error"{}}, }\item[{}]{consequence}{ = {\ttfamily False}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Announcement window\end{DoxyVerb}
+ \Hypertarget{classconf__gui_1_1conf__gui_a8779c3d90cae4fc922afb76963c91f00}\index{conf\_gui.conf\_gui@{conf\_gui.conf\_gui}!apply@{apply}}
+\index{apply@{apply}!conf\_gui.conf\_gui@{conf\_gui.conf\_gui}}
+\doxysubsubsection{\texorpdfstring{apply()}{apply()}}
+{\footnotesize\ttfamily \label{classconf__gui_1_1conf__gui_a8779c3d90cae4fc922afb76963c91f00} 
+conf\+\_\+gui.\+conf\+\_\+gui.\+apply (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{sender}{, }\item[{}]{app\+\_\+data}{, }\item[{}]{user\+\_\+data}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Applies configuration\end{DoxyVerb}
+ \Hypertarget{classconf__gui_1_1conf__gui_a56f99ea8d6762cf72fa1856b0af75d21}\index{conf\_gui.conf\_gui@{conf\_gui.conf\_gui}!applyChange@{applyChange}}
+\index{applyChange@{applyChange}!conf\_gui.conf\_gui@{conf\_gui.conf\_gui}}
+\doxysubsubsection{\texorpdfstring{applyChange()}{applyChange()}}
+{\footnotesize\ttfamily \label{classconf__gui_1_1conf__gui_a56f99ea8d6762cf72fa1856b0af75d21} 
+conf\+\_\+gui.\+conf\+\_\+gui.\+apply\+Change (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{sender}{, }\item[{}]{app\+\_\+data}{, }\item[{}]{win}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Helper - alters selected item based on previous selection (selected/not selected item(s))\end{DoxyVerb}
+ \Hypertarget{classconf__gui_1_1conf__gui_af2e1b3ee7af54c1d8e557b5e11e3cd93}\index{conf\_gui.conf\_gui@{conf\_gui.conf\_gui}!centerItem@{centerItem}}
+\index{centerItem@{centerItem}!conf\_gui.conf\_gui@{conf\_gui.conf\_gui}}
+\doxysubsubsection{\texorpdfstring{centerItem()}{centerItem()}}
+{\footnotesize\ttfamily \label{classconf__gui_1_1conf__gui_af2e1b3ee7af54c1d8e557b5e11e3cd93} 
+conf\+\_\+gui.\+conf\+\_\+gui.\+center\+Item (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{tag}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Centers item\end{DoxyVerb}
+ \Hypertarget{classconf__gui_1_1conf__gui_a3de8942e337be2c447b140098e654325}\index{conf\_gui.conf\_gui@{conf\_gui.conf\_gui}!onClose@{onClose}}
+\index{onClose@{onClose}!conf\_gui.conf\_gui@{conf\_gui.conf\_gui}}
+\doxysubsubsection{\texorpdfstring{onClose()}{onClose()}}
+{\footnotesize\ttfamily \label{classconf__gui_1_1conf__gui_a3de8942e337be2c447b140098e654325} 
+conf\+\_\+gui.\+conf\+\_\+gui.\+on\+Close (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{sender}{, }\item[{}]{app\+\_\+data}{, }\item[{}]{user\+\_\+data}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Closes window, refreshes table data\end{DoxyVerb}
+ \Hypertarget{classconf__gui_1_1conf__gui_a3a7499d6154a5a14cd45573e11a7afd6}\index{conf\_gui.conf\_gui@{conf\_gui.conf\_gui}!openCmds@{openCmds}}
+\index{openCmds@{openCmds}!conf\_gui.conf\_gui@{conf\_gui.conf\_gui}}
+\doxysubsubsection{\texorpdfstring{openCmds()}{openCmds()}}
+{\footnotesize\ttfamily \label{classconf__gui_1_1conf__gui_a3a7499d6154a5a14cd45573e11a7afd6} 
+conf\+\_\+gui.\+conf\+\_\+gui.\+open\+Cmds (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{sender}{, }\item[{}]{app\+\_\+data}{, }\item[{}]{user\+\_\+data}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Opens command window\end{DoxyVerb}
+ \Hypertarget{classconf__gui_1_1conf__gui_a3a67958d6e775ea9b8938395ee9dca04}\index{conf\_gui.conf\_gui@{conf\_gui.conf\_gui}!openDirWindow@{openDirWindow}}
+\index{openDirWindow@{openDirWindow}!conf\_gui.conf\_gui@{conf\_gui.conf\_gui}}
+\doxysubsubsection{\texorpdfstring{openDirWindow()}{openDirWindow()}}
+{\footnotesize\ttfamily \label{classconf__gui_1_1conf__gui_a3a67958d6e775ea9b8938395ee9dca04} 
+conf\+\_\+gui.\+conf\+\_\+gui.\+open\+Dir\+Window (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{sender}{, }\item[{}]{app\+\_\+data}{, }\item[{}]{user\+\_\+data}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Opens directory window\end{DoxyVerb}
+ \Hypertarget{classconf__gui_1_1conf__gui_a85a9826da965dcb9649701af0ea0c5ed}\index{conf\_gui.conf\_gui@{conf\_gui.conf\_gui}!openMainWindow@{openMainWindow}}
+\index{openMainWindow@{openMainWindow}!conf\_gui.conf\_gui@{conf\_gui.conf\_gui}}
+\doxysubsubsection{\texorpdfstring{openMainWindow()}{openMainWindow()}}
+{\footnotesize\ttfamily \label{classconf__gui_1_1conf__gui_a85a9826da965dcb9649701af0ea0c5ed} 
+conf\+\_\+gui.\+conf\+\_\+gui.\+open\+Main\+Window (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Opens main configuration window\end{DoxyVerb}
+ 
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+app/\+conf\+\_\+gui.\+py\end{DoxyCompactItemize}
