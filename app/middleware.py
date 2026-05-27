@@ -1,16 +1,16 @@
-import db.db as DB
-import device as device
+from ..app.db.db import Database
+from ..app.device import Device
 
 class middleware():
     def __init__(self, cmdDbFile="", devices=dict()):
         """Initialises middleware object"""
-        self.db=DB.Database(dbFile=cmdDbFile)
+        self.db=Database(dbFile=cmdDbFile)
         """Sets command database"""
         self.devList=[]
         """Sets empty list of devices"""
         for devIp, params in devices.items():
             for username, password in params.items():
-                self.devList.append(device.Device(devIp, username, password.decode()))
+                self.devList.append(Device(devIp, username, password.decode()))
                 """Device initialization"""    
         pass
 

@@ -1,14 +1,13 @@
-import api.apiros as API
-import db.db as DB
-import sys
-import ast as ast
+from ..app.api.apiros import *
+from ..app.db.db import Database
+import sys, ast
 
 class ApiCommands():
     def __init__(self, ip, username, password, database):
         """Initialises ApiCommands object"""
-        self.sk = API.open_socket(ip, 8729, True)
+        self.sk = open_socket(ip, 8729, True)
         """Opens socket"""
-        self.api = API.ApiRos(self.sk)
+        self.api = ApiRos(self.sk)
         """Sets ApiRos"""
         self.api.login(username, password)
         """Performes ApiRos login"""
@@ -84,7 +83,7 @@ class ApiCommands():
 
 def main(dbFile="default-commands.db", devIp="", device=""):
     """Main"""
-    db = DB.Database(dbFile, create=True)
+    db = Database(dbFile, create=True)
     """Sets command database object"""
     dev = ast.literal_eval(device)
     """Type conversion (string &rarr dictionary)"""

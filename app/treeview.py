@@ -1,8 +1,7 @@
 import dearpygui.dearpygui as dpg
-from db.db import Database
-import os
-import sys
-from EditThemePlugin import EditThemePlugin
+import os, sys
+from ..app.db.db import Database
+from ..app.EditThemePlugin import EditThemePlugin
 
 class Treeview:
     def __init__(self, dbName):
@@ -33,6 +32,13 @@ class Treeview:
                     with dpg.group(horizontal=False, parent="sectionTag"+str(dirID), tag="sectionHorizontalTag"+str(dirID)):
                         dpg.add_collapsing_header(tag="dir"+str(dirID), label=dirName, parent="sectionHorizontalTag"+str(dirID))
                         self.loop(dirID) 
+        
+        dpg.create_viewport(title='Micoto', width=1500, height=1000)
+        dpg.setup_dearpygui()
+        dpg.show_viewport()
+        dpg.set_primary_window("Menu", True)
+        dpg.start_dearpygui()
+        dpg.destroy_context()
     
     def dbTest(self):
         """Calls `db.checkCmdFile` function"""
@@ -140,9 +146,3 @@ class Treeview:
 if __name__ == "__main__":
     tree=Treeview(sys.argv[1])
     
-dpg.create_viewport(title='Micoto', width=1500, height=1000)
-dpg.setup_dearpygui()
-dpg.show_viewport()
-dpg.set_primary_window("Menu", True)
-dpg.start_dearpygui()
-dpg.destroy_context()

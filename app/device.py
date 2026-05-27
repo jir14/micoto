@@ -1,18 +1,18 @@
-import api.apiros as apiros
-import api.api as api
+from ..app.api.apiros import *
+from ..app.api.api import Api
 
 class Device():
     def __init__(self, devIp, devUsername, devPass):
         """Initialises device object"""
-        self.sk=apiros.open_socket(devIp, 8729, True)
+        self.sk=open_socket(devIp, 8729, True)
         """Sets device socket"""
-        self.apiros=apiros.ApiRos(self.sk)
+        self.apiros=ApiRos(self.sk)
         """Sets device ApiRos"""
         self.apiros.login(devUsername, devPass)
         """Performs ApiRos login"""
         self.ip=devIp
         """Sets device IP"""
-        self.api=api.Api(self)
+        self.api=Api(self)
         """Sets device Api"""
         self.name=self.api.getDevName()
         """Sets device name"""

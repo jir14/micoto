@@ -1,10 +1,8 @@
-import copy
+import copy, ast, sys
 import dearpygui.dearpygui as dpg
-import middleware as middle
-import ast as ast
-import sys
-from EditThemePlugin import EditThemePlugin
-import window as wnd
+from ..app.middleware import middleware
+from ..app.window import window
+from ..app.EditThemePlugin import EditThemePlugin
 
 class conf_gui():
     def __init__(self, cmdDbPath="" , devs=""):
@@ -40,7 +38,7 @@ class conf_gui():
                     EditThemePlugin()
                     dpg.add_menu_item(label="Fonts", callback=lambda: dpg.show_font_manager())
             try:
-                self.middle=middle.middleware(cmdDbFile=self.cmdDbPath, devices=self.devices)
+                self.middle=middleware(cmdDbFile=self.cmdDbPath, devices=self.devices)
             except:
                 self.annonceWindow("connection to devices failed")
             with dpg.group(horizontal=False, parent=MainWindow, tag="Menu", width=100, height=dpg.get_item_height(MainWindow)):
@@ -55,7 +53,7 @@ class conf_gui():
 
     def openDirWindow(self, sender, app_data, user_data):
         """Opens directory window"""
-        win = wnd.window(dirId=user_data["dirId"], pos=user_data["pos"], lbl=self.middle.printDirPath(user_data["dirId"], spacer="/"))
+        win = window(dirId=user_data["dirId"], pos=user_data["pos"], lbl=self.middle.printDirPath(user_data["dirId"], spacer="/"))
         if dpg.does_item_exist(win.getLbl()):
             dpg.focus_item(win.getLbl())
             return
@@ -131,7 +129,7 @@ class conf_gui():
         if dpg.does_item_exist(lbl):
             dpg.focus_item(lbl)
             return
-        win = wnd.window(dirId=oldWin.getDirId(), selected=oldWin.getSelected(), lbl=path, pos=oldWin.getPos(), cmd=cmd)
+        win = window(dirId=oldWin.getDirId(), selected=oldWin.getSelected(), lbl=path, pos=oldWin.getPos(), cmd=cmd)
         win.clearArgVals()
         with dpg.window(label=lbl, tag=lbl, autosize=True, on_close=self.onClose, user_data=win):
             win.setPos(win.getPos()+120)
