@@ -9,7 +9,7 @@ cntx=dpg.create_context()
 """Creates DearPyGui context"""
 
 class GUI():
-    def __init__(self):
+    def __init__(self, admin=False):
         self.db = None
         """Database object"""
         self.devDbPath = None
@@ -42,21 +42,23 @@ class GUI():
                 with dpg.menu(label="Theme"):
                     EditThemePlugin()
                     dpg.add_menu_item(label="Fonts", callback=lambda: dpg.show_font_manager())
-                with dpg.menu(label="Admin"):
-                    with dpg.file_dialog(modal=True, show=False, tag="cndd", callback=self.createNewDevDbFile, width=700, height=400, directory_selector=True):
-                        dpg.add_file_extension(".db")
-                    dpg.add_menu_item(label="Create new device db", callback=lambda: dpg.show_item("cndd"))
-                    with dpg.file_dialog(modal=True, show=False, tag="twdd", callback=self.treeview, width=700, height=400):
-                        dpg.add_file_extension(".db")
-                    dpg.add_menu_item(label="Command map", callback=lambda: dpg.show_item("twdd"))
-                    with dpg.file_dialog(modal=True, show=False, tag="csdd", callback=self.commandScan, width=700, height=400):
-                        dpg.add_file_extension(".db")
-                    dpg.add_menu_item(label="Command scan", callback=lambda: dpg.show_item("csdd"))
+                if admin:
+                    with dpg.menu(label="Admin"):
+                        with dpg.file_dialog(modal=True, show=False, tag="cndd", callback=self.createNewDevDbFile, width=700, height=400, directory_selector=True):
+                            dpg.add_file_extension(".db")
+                        dpg.add_menu_item(label="Create new device db", callback=lambda: dpg.show_item("cndd"))
+                        with dpg.file_dialog(modal=True, show=False, tag="twdd", callback=self.treeview, width=700, height=400):
+                            dpg.add_file_extension(".db")
+                        dpg.add_menu_item(label="Command map", callback=lambda: dpg.show_item("twdd"))
+                        with dpg.file_dialog(modal=True, show=False, tag="csdd", callback=self.commandScan, width=700, height=400):
+                            dpg.add_file_extension(".db")
+                        dpg.add_menu_item(label="Command scan", callback=lambda: dpg.show_item("csdd"))
 
             with dpg.group(horizontal=True):
                 dpg.add_button(label="connect", tag="ConnectButton", callback=self.connect)
-                dpg.add_button(label="add device", callback=self.openDeviceAddWindow)
-                dpg.add_button(label="delete selected", callback=self.delDev)
+                if admin:
+                    dpg.add_button(label="add device", callback=self.openDeviceAddWindow)
+                    dpg.add_button(label="delete selected", callback=self.delDev)
 
         dpg.create_viewport(title='Micoto', width=1200, height=1000)
         dpg.setup_dearpygui()
@@ -292,5 +294,5 @@ class GUI():
 
 
 if __name__ == "__main__":
-    gui=GUI()
+    gui=GUI(admin=True)
     
