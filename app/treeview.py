@@ -33,7 +33,7 @@ class Treeview:
                         dpg.add_collapsing_header(tag="dir"+str(dirID), label=dirName, parent="sectionHorizontalTag"+str(dirID))
                         self.loop(dirID) 
         
-        dpg.create_viewport(title='Micoto', width=1500, height=1000)
+        dpg.create_viewport(title='Micoto - treeview', width=1500, height=1000)
         dpg.setup_dearpygui()
         dpg.show_viewport()
         dpg.set_primary_window("Menu", True)
