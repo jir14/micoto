@@ -3,7 +3,7 @@ Mikrotik Configuration Tool
 
 This programme is part of my bachelor's degree. Current state of this project is BACHELOR THESIS.
 
-The programme can be run by `py test_app.py`.
+The programme can be run by `py micoto.py`.
 
 ## Running app
 ![Running app](docs/img/running_app.gif)
